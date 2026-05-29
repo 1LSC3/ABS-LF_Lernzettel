@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LF9 Lernzettel – Netzwerke und Dienste bereitstellen</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --bg2: #181c25;
+    --bg3: #1e2330;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #e8eaf0;
+    --text2: #9aa0b4;
+    --text3: #5c6378;
+    --blue: #4f8ef7;
+    --blue-bg: rgba(79,142,247,0.12);
+    --teal: #2dd4bf;
+    --teal-bg: rgba(45,212,191,0.10);
+    --amber: #f59e0b;
+    --amber-bg: rgba(245,158,11,0.10);
+    --red: #f87171;
+    --red-bg: rgba(248,113,113,0.10);
+    --green: #4ade80;
+    --green-bg: rgba(74,222,128,0.10);
+    --purple: #a78bfa;
+    --purple-bg: rgba(167,139,250,0.10);
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* ---- LAYOUT ---- */
+  .wrapper { display: flex; min-height: 100vh; }
+  
+  nav {
+    width: 240px;
+    min-width: 240px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    padding: 1.5rem 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  nav .logo {
+    padding: 0 1.25rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1rem;
+  }
+  nav .logo h1 { font-size: 14px; font-weight: 700; color: var(--blue); letter-spacing: 0.05em; text-transform: uppercase; }
+  nav .logo p { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  nav a {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 1.25rem; font-size: 13px; color: var(--text2);
+    text-decoration: none; border-left: 2px solid transparent;
+    transition: all 0.15s;
+  }
+  nav a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+  nav a.active { color: var(--blue); border-left-color: var(--blue); background: var(--blue-bg); }
+  nav .nav-section { font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; padding: 1rem 1.25rem 0.35rem; }
+  nav .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  
+  main { flex: 1; padding: 2.5rem 2rem; max-width: 900px; }
+
+  /* ---- TYPOGRAPHY ---- */
+  .page-title { font-size: 28px; font-weight: 700; color: var(--text); margin-bottom: 0.25rem; }
+  .page-sub { font-size: 14px; color: var(--text2); margin-bottom: 0.5rem; }
+  .chapter-header {
+    display: flex; align-items: center; gap: 12px;
+    margin: 2.5rem 0 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .chapter-icon {
+    width: 36px; height: 36px; border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .chapter-header h2 { font-size: 20px; font-weight: 600; }
+  .badge {
+    font-size: 10px; font-weight: 600; padding: 3px 9px; border-radius: 20px;
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  h3.sec { font-size: 16px; font-weight: 600; color: var(--text); margin: 1.5rem 0 0.75rem; display: flex; align-items: center; gap: 8px; }
+  h3.sec::before { content: ''; display: block; width: 3px; height: 16px; border-radius: 2px; background: var(--blue); flex-shrink: 0; }
+  p { color: var(--text2); font-size: 14px; margin-bottom: 0.5rem; }
+
+  /* ---- CARDS ---- */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  .card.blue { border-left: 3px solid var(--blue); }
+  .card.teal { border-left: 3px solid var(--teal); }
+  .card.amber { border-left: 3px solid var(--amber); }
+  .card.red { border-left: 3px solid var(--red); }
+  .card.green { border-left: 3px solid var(--green); }
+  .card.purple { border-left: 3px solid var(--purple); }
+
+  /* ---- DEF TABLE ---- */
+  .def-table { width: 100%; border-collapse: collapse; }
+  .def-table tr { border-bottom: 1px solid var(--border); }
+  .def-table tr:last-child { border-bottom: none; }
+  .def-table td { padding: 9px 0; vertical-align: top; font-size: 13.5px; }
+  .def-table td:first-child { width: 160px; font-weight: 600; color: var(--text); padding-right: 1rem; }
+  .def-table td:last-child { color: var(--text2); }
+  .def-table .sub { font-size: 11px; color: var(--text3); font-weight: 400; display: block; margin-top: 2px; }
+
+  /* ---- TAGS ---- */
+  .tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin: 2px 3px 2px 0; }
+  .tag.blue { background: var(--blue-bg); color: var(--blue); }
+  .tag.teal { background: var(--teal-bg); color: var(--teal); }
+  .tag.amber { background: var(--amber-bg); color: var(--amber); }
+  .tag.red { background: var(--red-bg); color: var(--red); }
+  .tag.green { background: var(--green-bg); color: var(--green); }
+  .tag.purple { background: var(--purple-bg); color: var(--purple); }
+
+  /* ---- FLOW DIAGRAM ---- */
+  .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0.75rem 0; }
+  .flow-step { background: var(--bg3); border: 1px solid var(--border2); border-radius: 6px; padding: 6px 12px; font-size: 12.5px; color: var(--text); }
+  .flow-step small { display: block; font-size: 10px; color: var(--text3); margin-top: 1px; }
+  .flow-arrow { color: var(--text3); font-size: 14px; }
+
+  /* ---- COMPARISON GRID ---- */
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 0.75rem 0 1rem; }
+  .compare-card { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem; }
+  .compare-card h4 { font-size: 13px; font-weight: 600; margin-bottom: 0.5rem; }
+  .compare-card ul { list-style: none; padding: 0; }
+  .compare-card li { font-size: 12.5px; color: var(--text2); padding: 3px 0; padding-left: 14px; position: relative; }
+  .compare-card li::before { content: '→'; position: absolute; left: 0; color: var(--text3); }
+
+  /* ---- INFO BOXES ---- */
+  .info-box { border-radius: var(--radius-sm); padding: 0.75rem 1rem; margin: 0.75rem 0; font-size: 13px; }
+  .info-box.blue { background: var(--blue-bg); border: 1px solid rgba(79,142,247,0.2); color: #93b8fb; }
+  .info-box.amber { background: var(--amber-bg); border: 1px solid rgba(245,158,11,0.2); color: #fcd264; }
+  .info-box.green { background: var(--green-bg); border: 1px solid rgba(74,222,128,0.2); color: #86efac; }
+  .info-box.red { background: var(--red-bg); border: 1px solid rgba(248,113,113,0.2); color: #fca5a5; }
+  .info-box strong { font-weight: 600; }
+
+  /* ---- TOM GRID ---- */
+  .tom-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; margin: 0.75rem 0; }
+  .tom-item { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; }
+  .tom-num { font-size: 10px; font-weight: 700; color: var(--text3); margin-bottom: 4px; }
+  .tom-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .tom-desc { font-size: 11.5px; color: var(--text2); line-height: 1.5; }
+
+  /* ---- QUIZ ---- */
+  .quiz-section { margin-top: 2rem; }
+  .quiz-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+  .quiz-header h3 { font-size: 15px; font-weight: 600; color: var(--text); }
+  .quiz-progress-text { font-size: 12px; color: var(--text3); }
+  .quiz-block { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 0.75rem; }
+  .quiz-q { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 0.75rem; line-height: 1.5; }
+  .quiz-num { font-size: 11px; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.4rem; }
+  .quiz-opts { display: flex; flex-direction: column; gap: 7px; }
+  .quiz-opt {
+    background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--radius-sm);
+    padding: 9px 14px; font-size: 13px; color: var(--text); cursor: pointer;
+    text-align: left; transition: border-color 0.15s, background 0.15s; line-height: 1.5;
+  }
+  .quiz-opt:hover:not(:disabled) { border-color: var(--blue); background: var(--blue-bg); }
+  .quiz-opt.correct { border-color: var(--green) !important; background: var(--green-bg) !important; color: #86efac !important; }
+  .quiz-opt.wrong { border-color: var(--red) !important; background: var(--red-bg) !important; color: #fca5a5 !important; }
+  .quiz-opt.show-correct { border-color: var(--green); background: var(--green-bg); color: #86efac; opacity: 0.6; }
+  .quiz-opt:disabled { cursor: default; }
+  .tf-row { display: flex; gap: 10px; margin-top: 0.5rem; }
+  .tf-btn {
+    flex: 1; padding: 9px; border: 1px solid var(--border2); border-radius: var(--radius-sm);
+    font-size: 13px; cursor: pointer; background: var(--bg3); color: var(--text);
+    font-weight: 500; transition: all 0.15s;
+  }
+  .tf-btn:hover:not(:disabled) { border-color: var(--blue); background: var(--blue-bg); }
+  .tf-btn.correct { border-color: var(--green) !important; background: var(--green-bg) !important; color: #86efac !important; }
+  .tf-btn.wrong { border-color: var(--red) !important; background: var(--red-bg) !important; color: #fca5a5 !important; }
+  .tf-btn:disabled { cursor: default; }
+  .feedback {
+    margin-top: 0.6rem; font-size: 12.5px; padding: 7px 12px;
+    border-radius: var(--radius-sm); display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.ok { background: var(--green-bg); color: #86efac; border: 1px solid rgba(74,222,128,0.2); }
+  .feedback.nok { background: var(--red-bg); color: #fca5a5; border: 1px solid rgba(248,113,113,0.2); }
+  .reset-btn {
+    margin-top: 8px; font-size: 11.5px; color: var(--text3);
+    cursor: pointer; background: none; border: none; padding: 0; text-decoration: underline;
+  }
+  .reset-btn:hover { color: var(--text2); }
+
+  /* ---- PROGRESS BAR ---- */
+  .global-progress { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 2rem; }
+  .gp-label { font-size: 12px; color: var(--text2); margin-bottom: 0.5rem; display: flex; justify-content: space-between; }
+  .gp-bar { height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
+  .gp-fill { height: 6px; background: linear-gradient(90deg, var(--blue), var(--teal)); border-radius: 3px; width: 0%; transition: width 0.4s; }
+
+  /* ---- HIGHLIGHT LIST ---- */
+  ul.hl { list-style: none; padding: 0; }
+  ul.hl li { font-size: 13.5px; color: var(--text2); padding: 5px 0 5px 20px; position: relative; border-bottom: 1px solid var(--border); }
+  ul.hl li:last-child { border-bottom: none; }
+  ul.hl li::before { content: '▸'; position: absolute; left: 0; color: var(--blue); font-size: 11px; top: 7px; }
+  ul.hl li strong { color: var(--text); font-weight: 600; }
+
+  /* ---- PROTOCOL TABLE ---- */
+  .proto-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .proto-table th { text-align: left; padding: 8px 10px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); border-bottom: 1px solid var(--border2); }
+  .proto-table td { padding: 9px 10px; border-bottom: 1px solid var(--border); color: var(--text2); vertical-align: top; }
+  .proto-table tr:last-child td { border-bottom: none; }
+  .proto-table td:first-child { font-weight: 600; color: var(--text); }
+
+  /* ---- SCROLLBAR ---- */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
+
+  @media (max-width: 768px) {
+    nav { display: none; }
+    main { padding: 1.5rem 1rem; }
+    .compare-grid { grid-template-columns: 1fr; }
+    .tom-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+<!-- SIDEBAR NAV -->
+<nav id="sidebar">
+  <div class="logo">
+    <h1>LF9 Lernzettel</h1>
+    <p>Netzwerke &amp; Dienste</p>
+  </div>
+  <div class="nav-section">Kapitel 1 – Anwendungsschicht</div>
+  <a href="#serverarten"><span class="dot" style="background:#4f8ef7"></span>Serverarten</a>
+  <a href="#dhcp"><span class="dot" style="background:#4f8ef7"></span>DHCP</a>
+  <a href="#dns"><span class="dot" style="background:#4f8ef7"></span>DNS</a>
+  <a href="#protokollheader"><span class="dot" style="background:#4f8ef7"></span>Protokollheader</a>
+  <a href="#quiz1"><span class="dot" style="background:#4f8ef7"></span>Fragen</a>
+  <div class="nav-section">Kapitel 2 – Wirtschaft</div>
+  <a href="#kosten"><span class="dot" style="background:#2dd4bf"></span>Kostenarten</a>
+  <a href="#cloudmodelle"><span class="dot" style="background:#2dd4bf"></span>Cloud-Modelle</a>
+  <a href="#quiz2"><span class="dot" style="background:#2dd4bf"></span>Fragen</a>
+  <div class="nav-section">Kapitel 3 – Sicherheit</div>
+  <a href="#risiko"><span class="dot" style="background:#f87171"></span>Risikoanalyse</a>
+  <a href="#tom"><span class="dot" style="background:#f87171"></span>TOM (14 Punkte)</a>
+  <a href="#dmz"><span class="dot" style="background:#f87171"></span>DMZ &amp; Firewall</a>
+  <a href="#ids"><span class="dot" style="background:#f87171"></span>IDS / IPS / SPI / DPI</a>
+  <a href="#quiz3"><span class="dot" style="background:#f87171"></span>Fragen</a>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main>
+  <h1 class="page-title">LF9 – Netzwerke und Dienste bereitstellen</h1>
+  <p class="page-sub">August-Bebel-Schule · Klassenarbeitsvorbereitung 2024/25</p>
+
+  <!-- PROGRESS -->
+  <div class="global-progress">
+    <div class="gp-label"><span>Gesamtfortschritt Übungsfragen</span><span id="gp-text">0 / 25 beantwortet</span></div>
+    <div class="gp-bar"><div class="gp-fill" id="gp-fill"></div></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- KAPITEL 1                                               -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="chapter-header">
+    <div class="chapter-icon" style="background:var(--blue-bg);">🌐</div>
+    <div>
+      <h2 style="color:var(--blue)">Netzwerkprotokolle der Anwendungsschicht</h2>
+      <span class="badge" style="background:var(--blue-bg);color:var(--blue)">Kapitel 1</span>
+    </div>
+  </div>
+
+  <!-- SERVERARTEN -->
+  <section id="serverarten">
+    <h3 class="sec">Serverarten im Rechenzentrum</h3>
+
+    <div class="card blue">
+      <h4 style="font-size:14px;font-weight:600;margin-bottom:0.75rem;color:var(--blue)">Load Balancer</h4>
+      <p>Ein Load Balancer verteilt eingehende Netzwerkanfragen auf mehrere Backend-Server, um eine gleichmäßige Auslastung sicherzustellen. Er verhindert, dass einzelne Server überlastet werden, und erhöht gleichzeitig die Hochverfügbarkeit des Gesamtsystems.</p>
+      <table class="def-table" style="margin-top:0.75rem">
+        <tr><td>Arbeitsweise</td><td>Empfängt Anfragen und leitet sie anhand von Algorithmen weiter (Round Robin, Least Connections, IP-Hash)</td></tr>
+        <tr><td>Layer 4</td><td>Balancing auf TCP/UDP-Ebene – schnell, kein Einblick in Inhalte</td></tr>
+        <tr><td>Layer 7</td><td>Balancing auf HTTP-Ebene – kann URLs, Cookies oder Header auswerten</td></tr>
+        <tr><td>Health Checks</td><td>Prüft regelmäßig, ob Backend-Server erreichbar sind; ausgefallene werden aus dem Pool entfernt</td></tr>
+        <tr><td>Session Persistence</td><td>Sticky Sessions: Benutzer bleibt immer mit demselben Backend verbunden</td></tr>
+      </table>
+    </div>
+
+    <div class="card teal">
+      <h4 style="font-size:14px;font-weight:600;margin-bottom:0.75rem;color:var(--teal)">Backup-Server</h4>
+      <p>Ein Backup-Server speichert automatisch Kopien von Daten und Systemzuständen, um im Fehler- oder Katastrophenfall eine Wiederherstellung zu ermöglichen.</p>
+      <table class="def-table" style="margin-top:0.75rem">
+        <tr><td>Vollbackup</td><td>Komplette Sicherung aller Daten. Hoher Speicherbedarf, aber einfache Wiederherstellung.</td></tr>
+        <tr><td>Inkrementell</td><td>Nur Änderungen seit dem letzten Backup. Geringer Speicherbedarf, aber komplexere Wiederherstellung.</td></tr>
+        <tr><td>Differenziell</td><td>Alle Änderungen seit dem letzten Vollbackup. Kompromiss zwischen Größe und Aufwand.</td></tr>
+        <tr><td>RPO / RTO</td><td>Recovery Point Objective (max. Datenverlust) / Recovery Time Objective (max. Ausfallzeit)</td></tr>
+        <tr><td>3-2-1-Regel</td><td>3 Kopien, 2 unterschiedliche Medien, 1 Kopie außer Haus (Offsite/Cloud)</td></tr>
+      </table>
+    </div>
+
+    <div class="card purple">
+      <h4 style="font-size:14px;font-weight:600;margin-bottom:0.75rem;color:var(--purple)">Reverse Proxy</h4>
+      <p>Ein Reverse Proxy steht vor internen Servern und nimmt stellvertretend deren Anfragen entgegen. Clients kommunizieren nur mit dem Reverse Proxy, nicht direkt mit den Backend-Servern.</p>
+      <table class="def-table" style="margin-top:0.75rem">
+        <tr><td>Schutzfunktion</td><td>Interne IP-Adressen und Infrastruktur bleiben verborgen</td></tr>
+        <tr><td>SSL-Terminierung</td><td>Entschlüsselt HTTPS-Verbindungen und leitet intern ggf. als HTTP weiter → entlastet Backend</td></tr>
+        <tr><td>Caching</td><td>Speichert häufig angefragte Ressourcen zwischen → schnellere Antwortzeiten</td></tr>
+        <tr><td>Lastverteilung</td><td>Kann gleichzeitig wie ein Load Balancer agieren</td></tr>
+        <tr><td>Beispiele</td><td>nginx, Apache HTTP Server, HAProxy, Traefik</td></tr>
+      </table>
+      <div class="info-box blue" style="margin-top:0.75rem">
+        <strong>Unterschied Proxy vs. Reverse Proxy:</strong> Ein Forward Proxy steht vor den Clients und leitet deren Anfragen ins Internet weiter. Ein Reverse Proxy steht vor den Servern und schützt diese.
+      </div>
+    </div>
+  </section>
+
+  <!-- DHCP -->
+  <section id="dhcp">
+    <h3 class="sec">DHCP – Dynamic Host Configuration Protocol</h3>
+    <p>DHCP automatisiert die Vergabe von IP-Adressen, Subnetzmasken, Standard-Gateways und DNS-Servern in einem Netzwerk.</p>
+
+    <div class="card blue">
+      <h4 style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:0.75rem">DORA-Prozess (normaler Ablauf)</h4>
+      <div class="flow">
+        <div class="flow-step">1. DHCP Discover<small>Broadcast – Client sucht Server</small></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">2. DHCP Offer<small>Server bietet IP-Adresse an</small></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">3. DHCP Request<small>Client akzeptiert Angebot (Broadcast)</small></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">4. DHCP ACK<small>Server bestätigt Zuweisung</small></div>
+      </div>
+      <div class="info-box blue" style="margin-top:0.5rem">
+        <strong>Warum Broadcast beim Request?</strong> Damit alle anderen DHCP-Server im Netz wissen, dass ihr Angebot abgelehnt wurde – sie können die reservierte IP freigeben.
+      </div>
+    </div>
+
+    <div class="card teal">
+      <h4 style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:0.75rem">Lease-Time und Verlängerung</h4>
+      <table class="def-table">
+        <tr><td>Lease-Time</td><td>Zeitraum, für den eine IP-Adresse an einen Client vergeben wird. Nach Ablauf muss sie erneuert werden.</td></tr>
+        <tr><td>T1 (50 %)</td><td>Client versucht, die Lease per Unicast direkt beim ursprünglichen Server zu verlängern (DHCP Request)</td></tr>
+        <tr><td>T2 (87,5 %)</td><td>Wenn T1 scheitert: Client sendet Broadcast an alle DHCP-Server für Verlängerung</td></tr>
+        <tr><td>Ablauf</td><td>Kein Server antwortet → Client muss IP freigeben und DORA-Prozess neu starten</td></tr>
+      </table>
+    </div>
+
+    <div class="card amber">
+      <h4 style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:0.75rem">Graceful Shutdown (geordnete Freigabe)</h4>
+      <div class="flow">
+        <div class="flow-step">Client sendet DHCP Release<small>Unicast an den Server</small></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">Server empfängt Release<small>Markiert IP als verfügbar</small></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">IP-Adresse frei<small>Kann neu vergeben werden</small></div>
+      </div>
+      <p style="margin-top:0.75rem">Beim Graceful Shutdown wartet der Client nicht auf das Ende der Lease-Time, sondern gibt die IP aktiv zurück. Dies spart IP-Ressourcen und beschleunigt die Verfügbarkeit für andere Geräte.</p>
+    </div>
+
+    <div class="card" style="margin-top:0.5rem">
+      <h4 style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:0.75rem">DHCP-Optionen (wichtige Felder)</h4>
+      <table class="proto-table">
+        <thead><tr><th>Option</th><th>Beschreibung</th></tr></thead>
+        <tbody>
+          <tr><td>Option 1</td><td>Subnetzmaske</td></tr>
+          <tr><td>Option 3</td><td>Standard-Gateway (Router)</td></tr>
+          <tr><td>Option 6</td><td>DNS-Server-Adressen</td></tr>
+          <tr><td>Option 15</td><td>Domainname</td></tr>
+          <tr><td>Option 51</td><td>Lease-Time in Sekunden</td></tr>
+          <tr><td>Option 53</td><td>DHCP-Nachrichtentyp (Discover, Offer, Request, ACK …)</td></tr>
+          <tr><td>Option 54</td><td>DHCP-Server-IP-Adresse</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- DNS -->
+  <section id="dns">
+    <h3 class="sec">DNS – Domain Name System</h3>
+    <p>DNS übersetzt Domainnamen (z. B. www.google.de) in IP-Adressen. Es ist hierarchisch aufgebaut: Root-Server → TLD-Server → Authoritative Nameserver.</p>
+
+    <div class="compare-grid">
+      <div class="compare-card" style="border-top:3px solid var(--blue)">
+        <h4 style="color:var(--blue)">Rekursive Auflösung</h4>
+        <ul>
+          <li>Client stellt eine Anfrage an seinen Resolver</li>
+          <li>Resolver übernimmt die komplette Arbeit</li>
+          <li>Befragt Root → TLD → Auth. selbst</li>
+          <li>Liefert dem Client die fertige IP</li>
+          <li>Vorteil: einfach für den Client</li>
+          <li>Nachteil: hohe Last auf dem Resolver</li>
+          <li>Typisch: Anfragen vom Client zum ISP-DNS</li>
+        </ul>
+      </div>
+      <div class="compare-card" style="border-top:3px solid var(--teal)">
+        <h4 style="color:var(--teal)">Iterative Auflösung</h4>
+        <ul>
+          <li>Server antwortet nur mit einem Verweis</li>
+          <li>Client muss selbst weiter anfragen</li>
+          <li>Root → TLD → Auth. → Antwort</li>
+          <li>Vorteil: Last verteilt sich auf viele Server</li>
+          <li>Nachteil: mehr Anfragen nötig</li>
+          <li>Typisch: zwischen DNS-Servern</li>
+          <li>In der Praxis: Mischform üblich</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card blue">
+      <h4 style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:0.75rem">DNS-Eintragstypen (Record Types)</h4>
+      <table class="proto-table">
+        <thead><tr><th>Typ</th><th>Bedeutung</th><th>Beispiel</th></tr></thead>
+        <tbody>
+          <tr><td>A</td><td>IPv4-Adresse für einen Hostnamen</td><td>www → 93.184.216.34</td></tr>
+          <tr><td>AAAA</td><td>IPv6-Adresse für einen Hostnamen</td><td>www → 2606:2800::1</td></tr>
+          <tr><td>CNAME</td><td>Alias für einen anderen Namen</td><td>ftp → www.example.com</td></tr>
+          <tr><td>MX</td><td>Mailserver für eine Domain</td><td>mail.example.com</td></tr>
+          <tr><td>NS</td><td>Nameserver für eine Domain</td><td>ns1.example.com</td></tr>
+          <tr><td>PTR</td><td>Reverse Lookup (IP → Name)</td><td>34.216.184.93 → www</td></tr>
+          <tr><td>TXT</td><td>Freitext (SPF, DKIM, Verifikation)</td><td>v=spf1 include:…</td></tr>
+          <tr><td>SOA</td><td>Start of Authority – Zoneninfo</td><td>Serial, Refresh, Retry …</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card red">
+      <h4 style="font-size:14px;font-weight:600;color:var(--red);margin-bottom:0.75rem">DNS absichern</h4>
+      <ul class="hl">
+        <li><strong>DNSSEC:</strong> Digitale Signierung von DNS-Zonendaten mit Public-Key-Kryptografie. Schützt vor DNS-Spoofing und Cache Poisoning. Der Resolver kann die Signatur verifizieren.</li>
+        <li><strong>DNS over HTTPS (DoH):</strong> DNS-Anfragen werden über HTTPS übertragen (Port 443). Schützt vor Abhören und Manipulation im Transit.</li>
+        <li><strong>DNS over TLS (DoT):</strong> DNS-Anfragen über TLS verschlüsselt (Port 853). Ähnlich wie DoH, aber auf Protokollebene getrennter.</li>
+        <li><strong>Split-DNS:</strong> Interne Zone (privat, nicht öffentlich auflösbar) und externe Zone trennen. Interne Ressourcen wie Fileserver bleiben außen unsichtbar.</li>
+        <li><strong>Response Rate Limiting (RRL):</strong> Begrenzt Antworten auf bestimmte Clients, schützt vor DNS-Amplification-Angriffen.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- PROTOKOLLHEADER -->
+  <section id="protokollheader">
+    <h3 class="sec">Protokollheader</h3>
+    <p>Ein Protokollheader enthält Steuerinformationen, die nötig sind, damit ein Paket korrekt übertragen, geroutet und verarbeitet werden kann. Jede Schicht des OSI-Modells fügt beim Senden einen eigenen Header hinzu (Encapsulation) und entfernt ihn beim Empfangen (Decapsulation).</p>
+
+    <div class="card blue">
+      <h4 style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:0.75rem">Beispiel: TCP-Header</h4>
+      <table class="proto-table">
+        <thead><tr><th>Feld</th><th>Größe</th><th>Funktion</th></tr></thead>
+        <tbody>
+          <tr><td>Source Port</td><td>16 Bit</td><td>Quellport des Senders (z. B. 54321)</td></tr>
+          <tr><td>Destination Port</td><td>16 Bit</td><td>Zielport (z. B. 80 für HTTP, 443 für HTTPS)</td></tr>
+          <tr><td>Sequence Number</td><td>32 Bit</td><td>Reihenfolge der Datenpakete sicherstellen</td></tr>
+          <tr><td>Acknowledgment</td><td>32 Bit</td><td>Bestätigung empfangener Bytes</td></tr>
+          <tr><td>Flags</td><td>9 Bit</td><td>SYN, ACK, FIN, RST, PSH – steuern Verbindungsaufbau/-abbau</td></tr>
+          <tr><td>Window Size</td><td>16 Bit</td><td>Flusskontrolle – wie viele Bytes gesendet werden dürfen</td></tr>
+          <tr><td>Checksum</td><td>16 Bit</td><td>Fehlerprüfung des Headers und der Nutzdaten</td></tr>
+        </tbody>
+      </table>
+      <div class="info-box blue" style="margin-top:0.75rem">
+        <strong>Praxisbeispiel:</strong> Ein Browser öffnet www.schule.de. Der TCP-Header enthält Destination Port 443 (HTTPS), die Flags SYN (Verbindungsaufbau), und eine zufällige Sequence Number. Der Server antwortet mit SYN-ACK.
+      </div>
+    </div>
+  </section>
+
+  <!-- QUIZ 1 -->
+  <section id="quiz1" class="quiz-section">
+    <div class="quiz-header">
+      <h3>Übungsfragen – Kapitel 1</h3>
+      <span class="quiz-progress-text" id="q1-prog">0/8 beantwortet</span>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-num">Frage 1 · Multiple Choice</div>
+      <div class="quiz-q">Was ist die Hauptaufgabe eines Load Balancers?</div>
+      <div class="quiz-opts" id="q01">
+        <button class="quiz-opt" onclick="mc('q01',this,false,'q1-prog',8)">Er erstellt regelmäßige Datensicherungen</button>
+        <button class="quiz-opt" onclick="mc('q01',this,true,'q1-prog',8)">Er verteilt eingehende Anfragen auf mehrere Server zur gleichmäßigen Auslastung</button>
+        <button class="quiz-opt" onclick="mc('q01',this,false,'q1-prog',8)">Er verschlüsselt den Datenverkehr zwischen Client und Server</button>
+        <button class="quiz-opt" onclick="mc('q01',this,false,'q1-prog',8)">Er übersetzt Domainnamen in IP-Adressen</button>
+      </div>
+      <div class="feedback" id="q01-fb"></div>
+      <button class="reset-btn" onclick="resetMC('q01','q1-prog',8)">↺ Zurücksetzen</button>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-num">Frage 2 · Multiple Choice</div>
+      <div class="quiz-q">Welche Aussage zum Reverse Proxy ist korrekt?</div>
+      <div class="quiz-opts" id="q02">
+        <button class="quiz-opt" onclick="mc('q02',this,false,'q1-prog',8)">Er steht vor den Clients und leitet deren Anfragen ins Internet weiter</button>
+        <button class="quiz-opt" onclick="mc('q02',this,false,'q1-prog',8)">Er vergibt IP-Adressen an Clients per DHCP</button>
+        <button class="quiz-opt" onclick="mc('q02',this,true,'q1-prog',8)">Er steht vor internen Servern und schützt diese, indem er Anfragen stellvertretend annimmt</button>
+        <button class="quiz-opt" onclick="mc('q02',this,false,'q1-prog',8)">Er ist nur für Load-Balancing zuständig und hat keine Schutzfunktion</button>
+      </div>
+      <div class="feedback" id="q02-fb"></div>
+      <button class="reset-btn" onclick="resetMC('q02','q1-prog',8)">↺ Zurücksetzen</button>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-num">Frage 3 · Richtig oder Falsch</div>
+      <div class="quiz-q">Bei einem DHCP-Graceful-Shutdown sendet der Client aktiv eine DHCP-Release-Nachricht, bevor die Lease-Time abläuft.</div>
+      <div class="tf-row" id="q03">
+        <button class="tf-btn" onclick="tf('q03',this,true,'q1-prog',8)">✓ Richtig</button>
+        <button class="tf-btn" onclick="tf('q03',this,false,'q1-prog',8)">✗ Falsch</button>
+      </div>
+      <div class="feedback" id="q03-fb"></div>
+      <button class="reset-btn" onclick="resetTF('q03','q1-prog',8)">↺ Zurücksetzen</button>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-num">Frage 4 · Multiple Choice</div>
+      <div class="quiz-q">In welcher Reihenfolge läuft der DHCP-DORA-Prozess ab?</div>
+      <div class="quiz-opts" id="q04">
+        <button class="quiz-opt" onclick="mc('q04',this,false,'q1-prog',8)">Offer → Discover → Request → ACK</button>
+        <button class="quiz-opt" onclick="mc('q04',this,true,'q1-prog',8)">Discover → Offer → Request → ACK</button>
+        <button class="quiz-opt" onclick="mc('q04',this,false,'q1-prog',8)">Request → Discover → Offer → ACK</button>
+        <button class="quiz-opt" onclick="mc('q04',this,false,'q1-prog',8)">Discover → Request → Offer → ACK</button>
+      </div>
+      <div class="feedback" id="q04-fb"></div>
+      <button class="reset-btn" onclick="resetMC('q04','q1-prog',8)">↺ Zurücksetzen</button>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-num">Frage 5 · Richtig oder Falsch</div>
+      <div class="quiz-q">Bei der rekursiven DNS-Auflösung muss der Client selbst Root-, TLD- und Authoritative-Server nacheinander befragen.</div>
+      <div class="tf-row" id="q05">
+        <button class="tf-btn" onclick="tf('q05',this,false,'q1-prog',8)">✓ Richtig</button>
+        <button class="tf-btn" onclick="tf('q05',this,true,'q1-prog',8)">✗ Falsch</button>
+      </div>
+      <div class="feedback" id="q05-fb"></div>
+      <button class="reset-btn" onclick="resetTF('q05','q1-prog',8)">↺ Zurücksetzen</button>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-num">Frage 6 · Multiple Choice</div>
+      <div class="quiz-q">Welcher DNS-Eintragstyp wird für Reverse-Lookups (IP → Hostname) verwendet?</div>
+      <div class="quiz-opts" id="q06">
+        <button class="quiz-opt" onclick="mc('q06',this,false,'q1-prog',8)">A-Record</button>
+        <button class="quiz-opt" onclick="mc('q06',this,false,'q1-prog',8)">MX-Record</button>
+        <button class="quiz-opt" onclick="mc('q06',this,true,'q1-prog',8)">PTR-Record</button>
+        <button class="quiz-opt" onclick="mc('q06',this,false,'q1-prog',8)">CNAME-Record</button>
+      </div>
+      <div class="feedback" id="q06-fb"></div>
+      <button class="reset-btn" onclick="resetMC('q06','q1-prog',8)">↺ Zurücksetzen</button>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-num">Frage 7 · Multiple Choice</div>
+      <div class="quiz-q">Was schützt DNSSEC?</div>
+      <div class="quiz-opts" id="q07">
+        <button class="quiz-opt" onclick="mc('q07',this,false,'q1-prog',8)">Vor DDoS-Angriffen auf Webserver</button>
+        <button class="quiz-opt" onclick="mc('q07',this,true,'q1-prog',8)">Vor DNS-Spoofing und Cache Poisoning durch digitale Signaturen</button>
+        <button class="quiz-opt" onclick="mc('q07',this,false,'q1-prog',8)">Vor unverschlüsseltem HTTP-Traffic</button>
+        <button class="quiz-opt" onclick="mc('q07',this,false,'q1-prog',8)">Vor Brute-Force-Angriffen auf Passwörter</button>
+      </div>
+      <div class="feedback" id="q07-fb"></div>
+      <button class="reset-btn" onclick="resetMC('q07','q1-prog',8)">↺ Zurücksetzen</button>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-num">Frage 8 · Richtig oder Falsch</div>
+      <div class="quiz-q">Ein Backup-Server nach der 3-2-1-Regel hält 3 Kopien auf 2 verschiedenen Medientypen, von denen 1 Kopie extern (Offsite) aufbewahrt wird.</div>
+      <div class="tf-row" id="q08">
+        <button class="tf-btn" onclick="tf('q08',this,true,'q1-prog',8)">✓ Richtig</button>
+        <button class="tf-btn" onclick="tf('q08',this,false,'q1-prog',8)">✗ Falsch</button>
+      </div>
+      <div class="feedback" id="q08-fb"></div>
+      <button class="reset-btn" onclick="resetTF('q08','q1-prog',8)">↺ Zurücksetzen</button>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- KAPITEL 2                                               -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="chapter-header">
+    <div class="chapter-icon" style="background:var(--teal-bg);">💼</div>
+    <div>
+      <h2 style="color:var(--teal)">Wirtschaftliche Aspekte</h2>
+      <span class="badge" style="background:var(--teal-bg);color:var(--teal)">Kapitel 2</span>
+    </div>
+  </div>
+
+  <!-- KOSTENARTEN -->
+  <section id="kosten">
+    <h3 class="sec">Kostenarten</h3>
+
+    <div class="card teal">
+      <table class="def-table">
+        <tr><td>Selbstkosten<span class="sub">Kalkulation</span></td><td>Gesamte Kosten zur Erstellung einer Leistung. Berechnung: Herstellkosten + Verwaltungsgemeinkosten (VwGK) + Vertriebsgemeinkosten (VtGK). Grundlage für die Preisuntergrenze.</td></tr>
+        <tr><td>Herstellkosten<span class="sub">Produktion</span></td><td>Materialeinzelkosten + Fertigungseinzelkosten + Material- und Fertigungsgemeinkosten</td></tr>
+        <tr><td>Projektkosten<span class="sub">IT-Projekt</span></td><td>Alle einem Projekt direkt zurechenbaren Kosten: Personalkosten (intern/extern), Hardware, Lizenzen, Schulungen, Reisekosten, externe Dienstleister</td></tr>
+        <tr><td>TCO<span class="sub">Total Cost of Ownership</span></td><td>Gesamtkosten über den gesamten Lebenszyklus: Anschaffung, Implementierung, Betrieb, Wartung, Schulung, Entsorgung. Entscheidend beim Vergleich Make or Buy.</td></tr>
+        <tr><td>CAPEX vs. OPEX<span class="sub">Kostenart</span></td><td>Capital Expenditure (einmalige Investition, z. B. Server kaufen) vs. Operational Expenditure (laufende Betriebskosten, z. B. Cloud-Miete)</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- CLOUD MODELLE -->
+  <section id="cloudmodelle">
+    <h3 class="sec">Cloud-Abrechnungsmodelle und Beschaffungsstrategie</h3>
+
+    <div class="card teal">
+      <h4 style="font-size:14px;font-weight:600;color:var(--teal);margin-bottom:0.75rem">Make or Buy</h4>
+      <p>Entscheidung zwischen Eigenentwicklung (Make) und dem Kauf einer fertigen Lösung (Buy). Relevant bei der Anschaffung neuer Software, Systeme oder Services.</p>
+      <div class="compare-grid" style="margin-top:0.75rem">
+        <div class="compare-card" style="border-top:3px solid var(--green)">
+          <h4 style="color:var(--green)">Make (Eigenentwicklung)</h4>
+          <ul>
+            <li>Vollständige Kontrolle über Funktionen</li>
+            <li>Geeignet, wenn Kernkompetenz vorhanden</li>
+            <li>Individuelle Anforderungen erfüllbar</li>
+            <li>Höherer initialer Aufwand</li>
+            <li>Höhere Entwicklungskosten</li>
+          </ul>
+        </div>
+        <div class="compare-card" style="border-top:3px solid var(--blue)">
+          <h4 style="color:var(--blue)">Buy (Zukauf)</h4>
+          <ul>
+            <li>Schnelle Markteinführung (Time-to-Market)</li>
+            <li>Kein eigenes Entwickler-Know-how nötig</li>
+            <li>Bewährte, getestete Lösung</li>
+            <li>Laufende Lizenz-/Supportkosten</li>
+            <li>Abhängigkeit vom Hersteller (Vendor Lock-in)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card blue" style="margin-top:0.75rem">
+      <table class="def-table">
+        <tr>
+          <td>Pay-per-use<span class="sub">Nutzungsbasiert</span></td>
+          <td>Abrechnung exakt nach tatsächlichem Verbrauch. Keine Grundgebühr. Geeignet für schwankende Lasten. Beispiel: Cloud-VMs werden pro Betriebsstunde abgerechnet, Storage nach GB/Monat.</td>
+        </tr>
+        <tr>
+          <td>Pay as you grow<span class="sub">Wachstumsbasiert</span></td>
+          <td>Ressourcen und Kosten skalieren mit dem Unternehmenswachstum. Startet mit einem kleinen Paket und wächst bedarfsgerecht. Kein großes Upfront-Investment. Typisch für SaaS-Modelle mit gestaffelten Tarifen.</td>
+        </tr>
+        <tr>
+          <td>Flat Rate<span class="sub">Pauschale</span></td>
+          <td>Feste monatliche Gebühr unabhängig vom Verbrauch. Planungssicherheit, aber möglicherweise Verschwendung bei geringer Nutzung.</td>
+        </tr>
+        <tr>
+          <td>Freemium<span class="sub">Basismodell</span></td>
+          <td>Basisversion kostenlos, erweiterte Funktionen kostenpflichtig. Niedrige Einstiegshürde für Kunden.</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="info-box amber">
+      <strong>Prüfungstipp:</strong> Beim Monitoring-Szenario aus der Klausur: Das Unternehmen will sein internes Monitoring und das der Kunden managen. Pay-per-use eignet sich, wenn die Auslastung schwankt. Pay as you grow, wenn das Unternehmen expandiert. Make or Buy entscheidet, ob eine Eigenentwicklung oder ein fertiges Tool (z. B. Zabbix, Nagios, Grafana) sinnvoller ist.
+    </div>
+  </section>
+
+  <!-- QUIZ 2 -->
+  <section id="quiz2" class="quiz-section">
+    <div class="quiz-header">
+      <h3>Übungsfragen – Kapitel 2</h3>
+      <span class="quiz-progress-text" id="q2-prog">0/7 beantwortet</span>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-num">Frage 9 · Multiple Choice</div>
+      <div class="quiz-q">Was versteht man unter TCO (Total Cost of Ownership)?</div>
+      <div class="quiz-opts" id="q09">
+        <button class="quiz-opt" onclick="mc('q09',this,false,'q2-prog',7)">Nur der Kaufpreis einer Lösung</button>
+        <button class="quiz-opt" onclick="mc('q09',this,false,'q2-prog',7)">Betriebskosten minus Anschaffungskosten</button>
+        <button class="quiz-opt" onclick="mc('q09',this,true,'q2-prog',7)">Gesamtkosten über den kompletten Lebenszyklus: Anschaffung, Betrieb, Wartung, Schulung, Entsorgung</button>
+        <button class="quiz-opt" onclick="mc('q09',this,false,'q2-prog',7)">Die Kosten eines einzigen IT-Projekts</button>
+      </div>
+      <div class="feedback" id="q09-fb"></div>
+      <button class="reset-btn" onclick="resetMC('q09','q2-prog',7)">↺ Zurücksetzen</button>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-num">Frage 10 · Richtig oder Falsch</div>
+      <div class="quiz-q">CAPEX bezeichnet laufende monatliche Betriebskosten (z. B. Cloud-Abonnement), während OPEX einmalige Investitionen sind.</div>
+      <div class="tf-row" id="q10">
+        <button class="tf-btn" onclick="tf('q10',this,false,'q2-prog',7)">✓ Richtig</button>
+        <button class="tf-btn" onclick="tf('q10',this,true,'q2-prog',7)">✗ Falsch</button>
+      </div>
+      <div class="feedback" id="q10-fb"></div>
+      <button class="reset-btn" onclick="resetTF('q10','q2-prog',7)">↺ Zurücksetzen</button>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-num">Frage 11 · Multiple Choice</div>
+      <div class="quiz-q">Welches Abrechnungsmodell eignet sich am besten für ein Unternehmen mit stark schwankender IT-Auslastung?</div>
+      <div class="quiz-opts" id="q11">
+        <button class="quiz-opt" onclick="mc('q11',this,false,'q2-prog',7)">Flat Rate</button>
+        <button class="quiz-opt" onclick="mc('q11',this,true,'q2-prog',7)">Pay-per-use</button>
+        <button class="quiz-opt" onclick="mc('q11',this,false,'q2-prog',7)">Pay as you grow</button>
+        <button class="quiz-opt" onclick="mc('q11',this,false,'q2-prog',7)">Freemium</button>
+      </div>
+      <div class="feedback" id="q11-fb"></div>
+      <button class="reset-btn" onclick="resetMC('q11','q2-prog',7)">↺ Zurücksetzen</button>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-num">Frage 12 · Multiple Choice</div>
+      <div class="quiz-q">Welcher Aspekt spricht bei einer Make-or-Buy-Entscheidung für "Make" (Eigenentwicklung)?</div>
+      <div class="quiz-opts" id="q12">
+        <button class="quiz-opt" onclick="mc('q12',this,false,'q2-prog',7)">Schnelle Markteinführung benötigt</button>
+        <button class="quiz-opt" onclick="mc('q12',this,false,'q2-prog',7)">Kein internes Know-how vorhanden</button>
+        <button class="quiz-opt" onclick="mc('q12',this,true,'q2-prog',7)">Die Lösung ist Kernkompetenz des Unternehmens und erfordert individuelle Anforderungen</button>
+        <button class="quiz-opt" onclick="mc('q12',this,false,'q2-prog',7)">Budget ist begrenzt und Entwickler fehlen</button>
+      </div>
+      <div class="feedback" id="q12-fb"></div>
+      <button class="reset-btn" onclick="resetMC('q12','q2-prog',7)">↺ Zurücksetzen</button>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-num">Frage 13 · Richtig oder Falsch</div>
+      <div class="quiz-q">Pay as you grow bedeutet, dass Ressourcen und Kosten mit dem Unternehmenswachstum skalieren, ohne großes Upfront-Investment.</div>
+      <div class="tf-row" id="q13">
+        <button class="tf-btn" onclick="tf('q13',this,true,'q2-prog',7)">✓ Richtig</button>
+        <button class="tf-btn" onclick="tf('q13',this,false,'q2-prog',7)">✗ Falsch</button>
+      </div>
+      <div class="feedback" id="q13-fb"></div>
+      <button class="reset-btn" onclick="resetTF('q13','q2-prog',7)">↺ Zurücksetzen</button>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-num">Frage 14 · Multiple Choice</div>
+      <div class="quiz-q">Was sind Selbstkosten?</div>
+      <div class="quiz-opts" id="q14">
+        <button class="quiz-opt" onclick="mc('q14',this,false,'q2-prog',7)">Nur die Fertigungskosten eines Produkts</button>
+        <button class="quiz-opt" onclick="mc('q14',this,true,'q2-prog',7)">Herstellkosten + Verwaltungsgemeinkosten + Vertriebsgemeinkosten</button>
+        <button class="quiz-opt" onclick="mc('q14',this,false,'q2-prog',7)">Der Verkaufspreis minus Gewinnmarge</button>
+        <button class="quiz-opt" onclick="mc('q14',this,false,'q2-prog',7)">Laufende monatliche Betriebskosten</button>
+      </div>
+      <div class="feedback" id="q14-fb"></div>
+      <button class="reset-btn" onclick="resetMC('q14','q2-prog',7)">↺ Zurücksetzen</button>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-num">Frage 15 · Richtig oder Falsch</div>
+      <div class="quiz-q">Vendor Lock-in ist ein Vorteil des "Buy"-Ansatzes und beschreibt die vollständige Unabhängigkeit vom Hersteller.</div>
+      <div class="tf-row" id="q15">
+        <button class="tf-btn" onclick="tf('q15',this,false,'q2-prog',7)">✓ Richtig</button>
+        <button class="tf-btn" onclick="tf('q15',this,true,'q2-prog',7)">✗ Falsch</button>
+      </div>
+      <div class="feedback" id="q15-fb"></div>
+      <button class="reset-btn" onclick="resetTF('q15','q2-prog',7)">↺ Zurücksetzen</button>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- KAPITEL 3                                               -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="chapter-header">
+    <div class="chapter-icon" style="background:var(--red-bg);">🔐</div>
+    <div>
+      <h2 style="color:var(--red)">Sicherheitsaspekte</h2>
+      <span class="badge" style="background:var(--red-bg);color:var(--red)">Kapitel 3</span>
+    </div>
+  </div>
+
+  <!-- RISIKOANALYSE -->
+  <section id="risiko">
+    <h3 class="sec">Risikoanalyse</h3>
+
+    <div class="card red">
+      <table class="def-table">
+        <tr><td>CIA-Triade<span class="sub">Schutzziele</span></td><td><strong>C</strong>onfidentiality (Vertraulichkeit) · <strong>I</strong>ntegrity (Integrität) · <strong>A</strong>vailability (Verfügbarkeit). Grundlage jeder Sicherheitsbetrachtung.</td></tr>
+        <tr><td>Schutzbedarfsanalyse</td><td>Bewertet den Schutzbedarf von IT-Systemen in den Dimensionen C, I, A. Stufen: normal / hoch / sehr hoch. Ergebnis bestimmt, welche Maßnahmen nötig sind.</td></tr>
+        <tr><td>Risikobewertung</td><td>Risiko = Eintrittswahrscheinlichkeit × Schadenshöhe. Ergebnis wird in einer Risikomatrix dargestellt.</td></tr>
+        <tr><td>Risikobehandlung</td><td>4 Strategien: Vermeiden (Prozess abschaffen), Reduzieren (Maßnahmen treffen), Übertragen (Versicherung), Akzeptieren (Restrisiko bewusst tragen).</td></tr>
+        <tr><td>BSI Grundschutz</td><td>Standard des Bundesamts für Sicherheit in der Informationstechnik. Bietet IT-Grundschutz-Kompendium mit Bausteinen, Gefährdungen und Maßnahmen.</td></tr>
+        <tr><td>Bedrohungsszenarien</td><td>Beispiele: Ransomware, Insider-Bedrohung, Phishing, DDoS, Hardware-Ausfall, Naturkatastrophen, Social Engineering.</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- TOM -->
+  <section id="tom">
+    <h3 class="sec">TOM – Technische und Organisatorische Maßnahmen (Art. 32 DSGVO)</h3>
+    <p>TOM sind Maßnahmen, die ein Unternehmen ergreifen muss, um personenbezogene Daten zu schützen. Die 14 Kontrollbereiche:</p>
+
+    <div class="tom-grid">
+      <div class="tom-item">
+        <div class="tom-num"><span class="tag blue">01</span></div>
+        <div class="tom-title">Zugangskontrolle</div>
+        <div class="tom-desc">Unbefugte Nutzung von Datenverarbeitungssystemen verhindern. Passwörter, MFA, Bildschirmsperren.</div>
+      </div>
+      <div class="tom-item">
+        <div class="tom-num"><span class="tag blue">02</span></div>
+        <div class="tom-title">Zutrittskontrolle</div>
+        <div class="tom-desc">Physischer Zutritt zu Serverräumen und Rechenzentren. Schlüsselkarten, Sicherheitspersonal, Videoüberwachung.</div>
+      </div>
+      <div class="tom-item">
+        <div class="tom-num"><span class="tag blue">03</span></div>
+        <div class="tom-title">Zugriffskontrolle</div>
+        <div class="tom-desc">Berechtigungsmanagement: Wer darf welche Daten lesen/schreiben? Rollen- und Rechtekonzept (RBAC).</div>
+      </div>
+      <div class="tom-item">
+        <div class="tom-num"><span class="tag blue">04</span></div>
+        <div class="tom-title">Trennungskontrolle</div>
+        <div class="tom-desc">Daten verschiedener Zwecke/Mandanten werden getrennt verarbeitet und gespeichert (z. B. VLANs, separate DBs).</div>
+      </div>
+      <div class="tom-item">
+        <div class="tom-num"><span class="tag teal">05</span></div>
+        <div class="tom-title">Weitergabekontrolle</div>
+        <div class="tom-desc">Verhindert unbefugtes Lesen/Kopieren beim Übermitteln. Verschlüsselung, VPN, sichere E-Mail.</div>
+      </div>
+      <div class="tom-item">
+        <div class="tom-num"><span class="tag teal">06</span></div>
+        <div class="tom-title">Eingabekontrolle</div>
+        <div class="tom-desc">Nachvollziehbarkeit, wer Daten eingegeben/verändert hat. Audit-Logs, Versionierung.</div>
+      </div>
+      <div class="tom-item">
+        <div class="tom-num"><span class="tag teal">07</span></div>
+        <div class="tom-title">Auftragskontrolle</div>
+        <div class="tom-desc">Auftragsverarbeiter dürfen Daten nur gemäß Vertrag (AVV) verarbeiten. Kontrolle der Dienstleister.</div>
+      </div>
+      <div class="tom-item">
+        <div class="tom-num"><span class="tag teal">08</span></div>
+        <div class="tom-title">Verfügbarkeitskontrolle</div>
+        <div class="tom-desc">Schutz vor unbeabsichtigter Zerstörung/Verlust. Backups, RAID, USV, Redundanz.</div>
+      </div>
+      <div class="tom-item">
+        <div class="tom-num"><span class="tag amber">09</span></div>
+        <div class="tom-title">Verschlüsselung</div>
+        <div class="tom-desc">Daten at rest und in transit verschlüsseln. TLS/SSL, AES, RSA, Festplattenverschlüsselung.</div>
+      </div>
+      <div class="tom-item">
+        <div class="tom-num"><span class="tag amber">10</span></div>
+        <div class="tom-title">Pseudonymisierung</div>
+        <div class="tom-desc">Ersetzen identifizierender Merkmale durch Pseudonyme. Datenschutzrisiko reduziert, aber nicht anonym.</div>
+      </div>
+      <div class="tom-item">
+        <div class="tom-num"><span class="tag amber">11</span></div>
+        <div class="tom-title">Belastbarkeit</div>
+        <div class="tom-desc">Systeme müssen auch unter Angriff oder Last funktionsfähig bleiben. Resilience, Lastverteilung.</div>
+      </div>
+      <div class="tom-item">
+        <div class="tom-num"><span class="tag amber">12</span></div>
+        <div class="tom-title">Wiederherstellung</div>
+        <div class="tom-desc">Nach einem Vorfall müssen Daten und Systeme zeitnah wiederhergestellt werden. Disaster Recovery Plan, RTO/RPO.</div>
+      </div>
+      <div class="tom-item">
+        <div class="tom-num"><span class="tag red">13</span></div>
+        <div class="tom-title">Überprüfungsverfahren</div>
+        <div class="tom-desc">Regelmäßige Audits, Penetrationstests, Datenschutzfolgenabschätzung (DSFA) zur Wirksamkeitskontrolle.</div>
+      </div>
+      <div class="tom-item">
+        <div class="tom-num"><span class="tag red">14</span></div>
+        <div class="tom-title">Privacy by Design</div>
+        <div class="tom-desc">Datenschutz wird von Anfang an in Systeme eingebaut. Datensparsamkeit, Standarddatenschutz (Privacy by Default).</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DMZ & FIREWALL -->
+  <section id="dmz">
+    <h3 class="sec">DMZ, Firewall und Netzwerksicherheit</h3>
+
+    <div class="card red">
+      <h4 style="font-size:14px;font-weight:600;color:var(--red);margin-bottom:0.75rem">DMZ – Demilitarisierte Zone</h4>
+      <p>Die DMZ ist ein Netzwerksegment zwischen dem Internet (unsicher) und dem internen LAN (sicher). Öffentlich erreichbare Dienste werden in der DMZ betrieben, nicht direkt im internen Netz.</p>
+      <div style="margin:0.75rem 0">
+        <div class="flow">
+          <div class="flow-step">Internet<small>unsicher</small></div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step" style="border-color:var(--red)">Firewall 1<small>NGFW</small></div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step" style="border-color:var(--amber)">DMZ<small>Web-, Mail-, DNS-Server</small></div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step" style="border-color:var(--red)">Firewall 2<small>FW</small></div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step" style="border-color:var(--green)">Internes LAN<small>sicher</small></div>
+        </div>
+      </div>
+      <div class="info-box amber">
+        <strong>Merke:</strong> Datenbankserver und interne Fileserver gehören ins interne LAN, NICHT in die DMZ. In der DMZ stehen nur Server, die von außen erreichbar sein müssen (Webserver, Mailserver, öffentlicher DNS).
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:0.75rem">
+      <table class="def-table">
+        <tr>
+          <td>FW (Firewall)<span class="sub">Klassisch</span></td>
+          <td>Filtert Netzwerkverkehr anhand von Regeln (IP-Adresse, Port, Protokoll). Arbeitet auf Layer 3/4. Kein Einblick in Paketinhalte. Trennt Netzbereiche und kontrolliert Datenfluss.</td>
+        </tr>
+        <tr>
+          <td>NGFW<span class="sub">Next Generation</span></td>
+          <td>Erweiterte Firewall mit Anwendungserkennung (Layer 7), integriertem IPS/IDS, SSL-Inspektion, Benutzeridentifikation, Threat Intelligence-Feeds und URL-Filterung.</td>
+        </tr>
+        <tr>
+          <td>PAP<span class="sub">Paketfilter</span></td>
+          <td>Einfachster Firewall-Typ. Prüft nur Header-Informationen (IP, Port, Protokoll). Kein Zustandsspeicher (stateless), kein Einblick in Inhalte. Schnell, aber eingeschränkt.</td>
+        </tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- IDS / IPS / SPI / DPI -->
+  <section id="ids">
+    <h3 class="sec">IDS / IPS / SPI / DPI – Zuordnung und Erklärung</h3>
+
+    <div class="card red">
+      <table class="def-table">
+        <tr>
+          <td>IDS<span class="sub">Intrusion Detection System</span></td>
+          <td>Erkennt ungewöhnlichen Datenverkehr und Angriffsmuster. Meldet Verdachtsfälle an den Administrator. <strong>Handelt nicht aktiv</strong> – nur Erkennen und Melden. Passiv.</td>
+        </tr>
+        <tr>
+          <td>IPS<span class="sub">Intrusion Prevention System</span></td>
+          <td>Erkennt Angriffe und <strong>blockiert diese aktiv</strong>. Kann Verbindungen trennen, Pakete verwerfen oder IPs sperren. Erweiterung des IDS um automatische Gegenmaßnahmen.</td>
+        </tr>
+        <tr>
+          <td>SPI<span class="sub">Stateful Packet Inspection</span></td>
+          <td>Analysiert Pakete im Kontext ihrer Verbindung. Speichert den Verbindungsstatus (NEW, ESTABLISHED, RELATED, INVALID). Antworten auf bekannte Verbindungen werden schneller durchgelassen. Schützt vor IP-Spoofing.</td>
+        </tr>
+        <tr>
+          <td>DPI<span class="sub">Deep Packet Inspection</span></td>
+          <td>Inspiziert Pakete bis in die Anwendungsschicht (Layer 7). Erkennt ungewöhnliche Inhalte, Protokollmissbrauch und Schadsoftware in den Nutzdaten. Basis für Content Filtering, QoS und moderne NGFWs.</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="compare-grid" style="margin-top:0.75rem">
+      <div class="compare-card" style="border-top:3px solid var(--amber)">
+        <h4 style="color:var(--amber)">SPI – Stateful</h4>
+        <ul>
+          <li>Kennt Verbindungszustände</li>
+          <li>Schnelle Entscheidung bei bekannten Sessions</li>
+          <li>Schutzt vor IP-Spoofing</li>
+          <li>Geringer CPU-Overhead als DPI</li>
+          <li>Kein Blick in Paketinhalte</li>
+        </ul>
+      </div>
+      <div class="compare-card" style="border-top:3px solid var(--red)">
+        <h4 style="color:var(--red)">DPI – Deep Inspection</h4>
+        <ul>
+          <li>Analysiert bis Layer 7</li>
+          <li>Erkennt Schadsoftware im Payload</li>
+          <li>Basis für Applikationserkennung</li>
+          <li>Höherer CPU-Aufwand</li>
+          <li>Grundlage für NGFW-Features</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="info-box green" style="margin-top:0.75rem">
+      <strong>Klausur-Merkhilfe Zuordnung:</strong>
+      IDS = <em>nur erkennen &amp; melden</em> · IPS = <em>erkennen &amp; blockieren</em> · SPI = <em>Verbindungsstatus speichern</em> · DPI = <em>bis Layer 7 inspizieren</em>
+    </div>
+  </section>
+
+  <!-- QUIZ 3 -->
+  <section id="quiz3" class="quiz-section">
+    <div class="quiz-header">
+      <h3>Übungsfragen – Kapitel 3</h3>
+      <span class="quiz-progress-text" id="q3-prog">0/10 beantwortet</span>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-num">Frage 16 · Multiple Choice</div>
+      <div class="quiz-q">Was ist der Unterschied zwischen IDS und IPS?</div>
+      <div class="quiz-opts" id="q16">
+        <button class="quiz-opt" onclick="mc('q16',this,false,'q3-prog',10)">IDS ist teurer als IPS</button>
+        <button class="quiz-opt" onclick="mc('q16',this,false,'q3-prog',10)">IPS kann nur Netzwerkverkehr überwachen, IDS nicht</button>
+        <button class="quiz-opt" onclick="mc('q16',this,true,'q3-prog',10)">IPS blockiert Angriffe aktiv, IDS erkennt und meldet sie nur</button>
+        <button class="quiz-opt" onclick="mc('q16',this,false,'q3-prog',10)">IDS arbeitet auf Layer 7, IPS nur auf Layer 3</button>
+      </div>
+      <div class="feedback" id="q16-fb"></div>
+      <button class="reset-btn" onclick="resetMC('q16','q3-prog',10)">↺ Zurücksetzen</button>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-num">Frage 17 · Richtig oder Falsch</div>
+      <div class="quiz-q">In der DMZ werden interne Datenbankserver platziert, damit auf deren Daten von außen zugegriffen werden kann.</div>
+      <div class="tf-row" id="q17">
+        <button class="tf-btn" onclick="tf('q17',this,false,'q3-prog',10)">✓ Richtig</button>
+        <button class="tf-btn" onclick="tf('q17',this,true,'q3-prog',10)">✗ Falsch</button>
+      </div>
+      <div class="feedback" id="q17-fb"></div>
+      <button class="reset-btn" onclick="resetTF('q17','q3-prog',10)">↺ Zurücksetzen</button>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-num">Frage 18 · Multiple Choice</div>
+      <div class="quiz-q">Welche TOM schützt vor unbefugtem physischem Zutritt zu Serverräumen?</div>
+      <div class="quiz-opts" id="q18">
+        <button class="quiz-opt" onclick="mc('q18',this,false,'q3-prog',10)">Zugangskontrolle</button>
+        <button class="quiz-opt" onclick="mc('q18',this,true,'q3-prog',10)">Zutrittskontrolle</button>
+        <button class="quiz-opt" onclick="mc('q18',this,false,'q3-prog',10)">Zugriffskontrolle</button>
+        <button class="quiz-opt" onclick="mc('q18',this,false,'q3-prog',10)">Weitergabekontrolle</button>
+      </div>
+      <div class="feedback" id="q18-fb"></div>
+      <button class="reset-btn" onclick="resetMC('q18','q3-prog',10)">↺ Zurücksetzen</button>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-num">Frage 19 · Richtig oder Falsch</div>
+      <div class="quiz-q">SPI (Stateful Packet Inspection) speichert den Verbindungsstatus, um Antwortpakete kontextbezogen zu bewerten und IP-Spoofing zu verhindern.</div>
+      <div class="tf-row" id="q19">
+        <button class="tf-btn" onclick="tf('q19',this,true,'q3-prog',10)">✓ Richtig</button>
+        <button class="tf-btn" onclick="tf('q19',this,false,'q3-prog',10)">✗ Falsch</button>
+      </div>
+      <div class="feedback" id="q19-fb"></div>
+      <button class="reset-btn" onclick="resetTF('q19','q3-prog',10)">↺ Zurücksetzen</button>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-num">Frage 20 · Multiple Choice</div>
+      <div class="quiz-q">Welche Aussage zur NGFW (Next Generation Firewall) trifft zu?</div>
+      <div class="quiz-opts" id="q20">
+        <button class="quiz-opt" onclick="mc('q20',this,false,'q3-prog',10)">Sie kann nur Pakete auf Layer 3 filtern</button>
+        <button class="quiz-opt" onclick="mc('q20',this,false,'q3-prog',10)">Sie arbeitet rein stateless ohne Verbindungsverfolgung</button>
+        <button class="quiz-opt" onclick="mc('q20',this,true,'q3-prog',10)">Sie erkennt Anwendungen auf Layer 7 und integriert IPS/IDS sowie SSL-Inspektion</button>
+        <button class="quiz-opt" onclick="mc('q20',this,false,'q3-prog',10)">Sie ersetzt ausschließlich Antivirenprogramme auf Endgeräten</button>
+      </div>
+      <div class="feedback" id="q20-fb"></div>
+      <button class="reset-btn" onclick="resetMC('q20','q3-prog',10)">↺ Zurücksetzen</button>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-num">Frage 21 · Multiple Choice</div>
+      <div class="quiz-q">DPI (Deep Packet Inspection) inspiziert Pakete bis zu welcher OSI-Schicht?</div>
+      <div class="quiz-opts" id="q21">
+        <button class="quiz-opt" onclick="mc('q21',this,false,'q3-prog',10)">Layer 3 (Vermittlungsschicht)</button>
+        <button class="quiz-opt" onclick="mc('q21',this,false,'q3-prog',10)">Layer 4 (Transportschicht)</button>
+        <button class="quiz-opt" onclick="mc('q21',this,true,'q3-prog',10)">Layer 7 (Anwendungsschicht)</button>
+        <button class="quiz-opt" onclick="mc('q21',this,false,'q3-prog',10)">Layer 2 (Sicherungsschicht)</button>
+      </div>
+      <div class="feedback" id="q21-fb"></div>
+      <button class="reset-btn" onclick="resetMC('q21','q3-prog',10)">↺ Zurücksetzen</button>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-num">Frage 22 · Richtig oder Falsch</div>
+      <div class="quiz-q">Privacy by Design (TOM 14) bedeutet, dass Datenschutz nachträglich in bestehende Systeme eingebaut wird, wenn Probleme auftreten.</div>
+      <div class="tf-row" id="q22">
+        <button class="tf-btn" onclick="tf('q22',this,false,'q3-prog',10)">✓ Richtig</button>
+        <button class="tf-btn" onclick="tf('q22',this,true,'q3-prog',10)">✗ Falsch</button>
+      </div>
+      <div class="feedback" id="q22-fb"></div>
+      <button class="reset-btn" onclick="resetTF('q22','q3-prog',10)">↺ Zurücksetzen</button>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-num">Frage 23 · Multiple Choice</div>
+      <div class="quiz-q">Was beschreibt die Formel: Risiko = Eintrittswahrscheinlichkeit × Schadenshöhe?</div>
+      <div class="quiz-opts" id="q23">
+        <button class="quiz-opt" onclick="mc('q23',this,false,'q3-prog',10)">Die Berechnung von TCO</button>
+        <button class="quiz-opt" onclick="mc('q23',this,true,'q3-prog',10)">Die quantitative Risikobewertung in der Risikoanalyse</button>
+        <button class="quiz-opt" onclick="mc('q23',this,false,'q3-prog',10)">Den Schutzbedarfswert nach BSI</button>
+        <button class="quiz-opt" onclick="mc('q23',this,false,'q3-prog',10)">Die Projektkosten-Kalkulation</button>
+      </div>
+      <div class="feedback" id="q23-fb"></div>
+      <button class="reset-btn" onclick="resetMC('q23','q3-prog',10)">↺ Zurücksetzen</button>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-num">Frage 24 · Multiple Choice</div>
+      <div class="quiz-q">Ordne zu: Welches System "erkennt ungewöhnlichen Datenverkehr und meldet mögliche Angriffe einem Administrator"?</div>
+      <div class="quiz-opts" id="q24">
+        <button class="quiz-opt" onclick="mc('q24',this,true,'q3-prog',10)">IDS</button>
+        <button class="quiz-opt" onclick="mc('q24',this,false,'q3-prog',10)">IPS</button>
+        <button class="quiz-opt" onclick="mc('q24',this,false,'q3-prog',10)">SPI</button>
+        <button class="quiz-opt" onclick="mc('q24',this,false,'q3-prog',10)">DPI</button>
+      </div>
+      <div class="feedback" id="q24-fb"></div>
+      <button class="reset-btn" onclick="resetMC('q24','q3-prog',10)">↺ Zurücksetzen</button>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-num">Frage 25 · Richtig oder Falsch</div>
+      <div class="quiz-q">Die Zugriffskontrolle (TOM 03) regelt, wer welche Daten lesen oder schreiben darf, und wird typischerweise durch ein Rollen- und Rechtekonzept (RBAC) umgesetzt.</div>
+      <div class="tf-row" id="q25">
+        <button class="tf-btn" onclick="tf('q25',this,true,'q3-prog',10)">✓ Richtig</button>
+        <button class="tf-btn" onclick="tf('q25',this,false,'q3-prog',10)">✗ Falsch</button>
+      </div>
+      <div class="feedback" id="q25-fb"></div>
+      <button class="reset-btn" onclick="resetTF('q25','q3-prog',10)">↺ Zurücksetzen</button>
+    </div>
+  </section>
+
+  <p style="font-size:12px;color:#5c6378;text-align:center;margin-top:3rem;padding-bottom:2rem">LF9 Lernzettel · August-Bebel-Schule · 2024/25</p>
+</main>
+</div>
+
+<script>
+const TOTAL = 25;
+const answered = new Set();
+
+const sectionMap = {
+  'q1-prog': ['q01','q02','q03','q04','q05','q06','q07','q08'],
+  'q2-prog': ['q09','q10','q11','q12','q13','q14','q15'],
+  'q3-prog': ['q16','q17','q18','q19','q20','q21','q22','q23','q24','q25']
+};
+
+
+  const done = qs.filter(q => answered.has(q)).length;
+    document.getElementById(id).textContent = done + '/' + qs.length + ' beantwortet';
+  }
+}
+
+function mc(qid, btn, isCorrect, progId, total) {
+  const container = document.getElementById(qid);
+  if (container.dataset.done) return;
+  container.dataset.done = '1';
+  const btns = container.querySelectorAll('button');
+  btns.forEach(b => b.disabled = true);
+  const fb = document.getElementById(qid + '-fb');
+  if (isCorrect) {
+    btn.classList.add('correct');
+    fb.textContent = '✓ Richtig!';
+    fb.className = 'feedback show ok';
+  } else {
+    btn.classList.add('wrong');
+    fb.textContent = '✗ Leider falsch. Die korrekte Antwort ist grün markiert.';
+    fb.className = 'feedback show nok';
+    btns.forEach(b => {
+      if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(',true,')) b.classList.add('show-correct');
+    });
+  }
+  answered.add(qid);
+  updateProgress();
+}
+
+function tf(qid, btn, isCorrect, progId, total) {
+  const container = document.getElementById(qid);
+  if (container.dataset.done) return;
+  container.dataset.done = '1';
+  const btns = container.querySelectorAll('button');
+  btns.forEach(b => b.disabled = true);
+  const fb = document.getElementById(qid + '-fb');
+  if (isCorrect) {
+    btn.classList.add('correct');
+    fb.textContent = '✓ Richtig!';
+    fb.className = 'feedback show ok';
+  } else {
+    btn.classList.add('wrong');
+    fb.textContent = '✗ Falsch. Die richtige Antwort ist grün markiert.';
+    fb.className = 'feedback show nok';
+    btns.forEach(b => {
+      if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(',true,')) b.classList.add('correct');
+    });
+  }
+  answered.add(qid);
+  updateProgress();
+}
+
+function resetMC(qid) {
+  const container = document.getElementById(qid);
+  delete container.dataset.done;
+  container.querySelectorAll('button').forEach(b => { b.disabled = false; b.className = 'quiz-opt'; });
+  document.getElementById(qid + '-fb').className = 'feedback';
+  answered.delete(qid);
+  updateProgress();
+}
+
+function resetTF(qid) {
+  const container = document.getElementById(qid);
+  delete container.dataset.done;
+  container.querySelectorAll('button').forEach(b => { b.disabled = false; b.className = 'tf-btn'; });
+  document.getElementById(qid + '-fb').className = 'feedback';
+  answered.delete(qid);
+  updateProgress();
+}
+
+const navLinks = document.querySelectorAll('nav a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  document.querySelectorAll('section[id]').forEach(sec => {
+    if (window.scrollY >= sec.offsetTop - 120) current = sec.id;
+  });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+
+updateProgress();
+</script>
+</body>
+</html>
