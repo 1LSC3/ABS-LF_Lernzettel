@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LF6 Lernzettel – SLA & IT-Standards</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f3ee;
+    --surface: #fdfcf9;
+    --surface2: #f0ede5;
+    --ink: #1a1814;
+    --ink2: #4a4540;
+    --ink3: #8a847a;
+    --accent: #2d5a8e;
+    --accent-light: #e8f0f8;
+    --accent2: #5a7a3a;
+    --accent2-light: #eaf2e0;
+    --accent3: #8e4a2d;
+    --accent3-light: #f8ede8;
+    --amber: #8a6a1a;
+    --amber-light: #faf3e0;
+    --border: #ddd9d0;
+    --radius: 10px;
+    --radius-lg: 16px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .page-header {
+    background: var(--ink);
+    color: #fdfcf9;
+    padding: 3rem 2.5rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page-header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 220px; height: 220px;
+    border: 40px solid rgba(255,255,255,0.04);
+    border-radius: 50%;
+  }
+  .page-header::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: 30%;
+    width: 300px; height: 300px;
+    border: 50px solid rgba(255,255,255,0.03);
+    border-radius: 50%;
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .08em;
+    background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.75);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+
+  .page-header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.6rem;
+    font-weight: 400;
+    line-height: 1.15;
+    margin-bottom: .5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .page-header p {
+    color: rgba(255,255,255,0.55);
+    font-size: 14px;
+    position: relative;
+    z-index: 1;
+  }
+
+  nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: .75rem 2.5rem;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+
+  nav button {
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--ink2);
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+
+  nav button:hover { background: var(--surface2); }
+  nav button.active {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 4rem;
+  }
+
+  .section { display: none; animation: fadeIn .25s ease; }
+  .section.active { display: block; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.8rem;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: .4rem;
+  }
+
+  .section-lead {
+    color: var(--ink3);
+    font-size: 14px;
+    margin-bottom: 2rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .card-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .07em;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 12px;
+    margin-bottom: .9rem;
+    text-transform: uppercase;
+  }
+
+  .label-def { background: var(--accent-light); color: var(--accent); }
+  .label-info { background: var(--accent2-light); color: var(--accent2); }
+  .label-warn { background: var(--amber-light); color: var(--amber); }
+  .label-ex { background: var(--accent3-light); color: var(--accent3); }
+  .label-tip { background: #f0e8f8; color: #5a2d8e; }
+
+  .card h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: .85rem;
+  }
+
+  .card p { color: var(--ink2); font-size: 14px; line-height: 1.75; margin-bottom: .6rem; }
+  .card p:last-child { margin-bottom: 0; }
+
+  ul.lz { list-style: none; }
+  ul.lz li {
+    font-size: 14px;
+    color: var(--ink2);
+    padding: 5px 0 5px 22px;
+    position: relative;
+    line-height: 1.65;
+    border-bottom: 1px solid var(--surface2);
+  }
+  ul.lz li:last-child { border-bottom: none; }
+  ul.lz li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--ink3);
+    font-size: 12px;
+    top: 7px;
+  }
+
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-light);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+  }
+  .callout p { color: var(--accent); font-size: 14px; line-height: 1.7; }
+  .callout.green { border-color: var(--accent2); background: var(--accent2-light); }
+  .callout.green p { color: #2d5a1a; }
+  .callout.amber { border-color: var(--amber); background: var(--amber-light); }
+  .callout.amber p { color: #5a4010; }
+  .callout.red { border-color: var(--accent3); background: var(--accent3-light); }
+  .callout.red p { color: #5a2010; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    margin: .75rem 0;
+  }
+  th {
+    text-align: left;
+    padding: 9px 14px;
+    border-bottom: 2px solid var(--border);
+    color: var(--ink3);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--surface2);
+    color: var(--ink2);
+    vertical-align: top;
+    line-height: 1.6;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg); }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+  .three-col {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+  @media (max-width: 760px) { .three-col { grid-template-columns: 1fr; } }
+
+  .mini-card {
+    background: var(--surface2);
+    border-radius: var(--radius);
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--border);
+  }
+  .mini-card .mc-title { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 5px; }
+  .mini-card .mc-sub { font-size: 12px; color: var(--ink3); margin-bottom: 6px; font-family: 'DM Mono', monospace; }
+  .mini-card p { font-size: 13px; color: var(--ink2); line-height: 1.6; }
+
+  .level-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--surface2);
+  }
+  .level-row:last-child { border-bottom: none; }
+  .level-badge {
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    color: #fff;
+  }
+  .lv0 { background: var(--ink3); }
+  .lv1 { background: var(--accent2); }
+  .lv2 { background: var(--accent); }
+  .lv3 { background: var(--amber); }
+  .lv4 { background: var(--accent3); }
+  .level-content h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; color: var(--ink); }
+  .level-content p { font-size: 13.5px; color: var(--ink2); line-height: 1.65; }
+
+  /* QUIZ */
+  .quiz-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .quiz-header .ql { font-size: 13px; color: var(--ink3); }
+  .quiz-header .qv { font-size: 1.5rem; font-weight: 600; font-family: 'DM Serif Display', serif; color: var(--ink); }
+
+  .q-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 1rem;
+  }
+  .q-num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ink3); margin-bottom: 8px; letter-spacing: .05em; }
+  .q-text { font-size: 15px; font-weight: 500; color: var(--ink); margin-bottom: 1.1rem; line-height: 1.55; }
+  .q-opts { display: flex; flex-direction: column; gap: 7px; }
+  .q-opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    background: var(--bg);
+    color: var(--ink2);
+    font-size: 14px;
+    line-height: 1.5;
+    transition: all .15s;
+    text-align: left;
+    font-family: 'Outfit', sans-serif;
+  }
+  .q-opt:hover:not([disabled]) { border-color: #aaa; background: var(--surface2); }
+  .q-opt .ol {
+    flex-shrink: 0;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600;
+    color: var(--ink3);
+    font-family: 'DM Mono', monospace;
+    margin-top: 1px;
+  }
+  .q-opt.correct { background: #e8f4e8; border-color: #7ab87a; color: #1a4a1a; }
+  .q-opt.correct .ol { background: #4a9a4a; color: #fff; border-color: #4a9a4a; }
+  .q-opt.wrong { background: #f8e8e8; border-color: #c87a7a; color: #4a1a1a; }
+  .q-opt.wrong .ol { background: #c84a4a; color: #fff; border-color: #c84a4a; }
+
+  .q-explain {
+    display: none;
+    margin-top: .9rem;
+    padding: .85rem 1rem;
+    background: var(--surface2);
+    border-radius: var(--radius);
+    font-size: 13px;
+    color: var(--ink2);
+    line-height: 1.7;
+    border-left: 3px solid var(--ink3);
+  }
+  .q-explain.show { display: block; }
+
+  strong { font-weight: 600; color: var(--ink); }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+  .formula-box {
+    background: var(--ink);
+    color: #fdfcf9;
+    border-radius: var(--radius);
+    padding: 1.1rem 1.4rem;
+    margin: 1rem 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    line-height: 1.8;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="badge">LF6 · Fachinformatiker Systemintegration</div>
+  <h1>SLA & Standards<br>bei IT-Dienstleistungen</h1>
+  <p>Lernzettel auf Basis der Unterrichtsblätter · Mit interaktiven Testfragen</p>
+</div>
+
+<nav id="nav">
+  <button class="active" onclick="showTab('sla-grundlagen')">SLA Grundlagen</button>
+  <button onclick="showTab('sla-kpis')">KPIs im SLA</button>
+  <button onclick="showTab('service-levels')">Service Levels</button>
+  <button onclick="showTab('standards')">IT-Standards</button>
+  <button onclick="showTab('itil')">ITIL</button>
+  <button onclick="showTab('rechtliches')">Rechtliche Anforderungen</button>
+  <button onclick="showTab('quiz')">Testfragen</button>
+</nav>
+
+<div class="container">
+
+  <!-- ===== SLA GRUNDLAGEN ===== -->
+  <div class="section active" id="sec-sla-grundlagen">
+    <div class="section-title">Service Level Agreement</div>
+    <div class="section-lead">Ein SLA regelt verbindlich Qualität, Verfügbarkeit und Verantwortlichkeiten zwischen Dienstleister und Kunde.</div>
+
+    <div class="card">
+      <div class="card-label label-def">Definition</div>
+      <h3>Was ist ein SLA?</h3>
+      <div class="callout">
+        <p>Ein Service Level Agreement (SLA) ist ein formalisiertes Abkommen zwischen einem Dienstleister und seinem Kunden. Es definiert die Art und Qualität der Dienstleistung, die der Kunde erwarten kann, und legt die Maßstäbe fest, an denen der Service gemessen wird.</p>
+      </div>
+      <p>Es legt klare Erwartungen und Standards fest, damit beide Parteien wissen, was sie voneinander erwarten können – und dient als Leitfaden für die gesamte Geschäftsbeziehung.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-label label-info">Schlüsselkomponenten</div>
+      <h3>Bestandteile eines SLA</h3>
+      <ul class="lz">
+        <li><strong>1. Dienstleistungsbeschreibung</strong> – Welche spezifischen Leistungen erbringt der Anbieter?</li>
+        <li><strong>2. Leistungsziele</strong> – Konkrete Ziele wie Reaktionszeit, Verfügbarkeit oder Geschwindigkeit</li>
+        <li><strong>3. Messverfahren</strong> – Wie und wann werden die Leistungen gemessen?</li>
+        <li><strong>4. Abhilfemaßnahmen / Strafen (Pönalen)</strong> – Konsequenzen bei Nichterreichung der Ziele</li>
+        <li><strong>5. Kundensupport</strong> – Wie und wann steht der Dienstleister für Unterstützung bereit?</li>
+        <li><strong>6. Datenschutz und Sicherheitsstandards</strong> – Wie werden Kundendaten geschützt und verarbeitet?</li>
+      </ul>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-label label-info">Vorteile</div>
+        <h3>Vorteile für den Kunden</h3>
+        <ul class="lz">
+          <li>Klare Kommunikation der Erwartungen</li>
+          <li>Verbindlichkeit und Transparenz</li>
+          <li>Verbesserte Dienstleister-Kunden-Beziehung</li>
+          <li>Konkrete Qualitätsziele und -standards</li>
+          <li>Anspruch auf Entschädigung bei Nichteinhaltung</li>
+          <li>Monitoring und Nachweis der Servicequalität</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-label label-warn">Nachteile</div>
+        <h3>Nachteile & Risiken</h3>
+        <ul class="lz">
+          <li>Komplex und zeitaufwendig in der Erstellung</li>
+          <li>Messung der Standards kann teuer sein</li>
+          <li>Zu strenge SLAs schränken Dienstleister-Flexibilität ein</li>
+          <li>Nichteinhaltung kann zu Rechtsstreitigkeiten führen</li>
+          <li>Beschädigte Geschäftsbeziehung bei Konflikten</li>
+          <li>Hoher Überwachungsaufwand</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label label-ex">Praxisbeispiel</div>
+      <h3>Beispiel: Internet Service Provider (ISP)</h3>
+      <p>Ein ISP könnte ein SLA mit einem Kunden unterzeichnen, das eine <strong>garantierte Uptime von 99,9 %</strong> und bestimmte Reaktionszeiten für den Support vorsieht. Wenn der Service unter diese Zahlen fällt, erhält der Kunde eine <strong>Gutschrift oder eine andere Form von Entschädigung</strong>.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-label label-warn">Merke</div>
+      <h3>Verfügbarkeit berechnen</h3>
+      <div class="formula-box">
+        Verfügbarkeit (%) = (Gesamtzeit − Ausfallzeit) / Gesamtzeit × 100<br><br>
+        Beispiel: 1 Jahr = 8.760 h<br>
+        Bei 99,7 % → max. 26,28 h Ausfall/Jahr erlaubt<br>
+        Bei 99,9 % → max. 8,76 h Ausfall/Jahr erlaubt
+      </div>
+      <table>
+        <thead><tr><th>Verfügbarkeit</th><th>Max. Ausfallzeit / Jahr</th><th>Bezeichnung</th></tr></thead>
+        <tbody>
+          <tr><td>99 %</td><td>87,6 Stunden (~3,6 Tage)</td><td>Two nines</td></tr>
+          <tr><td>99,7 %</td><td>26,28 Stunden</td><td>–</td></tr>
+          <tr><td>99,9 %</td><td>8,76 Stunden</td><td>Three nines</td></tr>
+          <tr><td>99,99 %</td><td>52,6 Minuten</td><td>Four nines</td></tr>
+          <tr><td>99,999 %</td><td>5,26 Minuten</td><td>Five nines</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-label label-ex">Übungsaufgabe aus dem Unterricht</div>
+      <h3>SLA-Prüfung: Datei-Server Downtime</h3>
+      <p><strong>Situation:</strong> Ihr SLA sieht 99,7 % Verfügbarkeit pro Jahr vor (Servicebereitschaft Mo–So 00:00–24:00 Uhr). Der Datei-Server hatte:</p>
+      <ul class="lz" style="margin: .75rem 0;">
+        <li>KW 1: 12 Stunden störungsbedingte Downtime</li>
+        <li>KW 12: 7 Stunden Downtime durch RAID-Hardwareausfall + Rücksicherung</li>
+        <li><strong>Gesamt: 19 Stunden Ausfall</strong></li>
+      </ul>
+      <div class="callout green">
+        <p><strong>Ergebnis:</strong> Das SLA erlaubt maximal 26,28 h Ausfall/Jahr. Mit 19 h Gesamtausfall wurde das SLA <strong>eingehalten</strong>. Die tatsächliche Verfügbarkeit beträgt ca. 99,78 % – oberhalb der vereinbarten 99,7 %.</p>
+      </div>
+      <p style="margin-top:.75rem;">Zusätzlich zu prüfen: Wurden Reaktionszeit (≤ 2 Arbeitsstunden) und Lösungszeit (≤ 8 Stunden) eingehalten? Die Lösungszeit von 7 Stunden beim RAID-Ausfall liegt gerade noch im Rahmen.</p>
+      <div class="callout amber">
+        <p><strong>Warum nehmen IT-Dienstleister die Lösungszeit ungern ins SLA auf?</strong> Die Lösungszeit hängt von vielen unkontrollierbaren Faktoren ab (Komplexität des Problems, Verfügbarkeit von Ersatzteilen, externe Abhängigkeiten). Kann sie nicht garantiert werden, drohen Pönalen – selbst wenn der Dienstleister alles in seiner Macht Stehende getan hat.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== KPIs ===== -->
+  <div class="section" id="sec-sla-kpis">
+    <div class="section-title">Key Performance Indicators (KPIs)</div>
+    <div class="section-lead">KPIs sind die messbaren Leistungsindikatoren innerhalb eines SLA. Sie machen Servicequalität objektiv bewertbar.</div>
+
+    <div class="card">
+      <div class="card-label label-def">Definition</div>
+      <h3>Was sind KPIs im SLA-Kontext?</h3>
+      <p>KPIs (Key Performance Indicators) sind entscheidende Messinstrumente innerhalb von SLAs. Sie helfen, die Qualität und Effizienz von Dienstleistungen zu bewerten und sicherzustellen, dass beide Parteien die vereinbarten Service-Levels einhalten. Durch genaue Definition und Überwachung können Unternehmen die Leistung transparent verfolgen und kontinuierlich verbessern.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-label label-info">Übersicht</div>
+      <h3>Die 6 wichtigsten KPIs im IT-SLA</h3>
+      <table>
+        <thead><tr><th>KPI</th><th>Bedeutung</th><th>Messung</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Verfügbarkeit</strong></td>
+            <td>Zeit, in der ein Service verfügbar und betriebsbereit ist</td>
+            <td>Prozentsatz der Gesamtzeit, z.B. 99,9 %</td>
+          </tr>
+          <tr>
+            <td><strong>Reaktionszeit</strong></td>
+            <td>Zeit bis zur ersten Reaktion auf eine Störung oder Anfrage</td>
+            <td>Zeitspanne in Minuten/Stunden ab Meldung</td>
+          </tr>
+          <tr>
+            <td><strong>Lösungszeit</strong></td>
+            <td>Zeit bis zur vollständigen Behebung eines gemeldeten Problems</td>
+            <td>Zeitspanne in Stunden ab Meldung</td>
+          </tr>
+          <tr>
+            <td><strong>Durchsatz</strong></td>
+            <td>Menge an Transaktionen/Operationen in einem Zeitraum</td>
+            <td>Transaktionen pro Sekunde/Stunde</td>
+          </tr>
+          <tr>
+            <td><strong>Fehlerquote</strong></td>
+            <td>Anzahl Fehler/Ausfälle im Verhältnis zu Gesamtanfragen</td>
+            <td>Prozentsatz oder Anzahl pro Zeitraum</td>
+          </tr>
+          <tr>
+            <td><strong>Kundenzufriedenheit</strong></td>
+            <td>Zufriedenheit der Kunden mit dem Service</td>
+            <td>Umfragen, Bewertungen, NPS</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-label label-ex">Praxisbeispiel</div>
+      <h3>KPIs aus dem Unterrichts-SLA</h3>
+      <table>
+        <thead><tr><th>SLA-Punkt</th><th>Wert</th><th>KPI-Typ</th></tr></thead>
+        <tbody>
+          <tr><td>Verfügbarkeit pro Jahr</td><td>99,7 %</td><td>Verfügbarkeit</td></tr>
+          <tr><td>Servicebereitschaft</td><td>Mo–So 00:00–24:00 Uhr</td><td>Verfügbarkeit</td></tr>
+          <tr><td>Reaktionszeit auf Störungen</td><td>Innerhalb 2 Arbeitsstunden</td><td>Reaktionszeit</td></tr>
+          <tr><td>Lösungszeit</td><td>Innerhalb 8 Stunden</td><td>Lösungszeit</td></tr>
+          <tr><td>Priorität</td><td>Höchste Priorität</td><td>Serviceklasse</td></tr>
+          <tr><td>Störungsdokumentation</td><td>Troubleticket</td><td>Prozessqualität</td></tr>
+          <tr><td>Wartungsfenster</td><td>Mo–So 22:00–06:00 Uhr</td><td>Verfügbarkeit</td></tr>
+          <tr><td>Wartungsankündigung</td><td>5 Tage im Voraus</td><td>Kommunikation</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-label label-tip">Tipp</div>
+      <h3>MTTR und MTBF</h3>
+      <div class="two-col">
+        <div class="mini-card">
+          <div class="mc-title">MTTR</div>
+          <div class="mc-sub">Mean Time To Repair</div>
+          <p>Durchschnittliche Zeit zur Behebung eines Ausfalls. Je niedriger, desto besser. Direkt verwandt mit der SLA-Lösungszeit.</p>
+        </div>
+        <div class="mini-card">
+          <div class="mc-title">MTBF</div>
+          <div class="mc-sub">Mean Time Between Failures</div>
+          <p>Durchschnittliche Zeit zwischen zwei Ausfällen. Je höher, desto zuverlässiger das System. Beeinflusst die Verfügbarkeits-KPI direkt.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SERVICE LEVELS ===== -->
+  <div class="section" id="sec-service-levels">
+    <div class="section-title">Service Levels</div>
+    <div class="section-lead">IT-Dienstleister organisieren ihren Support in Stufen – von Self-Service bis zum externen Hersteller.</div>
+
+    <div class="card">
+      <div class="card-label label-def">Grundprinzip</div>
+      <h3>Warum Service Levels?</h3>
+      <p>Ein Service-Provider teilt seine Dienstleistungen in verschiedene Service Levels ein, um <strong>Ressourcen optimal zu nutzen</strong>. Mit jedem höheren Level steigen die Spezialisierung der Mitarbeiter und die Anforderungen an ihre Qualifikationen. Die Einteilung ermöglicht eine systematische Weiterleitung von Problemen und stellt sicher, dass immer das passende Fachwissen eingesetzt wird.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-label label-info">Hierarchie</div>
+      <h3>Die 5 Service-Level-Stufen</h3>
+
+      <div class="level-row">
+        <div class="level-badge lv0">L0</div>
+        <div class="level-content">
+          <h4>Level 0 – Self Service durch Kunden</h4>
+          <p>Dem Kunden stehen FAQ-Bereiche, Anleitungen, Tutorials und automatisierte Hilfsmittel zur Verfügung. Kostengünstigste Option, da keine direkte Interaktion mit Personal nötig ist.</p>
+        </div>
+      </div>
+      <div class="level-row">
+        <div class="level-badge lv1">L1</div>
+        <div class="level-content">
+          <h4>Level 1 – Service Desk</h4>
+          <p>Erster Kontaktpunkt zwischen Kunde und Kundenservice. Basisanfragen und -probleme werden durch gut dokumentierte Lösungen behoben. Mitarbeiter nutzen Skripte und Anleitungen. Bei Bedarf Weiterleitung an Level 2.</p>
+        </div>
+      </div>
+      <div class="level-row">
+        <div class="level-badge lv2">L2</div>
+        <div class="level-content">
+          <h4>Level 2 – Specialized Support</h4>
+          <p>Komplexere Probleme, die Level 1 nicht lösen kann, werden hier bearbeitet. Mitarbeiter haben spezialisierte Kenntnisse in bestimmten Bereichen und führen detailliertere Diagnosen durch.</p>
+        </div>
+      </div>
+      <div class="level-row">
+        <div class="level-badge lv3">L3</div>
+        <div class="level-content">
+          <h4>Level 3 – Expert Support</h4>
+          <p>Hochspezialisierte Experten mit tiefgreifendem Produktwissen. Entwickeln maßgeschneiderte Lösungen und arbeiten oft eng mit Produktentwicklungsteams zusammen.</p>
+        </div>
+      </div>
+      <div class="level-row">
+        <div class="level-badge lv4">L4</div>
+        <div class="level-content">
+          <h4>Level 4 – Externer Hersteller</h4>
+          <p>Wenn das Problem intern nicht lösbar ist, wird es an den Hersteller weitergeleitet. Umfasst Probleme mit spezieller Hardware/Software-Kenntnis, Garantieleistungen oder Änderungen auf sehr tiefem Systemniveau.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label label-tip">Übergang zwischen Levels</div>
+      <h3>Wie erfolgt der Übergang?</h3>
+      <ul class="lz">
+        <li><strong>Eskalation:</strong> Wenn ein Level das Problem nicht lösen kann, wird der Vorgang an das nächsthöhere Level weitergeleitet</li>
+        <li><strong>Troubleticket:</strong> Jeder Vorgang wird dokumentiert und mitgenommen, damit Level 2/3/4 den bisherigen Verlauf kennen</li>
+        <li><strong>Zeitbasiert:</strong> Nach Ablauf der SLA-Reaktions- oder Lösungszeit erfolgt automatisch eine Eskalation</li>
+        <li><strong>Fachlich:</strong> Bei erkannter Komplexität kann der Bearbeiter selbst die Eskalation einleiten</li>
+        <li><strong>Hierarchisch:</strong> Bei hoher Priorität oder Kundenunzufriedenheit kann auch Management involviert werden</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== STANDARDS ===== -->
+  <div class="section" id="sec-standards">
+    <div class="section-title">IT-Dienstleistungsstandards</div>
+    <div class="section-lead">Standards schaffen Struktur, fördern Interoperabilität und sind Grundlage für Verträge und Zertifizierungen.</div>
+
+    <div class="card">
+      <div class="card-label label-def">Überblick</div>
+      <h3>Warum gibt es unterschiedliche Standards?</h3>
+      <p>In der digitalen Welt sind Standards bei IT-Dienstleistungen von entscheidender Bedeutung. Sie bieten eine einheitliche Struktur, fördern die Interoperabilität zwischen Systemen und ermöglichen einen reibungslosen Betrieb. Unterschiede entstehen durch <strong>technologische Entwicklungen</strong>, <strong>gesetzliche Vorschriften</strong> und <strong>branchenspezifische Anforderungen</strong>.</p>
+    </div>
+
+    <div class="two-col" style="margin-bottom:1.25rem;">
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-label label-info">Vorteile der Standardisierung</div>
+        <ul class="lz">
+          <li>Einheitliche Prozesse und Abläufe</li>
+          <li>Bessere Interoperabilität zwischen Systemen</li>
+          <li>Vergleichbarkeit von Dienstleistungen</li>
+          <li>Basis für Verträge und Zertifizierungen</li>
+          <li>Erleichtert Qualitätssicherung</li>
+          <li>Vertrauen bei Kunden und Partnern</li>
+        </ul>
+      </div>
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-label label-warn">Nachteile der Standardisierung</div>
+        <ul class="lz">
+          <li>Einschränkung von Flexibilität und Innovation</li>
+          <li>Hoher Einführungs- und Schulungsaufwand</li>
+          <li>Bürokratischer Overhead</li>
+          <li>Standards können veralten</li>
+          <li>Kann auf KMU unverhältnismäßig wirken</li>
+          <li>Mehrere konkurrierende Standards sorgen für Verwirrung</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label label-def">ITIL</div>
+      <h3>ITIL – Information Technology Infrastructure Library</h3>
+      <p>Ein Satz von <strong>Best-Practice-Richtlinien</strong> für das IT-Service-Management (ITSM). Die Methodik konzentriert sich darauf, IT-Services auf Geschäftsanforderungen auszurichten. Kein verbindlicher Standard, sondern ein flexibles Rahmenwerk.</p>
+      <div class="callout">
+        <p><strong>Praxisbeispiel:</strong> Eine Organisation verwendet ITIL, um einen effektiven Change-Management-Prozess zu etablieren, der sicherstellt, dass Änderungen an IT-Systemen minimale Betriebsunterbrechungen verursachen.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label label-def">COBIT</div>
+      <h3>COBIT – Control Objectives for Information and Related Technology</h3>
+      <p>Ein Rahmenwerk, das Unternehmen bei der <strong>Entwicklung, Implementierung, Überwachung und Verbesserung von IT-Governance und IT-Management</strong> unterstützt. Fokus auf Regulierung, Kontrolle, Compliance und Risikomanagement.</p>
+      <div class="callout">
+        <p><strong>Praxisbeispiel:</strong> Eine Finanzinstitution verwendet COBIT, um sicherzustellen, dass ihre IT-Systeme alle Compliance-Anforderungen erfüllen und IT-Risiken effektiv gemanagt werden.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label label-def">FitSM</div>
+      <h3>FitSM – Leichtgewichtiger ITSM-Standard</h3>
+      <p>Ein <strong>schlanker und zugänglicher Rahmen</strong> für IT-Service-Management, besonders geeignet für <strong>kleine und mittlere Unternehmen (KMU)</strong>. Fokus auf Einfachheit und Pragmatismus.</p>
+      <div class="callout green">
+        <p><strong>Praxisbeispiel:</strong> Ein kleines Software-Entwicklungsunternehmen nutzt FitSM, um einen einfachen und effektiven Service-Management-Prozess einzuführen, ohne den Overhead großer Frameworks.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label label-def">ISO/IEC 20000</div>
+      <h3>ISO/IEC 20000 – Internationaler ITSM-Standard</h3>
+      <p>Internationaler, <strong>zertifizierbarer Standard</strong> für IT-Service-Management. Stellt Anforderungen an Serviceanbieter für Planung, Einrichtung, Implementierung, Betrieb, Überwachung, Überprüfung, Pflege und Verbesserung des Service Management Systems (SMS).</p>
+      <div class="callout">
+        <p><strong>Praxisbeispiel:</strong> Eine globale IT-Dienstleistungsfirma nutzt ISO/IEC 20000, um einheitliche Prozesse über alle Service-Teams hinweg zu gewährleisten.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label label-info">Vergleich</div>
+      <h3>Standards im Überblick</h3>
+      <table>
+        <thead><tr><th>Standard</th><th>Art</th><th>Fokus</th><th>Zielgruppe</th></tr></thead>
+        <tbody>
+          <tr><td><strong>ITIL</strong></td><td>Best-Practice-Rahmenwerk</td><td>IT-Service-Management, Prozesse</td><td>Alle Unternehmensgrößen</td></tr>
+          <tr><td><strong>COBIT</strong></td><td>Governance-Rahmenwerk</td><td>IT-Governance, Compliance, Risiko</td><td>Großunternehmen, Finanzsektor</td></tr>
+          <tr><td><strong>FitSM</strong></td><td>Leichtgewichtiger Standard</td><td>Pragmatisches ITSM</td><td>KMU</td></tr>
+          <tr><td><strong>ISO/IEC 20000</strong></td><td>Zertifizierbare Norm</td><td>ITSM-Systemanforderungen</td><td>Alle, mit Zertifizierungsbedarf</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== ITIL ===== -->
+  <div class="section" id="sec-itil">
+    <div class="section-title">ITIL im Detail</div>
+    <div class="section-lead">Die Information Technology Infrastructure Library – das weltweit verbreitetste Framework für IT-Service-Management.</div>
+
+    <div class="card">
+      <div class="card-label label-def">Hintergrund</div>
+      <h3>Entstehung und Bedeutung</h3>
+      <ul class="lz">
+        <li>Ursprünglich in den <strong>1980er Jahren von der britischen Regierung</strong> entwickelt</li>
+        <li>Weltweit anerkannter Standard für ITSM (IT-Service-Management)</li>
+        <li>Besteht aus Publikationen, die verschiedene ITSM-Aspekte abdecken</li>
+        <li><strong>Nicht vorschreibend</strong> – flexibles Framework, das je nach Unternehmen angepasst werden kann</li>
+        <li>Fördert proaktiven Ansatz: IT-Services verbessern, Kosten senken, Kundenzufriedenheit erhöhen</li>
+        <li>Zertifizierungen: Foundation → Practitioner → Expert → Master</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-label label-info">5 Aspekte / Phasen</div>
+      <h3>Die 5 ITIL-Kernbereiche</h3>
+
+      <table>
+        <thead><tr><th>#</th><th>Bereich</th><th>Inhalt</th><th>Wichtige Prozesse</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>1</strong></td>
+            <td><strong>Service-Strategie</strong></td>
+            <td>Identifikation von Geschäftszielen und Kundenbedürfnissen. Prioritäten setzen, Ressourcen planen.</td>
+            <td>Strategiemanagement, Portfoliomanagement</td>
+          </tr>
+          <tr>
+            <td><strong>2</strong></td>
+            <td><strong>Service-Design</strong></td>
+            <td>Gestaltung und Entwicklung neuer IT-Services</td>
+            <td>SLA-Management, Kapazitätsmanagement, Verfügbarkeitsmanagement, Sicherheitsmanagement</td>
+          </tr>
+          <tr>
+            <td><strong>3</strong></td>
+            <td><strong>Service-Transition</strong></td>
+            <td>Implementierung und Übergang neuer/veränderter Services in den Betrieb</td>
+            <td>Änderungsmanagement (Change), Release- & Deployment-Management, Wissensmanagement</td>
+          </tr>
+          <tr>
+            <td><strong>4</strong></td>
+            <td><strong>Service-Betrieb</strong></td>
+            <td>Täglicher Betrieb von IT-Services</td>
+            <td>Ereignismanagement, Incident-Management, Problem-Management, Zugriffsmanagement</td>
+          </tr>
+          <tr>
+            <td><strong>5</strong></td>
+            <td><strong>Kont. Service-Verbesserung</strong></td>
+            <td>Kontinuierliche Überwachung und Verbesserung von Services und Prozessen</td>
+            <td>CSI-Register, 7-Schritt-Verbesserungsprozess, Berichte</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-label label-info">Wichtige Begriffe</div>
+      <h3>Incident, Problem, Known Error</h3>
+      <div class="three-col">
+        <div class="mini-card">
+          <div class="mc-title">Incident</div>
+          <p>Ungeplante Unterbrechung oder Qualitätsminderung eines IT-Services. <strong>Ziel: schnellstmögliche Wiederherstellung</strong> – auch mit Workaround.</p>
+        </div>
+        <div class="mini-card">
+          <div class="mc-title">Problem</div>
+          <p>Unbekannte Ursache eines oder mehrerer Incidents. <strong>Ziel: dauerhafte Beseitigung der Ursache</strong> durch Root Cause Analysis.</p>
+        </div>
+        <div class="mini-card">
+          <div class="mc-title">Known Error</div>
+          <p>Problem mit <strong>bekannter Ursache und dokumentiertem Workaround</strong>. Gespeichert in der Known Error Database (KEDB).</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label label-tip">Merke</div>
+      <h3>ITIL vs. ISO/IEC 20000</h3>
+      <table>
+        <thead><tr><th></th><th>ITIL</th><th>ISO/IEC 20000</th></tr></thead>
+        <tbody>
+          <tr><td>Art</td><td>Best-Practice-Empfehlungen</td><td>Zertifizierbare Norm (Pflichtanforderungen)</td></tr>
+          <tr><td>Verbindlichkeit</td><td>Freiwillig</td><td>Bindend nach Zertifizierung</td></tr>
+          <tr><td>Ziel</td><td>Prozessverbesserung intern</td><td>Nachweis ggü. Kunden/Behörden</td></tr>
+          <tr><td>Verhältnis</td><td>ITIL-Umsetzung hilft bei ISO 20000</td><td>ISO 20000 baut auf ITIL-Prinzipien auf</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== RECHTLICHES ===== -->
+  <div class="section" id="sec-rechtliches">
+    <div class="section-title">Rechtliche Anforderungen</div>
+    <div class="section-lead">IT-Dienstleister müssen eine Vielzahl gesetzlicher Vorgaben kennen und einhalten – von Datenschutz bis Urheberrecht.</div>
+
+    <div class="card">
+      <div class="card-label label-def">1. BDSG</div>
+      <h3>Bundesdatenschutzgesetz (BDSG)</h3>
+      <p>Regelt den Umgang mit <strong>personenbezogenen Daten</strong>, die von Unternehmen und öffentlichen Stellen in Deutschland verarbeitet werden. IT-Dienstleister müssen die Prinzipien der <strong>Datenminimierung und Zweckbindung</strong> einhalten.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-label label-def">2. LDSG</div>
+      <h3>Landesdatenschutzgesetz (LDSG)</h3>
+      <p>Datenschutzgesetze der einzelnen <strong>Bundesländer</strong>, die den Datenschutz auf Landesebene regeln. Ergänzen das BDSG. IT-Dienstleister müssen auch diese Vorschriften beachten.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-label label-warn">3. DSGVO</div>
+      <h3>EU-Datenschutz-Grundverordnung (DSGVO)</h3>
+      <p>Europaweite Regelung mit <strong>Vorrang vor nationalen Gesetzen</strong>. Gilt für alle, die in der EU tätig sind oder Dienstleistungen für EU-Bürger anbieten. Stellt strenge Anforderungen an Sammlung, Speicherung und Verarbeitung personenbezogener Daten.</p>
+      <ul class="lz" style="margin-top:.75rem;">
+        <li>Bereitstellung angemessener Datenschutzerklärungen</li>
+        <li>Einholung gültiger Einwilligungen</li>
+        <li>Recht auf Auskunft, Berichtigung und Löschung</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-label label-warn">4. DSGVO – Auftragsverarbeitung (AVV)</div>
+      <h3>Auftragsverarbeitungsvertrag (AVV) – Art. 28 DSGVO</h3>
+      <p>Wenn ein Dienstleister personenbezogene Daten im Auftrag eines Unternehmens verarbeitet, ist eine <strong>Vereinbarung zur Auftragsverarbeitung (AVV) Pflicht</strong>. Sie muss enthalten:</p>
+      <ul class="lz" style="margin-top:.75rem;">
+        <li>Gegenstand und Dauer der Verarbeitung</li>
+        <li>Art und Zweck der Verarbeitung</li>
+        <li>Art der personenbezogenen Daten und Kategorien von Betroffenen</li>
+        <li>Subunternehmer (weitere Auftragsverarbeiter)</li>
+        <li>Haftung und Schadensersatz</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-label label-def">5. Urheberrechtsgesetz</div>
+      <h3>Urheberrecht</h3>
+      <p>Schützt die Rechte von Autoren an ihren Werken. IT-Dienstleister müssen sicherstellen, dass sie <strong>keine urheberrechtlich geschützten Materialien</strong> ohne Lizenz oder Erlaubnis verwenden. Dies gilt für Software, Grafiken, Texte und andere Inhalte.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-label label-def">6. Informationspflicht</div>
+      <h3>Impressum & Datenschutzerklärung</h3>
+      <p>Unternehmen in Deutschland sind gesetzlich verpflichtet, auf ihrer Website ein <strong>Impressum</strong> mit Name, Adresse und Vertretungsberechtigtem zu veröffentlichen. Bei Erfassung personenbezogener Daten muss der Nutzer <strong>transparent informiert</strong> werden:</p>
+      <ul class="lz" style="margin-top:.75rem;">
+        <li>Welche Daten werden erfasst?</li>
+        <li>Zu welchem Zweck?</li>
+        <li>Wie lange werden sie gespeichert?</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-label label-tip">Merke</div>
+      <h3>Governance & Compliance</h3>
+      <div class="callout amber">
+        <p><strong>Governance</strong> bezeichnet den Rahmen von Richtlinien, Prozessen und Kontrollen, mit dem ein Unternehmen sicherstellt, dass IT-Systeme die Unternehmensziele unterstützen und Risiken kontrolliert werden.</p>
+      </div>
+      <div class="callout red">
+        <p><strong>Wachsende Risiken</strong> (Cyberangriffe, Datenverluste, Compliance-Verstöße) erhöhen den Druck auf IT-Dienstleister, Governance-Strukturen und rechtliche Anforderungen konsequent umzusetzen – und fließen direkt in SLA-Gestaltung und IT-Standards ein.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div class="section" id="sec-quiz">
+    <div class="section-title">Testfragen</div>
+    <div class="section-lead">Überprüfe dein Wissen – klicke auf eine Antwort, um die Auflösung zu sehen.</div>
+
+    <div class="quiz-header">
+      <span class="ql">Richtig beantwortet</span>
+      <span class="qv" id="score-display">0 / 15</span>
+    </div>
+
+    <div id="quiz-container"></div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+const tabs = {
+  'sla-grundlagen': 'sec-sla-grundlagen',
+  'sla-kpis': 'sec-sla-kpis',
+  'service-levels': 'sec-service-levels',
+  'standards': 'sec-standards',
+  'itil': 'sec-itil',
+  'rechtliches': 'sec-rechtliches',
+  'quiz': 'sec-quiz'
+};
+
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(tabs[id]).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+const questions = [
+  {
+    q: "Was ist der Hauptzweck eines Service Level Agreements (SLA)?",
+    opts: [
+      "Einen Arbeitsvertrag zwischen IT-Mitarbeitern zu regeln",
+      "Qualität, Verfügbarkeit und Verantwortlichkeiten einer Dienstleistung verbindlich festzulegen",
+      "Die technische Konfiguration von IT-Systemen zu dokumentieren",
+      "Den Preis einer IT-Dienstleistung zu bestimmen"
+    ],
+    correct: 1,
+    explain: "Ein SLA ist ein formalisiertes Abkommen zwischen Dienstleister und Kunde, das die Art und Qualität der Dienstleistung definiert und die Maßstäbe festlegt, an denen der Service gemessen wird."
+  },
+  {
+    q: "Ein SLA garantiert 99,7 % Verfügbarkeit pro Jahr (8.760 h). Wie viele Stunden Ausfall sind maximal erlaubt?",
+    opts: ["8,76 Stunden", "26,28 Stunden", "52,6 Minuten", "87,6 Stunden"],
+    correct: 1,
+    explain: "8.760 h × 0,3 % = 26,28 Stunden. Bei 99,7 % Verfügbarkeit sind maximal 26,28 Stunden Ausfall pro Jahr zulässig."
+  },
+  {
+    q: "Ein Datei-Server hatte in einem Jahr 12 h + 7 h = 19 h Ausfall. Das SLA garantiert 99,7 % Verfügbarkeit. Was gilt?",
+    opts: [
+      "SLA verletzt – 19 h übersteigen den erlaubten Wert",
+      "SLA eingehalten – 19 h liegen unter den erlaubten 26,28 h",
+      "SLA verletzt – jeder einzelne Ausfall über 8 h verletzt das SLA",
+      "Kann nicht beurteilt werden ohne die Reaktionszeit zu kennen"
+    ],
+    correct: 1,
+    explain: "Bei 99,7 % sind 26,28 h/Jahr erlaubt. Mit 19 h Gesamtausfall wurde das SLA eingehalten. Separat zu prüfen: ob Reaktionszeit (≤ 2 h) und Lösungszeit (≤ 8 h) eingehalten wurden."
+  },
+  {
+    q: "Was ist der Unterschied zwischen Reaktionszeit und Lösungszeit im SLA?",
+    opts: [
+      "Reaktionszeit ist die Zeit bis zur Behebung, Lösungszeit die Zeit bis zur ersten Reaktion",
+      "Reaktionszeit ist die Zeit bis zur ersten Reaktion auf eine Störung, Lösungszeit die Zeit bis zur vollständigen Behebung",
+      "Beide Begriffe bedeuten dasselbe",
+      "Reaktionszeit gilt nur für Prio-1-Störungen, Lösungszeit für alle"
+    ],
+    correct: 1,
+    explain: "Reaktionszeit = Zeit bis zur ersten Reaktion (z.B. Rückmeldung). Lösungszeit = Zeit bis zur vollständigen Behebung des Problems. Beide werden separat im SLA festgelegt."
+  },
+  {
+    q: "Warum nehmen IT-Dienstleister die Lösungszeit ungern in ein SLA auf?",
+    opts: [
+      "Weil Lösungszeiten gesetzlich nicht messbar sind",
+      "Weil die Lösungszeit von unkontrollierbaren Faktoren abhängt und bei Nichteinhaltung Pönalen drohen",
+      "Weil Lösungszeiten nur intern relevant sind",
+      "Weil Kunden diese KPI nicht verstehen"
+    ],
+    correct: 1,
+    explain: "Die Lösungszeit hängt von vielen Faktoren ab, die der Dienstleister nicht vollständig kontrollieren kann (Komplexität, Ersatzteile, externe Abhängigkeiten). Bei Nichteinhaltung drohen Pönalen – selbst bei maximalem Einsatz."
+  },
+  {
+    q: "Was bedeutet MTBF?",
+    opts: [
+      "Maximum Time Between Failures – maximale Zeit zwischen zwei Ausfällen",
+      "Mean Time Before Fix – Durchschnittszeit vor der Reparatur",
+      "Mean Time Between Failures – durchschnittliche Zeit zwischen zwei Ausfällen",
+      "Minimum Time Between Failures – Mindestzeit zwischen Ausfällen"
+    ],
+    correct: 2,
+    explain: "MTBF = Mean Time Between Failures. Je höher der Wert, desto zuverlässiger das System. Er beeinflusst direkt die Verfügbarkeits-KPI im SLA."
+  },
+  {
+    q: "In welchem Service Level wird ein Kunde mit FAQ-Bereichen und Tutorials selbst zur Lösung geführt?",
+    opts: ["Level 1 – Service Desk", "Level 0 – Self Service", "Level 2 – Specialized Support", "Level 3 – Expert Support"],
+    correct: 1,
+    explain: "Level 0 ist der Self-Service. Dem Kunden stehen FAQ-Bereiche, Anleitungen und automatisierte Hilfsmittel zur Verfügung, ohne direkte Interaktion mit dem Servicepersonal."
+  },
+  {
+    q: "An wen wird ein Problem weitergeleitet, das Level 2 nicht lösen kann?",
+    opts: ["Level 0 – Self Service", "Level 1 – Service Desk", "Level 3 – Expert Support", "Direkt an den Kunden zurück"],
+    correct: 2,
+    explain: "Level 3 (Expert Support) übernimmt hochspezialisierte Probleme, die Level 2 übersteigen. Die Experten haben tiefgreifendes Produktwissen und entwickeln bei Bedarf maßgeschneiderte Lösungen."
+  },
+  {
+    q: "Was unterscheidet ITIL von ISO/IEC 20000?",
+    opts: [
+      "ITIL ist verbindlich und zertifizierbar, ISO 20000 ist nur ein Leitfaden",
+      "ITIL ist ein freiwilliges Best-Practice-Rahmenwerk, ISO 20000 ist eine zertifizierbare Norm",
+      "Beide sind identisch, nur der Name unterscheidet sich",
+      "ISO 20000 gilt nur in Europa, ITIL weltweit"
+    ],
+    correct: 1,
+    explain: "ITIL ist ein freiwilliges Best-Practice-Rahmenwerk ohne Zertifizierungspflicht. ISO/IEC 20000 ist eine internationale Norm mit definierten Mindestanforderungen, nach der sich Unternehmen zertifizieren lassen können."
+  },
+  {
+    q: "Für welche Unternehmensgrößen ist FitSM besonders geeignet?",
+    opts: [
+      "Nur für Großunternehmen mit mehr als 500 Mitarbeitern",
+      "Für Finanzinstitutionen und Banken",
+      "Besonders für kleine und mittlere Unternehmen (KMU)",
+      "Nur für staatliche Organisationen"
+    ],
+    correct: 2,
+    explain: "FitSM ist ein leichtgewichtiger ITSM-Standard, der sich durch Einfachheit und Pragmatismus auszeichnet. Er wurde speziell für KMU entwickelt, die einen zugänglichen ITSM-Rahmen ohne großen Overhead benötigen."
+  },
+  {
+    q: "Wofür steht COBIT?",
+    opts: [
+      "Centralized Operations Base for IT",
+      "Control Objectives for Information and Related Technology",
+      "Common Operations and Business Intelligence Tools",
+      "Certificate of Best IT Practices"
+    ],
+    correct: 1,
+    explain: "COBIT = Control Objectives for Information and Related Technology. Es ist ein Governance-Rahmenwerk mit Fokus auf IT-Governance, Compliance und Risikomanagement – besonders im Finanzsektor eingesetzt."
+  },
+  {
+    q: "Was ist der Unterschied zwischen einem Incident und einem Problem (ITIL)?",
+    opts: [
+      "Kein Unterschied, beide Begriffe sind synonym",
+      "Incident ist eine geplante Wartung, Problem ein ungeplanter Ausfall",
+      "Incident ist eine ungeplante Unterbrechung (Ziel: Wiederherstellung), Problem ist die unbekannte Ursache (Ziel: Beseitigung)",
+      "Problem ist schwerwiegender als ein Incident und löst automatisch einen SLA-Bruch aus"
+    ],
+    correct: 2,
+    explain: "Incident = ungeplante Unterbrechung, Ziel ist schnelle Wiederherstellung. Problem = unbekannte Ursache hinter einem oder mehreren Incidents, Ziel ist dauerhafte Beseitigung der Ursache (Root Cause Analysis)."
+  },
+  {
+    q: "Wann ist ein Auftragsverarbeitungsvertrag (AVV) nach DSGVO Art. 28 verpflichtend?",
+    opts: [
+      "Bei jedem IT-Dienstleistungsvertrag über 10.000 €",
+      "Wenn ein Dienstleister personenbezogene Daten im Auftrag eines Unternehmens verarbeitet",
+      "Nur bei Cloud-Diensten außerhalb der EU",
+      "Nur wenn der Dienstleister mehr als 50 Mitarbeiter hat"
+    ],
+    correct: 1,
+    explain: "Laut Art. 28 DSGVO ist ein AVV (Auftragsverarbeitungsvertrag) immer dann Pflicht, wenn ein Dienstleister personenbezogene Daten im Auftrag des Unternehmens verarbeitet – unabhängig von Unternehmensgröße oder Vertragssumme."
+  },
+  {
+    q: "Welche der folgenden Angaben muss laut Impressumspflicht auf einer deutschen Unternehmenswebsite stehen?",
+    opts: [
+      "Umsatzzahlen und Mitarbeiterzahl",
+      "Name und Adresse des Unternehmens sowie der Vertreter",
+      "Alle Kundenverträge in öffentlich zugänglicher Form",
+      "Passwörter und Zugangsdaten für Behörden"
+    ],
+    correct: 1,
+    explain: "Das Impressum muss u.a. Name und Adresse des Unternehmens sowie den Vertretungsberechtigten enthalten. Diese Informationspflicht ist gesetzlich verankert und gilt für alle in Deutschland geschäftlich tätigen Websitebetreiber."
+  },
+  {
+    q: "Welcher ITIL-Bereich befasst sich mit dem täglichen Betrieb von IT-Services, inklusive Incident- und Problem-Management?",
+    opts: ["Service-Strategie", "Service-Design", "Service-Transition", "Service-Betrieb"],
+    correct: 3,
+    explain: "Der Service-Betrieb (Service Operation) umfasst den täglichen Betrieb und beinhaltet Prozesse wie Incident-Management, Problem-Management, Ereignismanagement und Zugriffsmanagement."
+  }
+];
+
+let scores = new Array(questions.length).fill(null);
+
+function buildQuiz() {
+  const container = document.getElementById('quiz-container');
+  questions.forEach((q, qi) => {
+    const div = document.createElement('div');
+    div.className = 'q-card';
+    div.innerHTML = `
+      <div class="q-num">FRAGE ${qi + 1} VON ${questions.length}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-opts" id="opts-${qi}">
+        ${q.opts.map((o, oi) => `
+          <button class="q-opt" onclick="answer(${qi}, ${oi})" id="opt-${qi}-${oi}">
+            <span class="ol">${String.fromCharCode(65 + oi)}</span>
+            <span>${o}</span>
+          </button>`).join('')}
+      </div>
+      <div class="q-explain" id="exp-${qi}"><strong>Erklärung:</strong> ${q.explain}</div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function answer(qi, oi) {
+  const opts = document.querySelectorAll(`#opts-${qi} .q-opt`);
+  if ([...opts].some(o => o.disabled)) return;
+  opts.forEach((o, i) => {
+    o.disabled = true;
+    if (i === questions[qi].correct) o.classList.add('correct');
+    else if (i === oi && oi !== questions[qi].correct) o.classList.add('wrong');
+  });
+  if (scores[qi] === null) {
+    scores[qi] = oi === questions[qi].correct ? 1 : 0;
+    const right = scores.filter(v => v === 1).length;
+    const answered = scores.filter(v => v !== null).length;
+    document.getElementById('score-display').textContent = `${right} / ${questions.length}`;
+  }
+  document.getElementById(`exp-${qi}`).classList.add('show');
+}
+
+buildQuiz();
+</script>
+</body>
+</html>
