@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lernzettel – Datenbanken, SQL & GUI</title>
+<style>
+:root{
+  --bg:#0f1117;--bg2:#181c27;--bg3:#1e2332;--bg4:#242840;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);
+  --text:#e8eaf0;--text2:#9aa0b8;--text3:#6b7290;
+  --accent:#5b8df6;--accent2:#3d6de0;
+  --green:#3ecf8e;--amber:#f5a623;--red:#f06565;
+  --purple:#a78bfa;--teal:#38c9c0;--pink:#f472b6;
+  --r:10px;--rs:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.78}
+.shell{max-width:940px;margin:0 auto;padding:2rem 1.5rem 5rem}
+header{padding:2.5rem 0 1.8rem;border-bottom:1px solid var(--border);margin-bottom:1.5rem}
+header h1{font-size:27px;font-weight:700;color:#fff;letter-spacing:-.4px}
+header p{color:var(--text2);font-size:13px;margin-top:.4rem}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:2rem;position:sticky;top:0;z-index:10;background:var(--bg);padding:.5rem 0;border-bottom:1px solid var(--border)}
+.tab{font-size:12px;font-weight:500;padding:5px 14px;border-radius:20px;border:1px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;transition:all .15s;user-select:none}
+.tab:hover{color:var(--text);border-color:var(--accent)}
+.tab.active{background:var(--accent2);border-color:var(--accent);color:#fff}
+.section{display:none}
+.section.active{display:block;animation:fade .2s ease}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+h2{font-size:21px;font-weight:700;color:#fff;margin:2rem 0 1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+h2:first-child{margin-top:0}
+h3{font-size:11px;font-weight:700;color:var(--accent);margin:1.6rem 0 .5rem;text-transform:uppercase;letter-spacing:.8px}
+h4{font-size:14px;font-weight:600;color:var(--text);margin:1rem 0 .3rem}
+p{margin:.3rem 0 .6rem;color:var(--text2)}
+ul,ol{padding-left:1.4rem;color:var(--text2)}
+li{margin:.28rem 0}
+b,strong{color:var(--text);font-weight:600}
+hr{border:none;border-top:1px solid var(--border);margin:1.5rem 0}
+
+code{font-family:'Cascadia Code','Fira Code',Consolas,monospace;font-size:12.5px;background:rgba(91,141,246,.13);color:#93b8fb;padding:1px 6px;border-radius:4px}
+pre{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.2rem;margin:.75rem 0 1rem;overflow-x:auto}
+pre code{background:none;padding:0;font-size:13px;color:#c9d4ff;line-height:1.65}
+.kw{color:#7dd3fc}.fn{color:#a78bfa}.str{color:#86efac}.cmt{color:#4b5563;font-style:italic}.num{color:#fde68a}.op{color:#f9a8d4}
+
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.25rem;margin:.75rem 0}
+.card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:.5rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:.75rem 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:.75rem 0}
+@media(max-width:640px){.grid2,.grid3{grid-template-columns:1fr}}
+
+.badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:12px;margin-left:5px;vertical-align:middle}
+.b-blue{background:rgba(91,141,246,.18);color:#93b8fb}
+.b-green{background:rgba(62,207,142,.15);color:#3ecf8e}
+.b-amber{background:rgba(245,166,35,.15);color:#f5a623}
+.b-red{background:rgba(240,101,101,.15);color:#f06565}
+.b-purple{background:rgba(167,139,250,.15);color:#a78bfa}
+.b-teal{background:rgba(56,201,192,.15);color:#38c9c0}
+
+.tip{background:rgba(91,141,246,.08);border-left:3px solid var(--accent);border-radius:0 var(--rs) var(--rs) 0;padding:.65rem 1rem;margin:.75rem 0;font-size:13.5px;color:var(--text2)}
+.warn{background:rgba(245,166,35,.08);border-left:3px solid var(--amber);border-radius:0 var(--rs) var(--rs) 0;padding:.65rem 1rem;margin:.75rem 0;font-size:13.5px;color:var(--text2)}
+.ok{background:rgba(62,207,142,.08);border-left:3px solid var(--green);border-radius:0 var(--rs) var(--rs) 0;padding:.65rem 1rem;margin:.75rem 0;font-size:13.5px;color:var(--text2)}
+.danger{background:rgba(240,101,101,.08);border-left:3px solid var(--red);border-radius:0 var(--rs) var(--rs) 0;padding:.65rem 1rem;margin:.75rem 0;font-size:13.5px;color:var(--text2)}
+
+table{width:100%;border-collapse:collapse;font-size:13px;margin:.75rem 0 1rem}
+th{background:var(--bg3);color:var(--text);font-weight:600;text-align:left;padding:8px 12px;border:1px solid var(--border)}
+td{padding:7px 12px;border:1px solid var(--border);color:var(--text2);vertical-align:top}
+tr:hover td{background:rgba(255,255,255,.018)}
+
+.sg{border-radius:var(--r);padding:.9rem 1.1rem;margin:.5rem 0;border:1px solid transparent}
+.sg-dql{background:rgba(91,141,246,.07);border-color:rgba(91,141,246,.22)}
+.sg-dml{background:rgba(62,207,142,.07);border-color:rgba(62,207,142,.22)}
+.sg-ddl{background:rgba(245,166,35,.07);border-color:rgba(245,166,35,.22)}
+.sg-dcl{background:rgba(167,139,250,.07);border-color:rgba(167,139,250,.22)}
+.sg-tcl{background:rgba(56,201,192,.07);border-color:rgba(56,201,192,.22)}
+.sg-title{font-weight:700;font-size:13px;margin-bottom:.4rem}
+.sg-dql .sg-title{color:var(--accent)}.sg-dml .sg-title{color:var(--green)}
+.sg-ddl .sg-title{color:var(--amber)}.sg-dcl .sg-title{color:var(--purple)}.sg-tcl .sg-title{color:var(--teal)}
+
+.er-wrap{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:1rem 0;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:1.2rem}
+.er-entity{background:var(--bg2);border:2px solid var(--accent);border-radius:var(--rs);padding:.5rem .9rem;font-weight:700;font-size:13px;color:#fff;text-align:center;min-width:100px}
+.er-attrs{font-size:10px;color:var(--text3);font-weight:400;margin-top:.2rem}
+.er-rel{background:var(--bg2);border:2px solid var(--amber);padding:.35rem .7rem;font-size:12px;color:var(--amber);font-weight:700;white-space:nowrap;border-radius:4px}
+.er-arr{color:var(--text3);font-size:16px;font-weight:300}
+
+/* ── QUIZ STYLES ── */
+.quiz-section{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:1.25rem;margin:1.5rem 0}
+.quiz-section-title{font-size:13px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.6px;margin-bottom:1rem}
+.quiz-q{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.1rem;margin:.65rem 0;transition:border-color .2s}
+.quiz-q.answered-correct{border-color:rgba(62,207,142,.4)}
+.quiz-q.answered-wrong{border-color:rgba(240,101,101,.4)}
+.qnum{font-size:11px;color:var(--text3);font-weight:600;margin-bottom:.3rem}
+.qtext{font-weight:500;color:var(--text);margin-bottom:.7rem;font-size:14px}
+.ans-row{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:.4rem}
+.ans-btn{font-size:13px;padding:6px 16px;border-radius:8px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);cursor:pointer;transition:all .15s;text-align:left;line-height:1.4}
+.ans-btn:hover:not(:disabled){border-color:var(--accent);color:var(--text);background:rgba(91,141,246,.1)}
+.ans-btn.sel-correct{background:rgba(62,207,142,.18);border-color:var(--green);color:var(--green);font-weight:600;cursor:default}
+.ans-btn.sel-wrong{background:rgba(240,101,101,.18);border-color:var(--red);color:var(--red);font-weight:600;cursor:default}
+.ans-btn.hint-correct{background:rgba(62,207,142,.08);border-color:rgba(62,207,142,.35);color:rgba(62,207,142,.8);cursor:default}
+.ans-btn.locked{cursor:default;opacity:.55}
+.quiz-fb{font-size:13px;padding:.55rem .8rem;border-radius:var(--rs);margin-top:.5rem;display:none;line-height:1.5}
+.quiz-fb.show-ok{display:block;background:rgba(62,207,142,.08);color:#6fefb8;border:1px solid rgba(62,207,142,.15)}
+.quiz-fb.show-fail{display:block;background:rgba(240,101,101,.08);color:#f5a3a3;border:1px solid rgba(240,101,101,.15)}
+.reset-btn{font-size:11px;padding:4px 11px;border-radius:12px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;margin-top:.6rem;transition:all .15s;display:none}
+.reset-btn:hover{color:var(--text2);border-color:var(--text3)}
+.quiz-score{font-size:13px;color:var(--text2);margin-top:.75rem;padding:.5rem .75rem;background:var(--bg);border-radius:var(--rs);border:1px solid var(--border);display:none}
+.quiz-score.show{display:block}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<header>
+  <h1>📚 Lernzettel — Datenbanken, SQL &amp; GUI</h1>
+  <p>Klausurvorbereitung · IHK-Themen · 8 Themenblöcke mit interaktiven Mini-Quizzen</p>
+</header>
+
+<div class="tabs" id="tabs">
+  <div class="tab active" onclick="show('gui')">1 · GUI</div>
+  <div class="tab" onclick="show('cli')">2 · CLI vs GUI</div>
+  <div class="tab" onclick="show('sqlg')">3 · SQL-Gruppen</div>
+  <div class="tab" onclick="show('er')">4 · ER-Modell</div>
+  <div class="tab" onclick="show('sel')">5 · SELECT</div>
+  <div class="tab" onclick="show('agg')">6 · Aggregatfunktionen</div>
+  <div class="tab" onclick="show('join')">7 · JOINs</div>
+  <div class="tab" onclick="show('kcheck')">8 · Kompetenzcheck</div>
+</div>
+
+<!-- ══════════════════════════════════════════════ 1: GUI ══ -->
+<div class="section active" id="gui">
+  <h2>1 · GUI – Grafische Benutzeroberfläche</h2>
+
+  <h3>Definition</h3>
+  <p>Eine <b>GUI (Graphical User Interface)</b> erlaubt Benutzern die Interaktion mit einem Programm über <b>grafische Elemente</b> – Fenster, Schaltflächen, Menüs, Icons – ohne Textbefehle eintippen zu müssen.</p>
+
+  <h3>GUI-Komponenten</h3>
+  <div class="grid3">
+    <div class="card">
+      <div class="card-title">🖊 Eingabe-Elemente</div>
+      <ul>
+        <li><b>Textfeld (Input)</b> – einzeilige Texteingabe</li>
+        <li><b>Passwortfeld</b> – verdeckte Eingabe</li>
+        <li><b>Textarea</b> – mehrzeilige Eingabe</li>
+        <li><b>Checkbox</b> – Mehrfachauswahl (✓/✗)</li>
+        <li><b>Radio-Button</b> – Einfachauswahl</li>
+        <li><b>Dropdown/Combobox</b> – Auswahlliste</li>
+        <li><b>Slider</b> – Wertebereich wählen</li>
+        <li><b>Datei-Dialog</b> – Dateien öffnen/speichern</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">👁 Anzeige-Elemente</div>
+      <ul>
+        <li><b>Label / Text</b> – statische Beschriftung</li>
+        <li><b>Bild / Icon</b> – visuelle Darstellung</li>
+        <li><b>Tabelle</b> – strukturierte Daten</li>
+        <li><b>Liste / Listbox</b> – scrollbare Auswahl</li>
+        <li><b>Fortschrittsbalken</b> – Ladefortschritt</li>
+        <li><b>Statusbar</b> – Zustandsinfo unten</li>
+        <li><b>Tooltip</b> – Mouseover-Hilfe</li>
+        <li><b>Messagebox / Dialog</b> – Meldungen</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">🗂 Container &amp; Navigation</div>
+      <ul>
+        <li><b>Fenster (Window)</b> – Hauptcontainer</li>
+        <li><b>Panel / Frame</b> – Gruppencontainer</li>
+        <li><b>Dialog / Modal</b> – Unterfenster</li>
+        <li><b>Tab-Reiter</b> – mehrere Ansichten</li>
+        <li><b>Menüleiste</b> – Datei, Bearbeiten…</li>
+        <li><b>Toolbar</b> – Schnellzugriff-Buttons</li>
+        <li><b>Scrollbar</b> – scrollen in Inhalten</li>
+        <li><b>Splitter</b> – Bereich aufteilen</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Grundprinzipien der GUI-Programmierung</h3>
+  <div class="card">
+    <div class="card-title">① Ereignisgesteuerte Programmierung (Event-Driven)</div>
+    <p>Das Programm wartet auf <b>Ereignisse (Events)</b>: Mausklick, Tastendruck, Maus-Hover, Fensterschließen. Für jedes Ereignis wird ein <b>Event-Handler / Listener / Callback</b> registriert. Das Programm "schläft" zwischen Events und reaktiviert sich nur beim Eintreten eines Events.</p>
+    <p>Typische Events: <code>onClick</code> · <code>onKeyPress</code> · <code>onMouseEnter</code> · <code>onWindowClose</code> · <code>onValueChanged</code></p>
+  </div>
+  <div class="card">
+    <div class="card-title">② Komponentenbasierter Aufbau (Widget-Hierarchie)</div>
+    <p>Eine GUI wird aus <b>einzelnen Komponenten (Widgets)</b> zusammengesetzt. Diese sind <b>hierarchisch</b> angeordnet: Das Hauptfenster enthält Panels, die wiederum Buttons und Labels enthalten. Jede Komponente hat Eigenschaften (Größe, Farbe, Text) und kann auf Events reagieren.</p>
+  </div>
+  <div class="card">
+    <div class="card-title">③ Hauptschleife (Event Loop / Main Loop)</div>
+    <p>Nach dem Aufbau der GUI startet eine <b>Endlosschleife</b>. Diese läuft, solange das Fenster offen ist, wartet auf Events vom Betriebssystem und delegiert sie an die Handler. Ohne diese Schleife würde das Programm sofort beenden.</p>
+  </div>
+  <div class="card">
+    <div class="card-title">④ Layout-Management</div>
+    <p>Komponenten werden durch <b>Layout-Manager</b> angeordnet, nicht durch feste Pixelkoordinaten (die wären nicht skalierbar). Gängige Layouts: <b>Flow-Layout</b> (nebeneinander), <b>Grid-Layout</b> (Raster), <b>Border-Layout</b> (Rand + Mitte), <b>Box-Layout</b> (vertikal/horizontal).</p>
+  </div>
+  <div class="card">
+    <div class="card-title">⑤ MVC-Muster (Model – View – Controller)</div>
+    <p><b>Model</b> – Daten und Geschäftslogik (kein GUI-Code)<br>
+    <b>View</b> – Darstellung der Daten (GUI-Komponenten)<br>
+    <b>Controller</b> – Verarbeitet Nutzereingaben, verbindet Model und View<br>
+    Vorteil: Änderungen an der GUI erfordern keine Änderungen an der Logik.</p>
+  </div>
+
+  <h3>Pseudocode-Beispiel: Login-GUI</h3>
+  <pre><code><span class="cmt">// 1. Fenster erstellen</span>
+fenster = neuesFenster(titel="Login", breite=400, hoehe=250)
+
+<span class="cmt">// 2. Komponenten erstellen</span>
+lbl_user     = neuesLabel(text="Benutzername:")
+eingabe_user = neuesTextfeld(breite=200)
+lbl_pw       = neuesLabel(text="Passwort:")
+eingabe_pw   = neuesPasswortfeld(breite=200)
+btn_login    = neueSchaltfläche(text="Anmelden")
+lbl_status   = neuesLabel(text="", farbe=ROT)
+
+<span class="cmt">// 3. Layout / Anordnung</span>
+panel = neuesGridPanel(spalten=2)
+panel.add(lbl_user, eingabe_user)
+panel.add(lbl_pw,   eingabe_pw)
+panel.add(btn_login, lbl_status)
+fenster.add(panel)
+
+<span class="cmt">// 4. Event-Handler registrieren</span>
+btn_login.beiKlick(funktion() {
+    user = eingabe_user.getText()
+    pw   = eingabe_pw.getText()
+    wenn (user == "admin" UND pw == "1234") dann {
+        lbl_status.setText("✓ Erfolgreich!")
+        lbl_status.setFarbe(GRÜN)
+        öffneHauptfenster()
+    } sonst {
+        lbl_status.setText("✗ Falsche Zugangsdaten")
+    }
+})
+fenster.beiSchließen(funktion() { programm.beenden() })
+
+<span class="cmt">// 5. Hauptschleife starten</span>
+fenster.anzeigen()
+fenster.starteEventLoop()  <span class="cmt">// Läuft bis Fenster geschlossen wird</span></code></pre>
+
+  <h3>Ablauf: Was passiert bei einem Button-Klick?</h3>
+  <div class="card">
+    <p style="font-size:13.5px">
+      <b>① Nutzer klickt</b> → <b style="color:var(--accent)">② OS meldet Event</b> → <b style="color:var(--purple)">③ Event-Loop empfängt</b> → <b style="color:var(--green)">④ Handler aufgerufen</b> → <b style="color:var(--amber)">⑤ GUI aktualisiert (Repaint)</b>
+    </p>
+  </div>
+  <div class="tip">💡 <b>Klausur-Hinweis:</b> Kein bibliotheksspezifischer Code nötig – kein <code>import tkinter</code>, <code>JFrame</code> etc. Nur das <b>Prinzip</b> verstehen: Komponenten → Events → Handler → Loop!</div>
+
+  <div class="quiz-section">
+    <div class="quiz-section-title">🧠 Mini-Quiz: GUI</div>
+    <div id="q-gui"></div>
+    <div class="quiz-score" id="s-gui"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ 2: CLI ══ -->
+<div class="section" id="cli">
+  <h2>2 · Kommandozeile (CLI) vs. GUI</h2>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">🖥 CLI – Command Line Interface</div>
+      <p>Textbasierte Oberfläche. Nutzer tippt <b>Textbefehle</b>, System antwortet mit Text. Keine Maus erforderlich.</p>
+      <p><b>Beispiele:</b> Windows CMD, PowerShell, Bash, Terminal, SQL-Shell</p>
+    </div>
+    <div class="card">
+      <div class="card-title">🖱 GUI – Graphical User Interface</div>
+      <p>Grafische Oberfläche mit <b>Fenstern, Icons, Menüs und Maus</b>. Kein Auswendiglernen von Befehlen nötig.</p>
+      <p><b>Beispiele:</b> Windows Explorer, macOS Finder, alle Desktop-Anwendungen</p>
+    </div>
+  </div>
+
+  <h3>Vergleichstabelle</h3>
+  <table>
+    <tr><th>Kriterium</th><th>CLI</th><th>GUI</th></tr>
+    <tr><td><b>Bedienung</b></td><td>Texteingabe – Befehle auswendig lernen</td><td>Maus + Tastatur – intuitiv, selbsterklärend</td></tr>
+    <tr><td><b>Lernkurve</b></td><td>Steil – erfordert Wissen über Befehle/Syntax</td><td>Flach – visuelles Erkunden möglich</td></tr>
+    <tr><td><b>Geschwindigkeit (Experte)</b></td><td>Sehr schnell – ein Befehl macht viel</td><td>Langsamer – viele Klicks nötig</td></tr>
+    <tr><td><b>Geschwindigkeit (Anfänger)</b></td><td>Langsam – Befehle nachschlagen</td><td>Schnell – selbsterklärend</td></tr>
+    <tr><td><b>Automatisierung</b></td><td>Hervorragend – Skripte, Batch, Cronjobs</td><td>Schwierig bis kaum möglich</td></tr>
+    <tr><td><b>Ressourcenverbrauch</b></td><td>Sehr gering – ideal für Server ohne Monitor</td><td>Höher – braucht GPU, mehr RAM</td></tr>
+    <tr><td><b>Fernzugriff</b></td><td>Einfach über SSH (wenig Bandbreite)</td><td>Aufwändiger: RDP, VNC (hohe Bandbreite)</td></tr>
+    <tr><td><b>Fehleranfälligkeit</b></td><td>Tippfehler → gefährliche Aktionen möglich</td><td>Fehlklicks leichter erkennbar/rückgängig</td></tr>
+    <tr><td><b>Reproduzierbarkeit</b></td><td>Exakt reproduzierbar – gleiche Befehle, gleiche Ergebnisse</td><td>Schwer exakt zu reproduzieren</td></tr>
+    <tr><td><b>Zielgruppe</b></td><td>Admins, Entwickler, Power-User</td><td>Allgemeine Nutzer, Einsteiger</td></tr>
+  </table>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title" style="color:var(--green)">✅ CLI-Vorteile</div>
+      <ul>
+        <li>Automatisierbar (Skripte, Batch, Cronjob)</li>
+        <li>Ressourcensparend – ideal für Server</li>
+        <li>Fernzugriff per SSH (wenig Bandbreite)</li>
+        <li>Präzise und reproduzierbar</li>
+        <li>Skripte versionierbar (z.B. Git)</li>
+        <li>Funktioniert ohne grafische Ausgabe</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--green)">✅ GUI-Vorteile</div>
+      <ul>
+        <li>Keine Vorkenntnisse nötig (Discoverability)</li>
+        <li>Direktes visuelles Feedback</li>
+        <li>Weniger Fehlerquellen</li>
+        <li>Komplexe Daten visuell (Diagramme, Bilder)</li>
+        <li>WYSIWYG-Editing möglich</li>
+        <li>Zugänglichkeit (Screenreader etc.)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tip">💡 <b>Faustregel:</b> <b>Server &amp; Admins → CLI</b> | <b>Endnutzer &amp; Desktop → GUI</b> | <b>Entwickler → beide je nach Aufgabe</b></div>
+
+  <div class="quiz-section">
+    <div class="quiz-section-title">🧠 Mini-Quiz: CLI vs. GUI</div>
+    <div id="q-cli"></div>
+    <div class="quiz-score" id="s-cli"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ 3: SQL-GRUPPEN ══ -->
+<div class="section" id="sqlg">
+  <h2>3 · SQL-Befehlsgruppen</h2>
+  <p>SQL-Befehle werden in <b>5 Hauptgruppen</b> eingeteilt. <span class="badge b-red">DKL gibt es NICHT!</span></p>
+
+  <div class="sg sg-dql">
+    <div class="sg-title">DQL – Data Query Language <span class="badge b-blue">Abfragen</span></div>
+    <p><b>Zweck:</b> Daten lesen und abfragen. Verändert <b>keine</b> Daten!</p>
+    <p><b>Befehl:</b> <code>SELECT</code></p>
+    <pre><code><span class="kw">SELECT</span> Name, Gehalt <span class="kw">FROM</span> Mitarbeiter <span class="kw">WHERE</span> Abteilung = <span class="str">'IT'</span>;</code></pre>
+  </div>
+
+  <div class="sg sg-dml">
+    <div class="sg-title">DML – Data Manipulation Language <span class="badge b-green">Daten ändern</span></div>
+    <p><b>Zweck:</b> Datensätze einfügen, ändern, löschen. Arbeitet auf den <b>Daten (Zeilen)</b>, nicht auf der Struktur.</p>
+    <p><b>Befehle:</b> <code>INSERT INTO</code> · <code>UPDATE</code> · <code>DELETE FROM</code></p>
+    <pre><code><span class="kw">INSERT INTO</span> Mitarbeiter (Name, Gehalt) <span class="kw">VALUES</span> (<span class="str">'Weber'</span>, <span class="num">3800</span>);
+<span class="kw">UPDATE</span> Mitarbeiter <span class="kw">SET</span> Gehalt = <span class="num">4200</span> <span class="kw">WHERE</span> ID = <span class="num">5</span>;
+<span class="kw">DELETE FROM</span> Mitarbeiter <span class="kw">WHERE</span> ID = <span class="num">5</span>;</code></pre>
+  </div>
+
+  <div class="sg sg-ddl">
+    <div class="sg-title">DDL – Data Definition Language <span class="badge b-amber">Struktur</span></div>
+    <p><b>Zweck:</b> Datenbankstrukturen definieren: Tabellen erstellen, ändern, löschen. Arbeitet auf der <b>Struktur</b>, nicht auf den Daten.</p>
+    <p><b>Befehle:</b> <code>CREATE TABLE</code> · <code>ALTER TABLE</code> · <code>DROP TABLE</code> · <code>CREATE DATABASE</code> · <code>DROP DATABASE</code></p>
+    <pre><code><span class="kw">CREATE TABLE</span> Mitarbeiter (
+    ID        <span class="fn">INT</span>          <span class="kw">PRIMARY KEY</span> AUTO_INCREMENT,
+    Name      <span class="fn">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,
+    Gehalt    <span class="fn">DECIMAL</span>(<span class="num">8</span>,<span class="num">2</span>),
+    Abteilung <span class="fn">VARCHAR</span>(<span class="num">50</span>)
+);
+<span class="kw">ALTER TABLE</span> Mitarbeiter <span class="kw">ADD COLUMN</span> TelNr <span class="fn">VARCHAR</span>(<span class="num">20</span>);
+<span class="kw">DROP TABLE</span> Mitarbeiter;  <span class="cmt">-- Löscht Tabelle + alle Daten!</span></code></pre>
+  </div>
+
+  <div class="sg sg-dcl">
+    <div class="sg-title">DCL – Data Control Language <span class="badge b-purple">Rechte</span></div>
+    <p><b>Zweck:</b> Zugriffsrechte vergeben und entziehen.</p>
+    <p><b>Befehle:</b> <code>GRANT</code> · <code>REVOKE</code></p>
+    <pre><code><span class="kw">GRANT</span> SELECT, INSERT <span class="kw">ON</span> Mitarbeiter <span class="kw">TO</span> benutzer1;
+<span class="kw">REVOKE</span> INSERT <span class="kw">ON</span> Mitarbeiter <span class="kw">FROM</span> benutzer1;</code></pre>
+  </div>
+
+  <div class="sg sg-tcl">
+    <div class="sg-title">TCL – Transaction Control Language <span class="badge b-teal">Transaktionen</span></div>
+    <p><b>Zweck:</b> Transaktionen steuern → <b>Datenintegrität sicherstellen</b>. Mehrere Befehle werden als atomare Einheit behandelt – entweder alle oder keiner.</p>
+    <p><b>Befehle:</b> <code>COMMIT</code> · <code>ROLLBACK</code> · <code>SAVEPOINT</code></p>
+    <pre><code><span class="kw">BEGIN TRANSACTION</span>;
+<span class="kw">UPDATE</span> Konto <span class="kw">SET</span> Betrag = Betrag - <span class="num">500</span> <span class="kw">WHERE</span> KontoNr = <span class="num">1001</span>;
+<span class="kw">UPDATE</span> Konto <span class="kw">SET</span> Betrag = Betrag + <span class="num">500</span> <span class="kw">WHERE</span> KontoNr = <span class="num">2002</span>;
+<span class="kw">COMMIT</span>;   <span class="cmt">-- Alles OK → dauerhaft speichern</span>
+<span class="cmt">-- ROLLBACK; → Bei Fehler alle Änderungen rückgängig</span></code></pre>
+    <div class="ok">✅ TCL sichert Datenintegrität: Bei Fehlern kann ROLLBACK alle Änderungen einer Transaktion rückgängig machen.</div>
+  </div>
+
+  <h3>Gesamtübersicht</h3>
+  <table>
+    <tr><th>Kürzel</th><th>Vollname</th><th>Zweck</th><th>Befehle</th></tr>
+    <tr><td><b style="color:var(--accent)">DQL</b></td><td>Data Query Language</td><td>Daten lesen</td><td>SELECT</td></tr>
+    <tr><td><b style="color:var(--green)">DML</b></td><td>Data Manipulation Language</td><td>Daten ändern</td><td>INSERT, UPDATE, DELETE</td></tr>
+    <tr><td><b style="color:var(--amber)">DDL</b></td><td>Data Definition Language</td><td>Struktur definieren</td><td>CREATE, ALTER, DROP</td></tr>
+    <tr><td><b style="color:var(--purple)">DCL</b></td><td>Data Control Language</td><td>Rechte verwalten</td><td>GRANT, REVOKE</td></tr>
+    <tr><td><b style="color:var(--teal)">TCL</b></td><td>Transaction Control Language</td><td>Transaktionen steuern</td><td>COMMIT, ROLLBACK, SAVEPOINT</td></tr>
+  </table>
+  <div class="warn">⚠️ <b>DKL existiert nicht!</b> Wer DKL als SQL-Gruppe nennt, liegt falsch.</div>
+
+  <div class="quiz-section">
+    <div class="quiz-section-title">🧠 Mini-Quiz: SQL-Gruppen</div>
+    <div id="q-sqlg"></div>
+    <div class="quiz-score" id="s-sqlg"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ 4: ER ══ -->
+<div class="section" id="er">
+  <h2>4 · ER-Modell</h2>
+
+  <h3>Was ist das ER-Modell?</h3>
+  <p>Das <b>Entity-Relationship-Modell (ERM)</b> ist eine grafische Methode zur <b>konzeptuellen Datenmodellierung</b> – bevor eine Datenbank implementiert wird. Es beschreibt, welche Objekte es gibt, welche Eigenschaften sie haben und wie sie zusammenhängen.</p>
+
+  <h3>Grundelemente</h3>
+  <div class="grid3">
+    <div class="card">
+      <div class="card-title" style="color:var(--accent)">▭ Entität (Entity)</div>
+      <p>Ein reales Objekt, das in der Datenbank gespeichert wird.</p>
+      <p><b>Darstellung:</b> Rechteck</p>
+      <p><b>Beispiele:</b> <code>Kunde</code>, <code>Produkt</code>, <code>Bestellung</code></p>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--amber)">◇ Beziehung (Relationship)</div>
+      <p>Verbindung zwischen zwei Entitäten – hat einen Namen (Verb) und eine Kardinalität.</p>
+      <p><b>Darstellung:</b> Raute</p>
+      <p><b>Beispiele:</b> <code>kauft</code>, <code>enthält</code>, <code>arbeitet_in</code></p>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--green)">○ Attribut</div>
+      <p>Eine Eigenschaft einer Entität. Primärschlüssel werden unterstrichen.</p>
+      <p><b>Darstellung:</b> Ellipse</p>
+      <p><b>Beispiele:</b> <code>Name</code>, <code>Preis</code>, <code><u>KundeID</u></code></p>
+    </div>
+  </div>
+
+  <h3>Kardinalitäten</h3>
+  <table>
+    <tr><th>Typ</th><th>Notation</th><th>Bedeutung</th><th>DB-Umsetzung</th><th>Beispiel</th></tr>
+    <tr><td><b>1:1</b></td><td>1 — 1</td><td>Genau eine ↔ genau eine</td><td>FK in einer der Tabellen</td><td>Person ↔ Personalausweis</td></tr>
+    <tr><td><b>1:N</b></td><td>1 — N</td><td>Eine → viele; viele → eine zurück</td><td>FK auf der N-Seite</td><td>Abteilung → Mitarbeiter</td></tr>
+    <tr><td><b>N:M</b></td><td>N — M</td><td>Viele ↔ viele</td><td>Zwischentabelle nötig!</td><td>Schüler ↔ Kurse</td></tr>
+  </table>
+
+  <h3>Beispiel-ER-Diagramm: Online-Shop</h3>
+  <div class="er-wrap">
+    <div><div class="er-entity">Kunde<div class="er-attrs"><u>KundeID</u> · Name · Email</div></div></div>
+    <div class="er-arr">─ 1</div>
+    <div class="er-rel">gibt auf</div>
+    <div class="er-arr">N ─</div>
+    <div><div class="er-entity">Bestellung<div class="er-attrs"><u>BestellID</u> · Datum · Status</div></div></div>
+    <div class="er-arr">─ N</div>
+    <div class="er-rel">enthält</div>
+    <div class="er-arr">M ─</div>
+    <div><div class="er-entity">Produkt<div class="er-attrs"><u>ProduktID</u> · Name · Preis</div></div></div>
+  </div>
+  <p style="font-size:12px;color:var(--text3)">Kunde → Bestellung: 1:N (FK KundeID in Bestellung) · Bestellung ↔ Produkt: N:M (Zwischentabelle "Bestellposition" nötig)</p>
+
+  <h3>Vom ER-Modell zur Datenbanktabelle</h3>
+  <pre><code><span class="kw">CREATE TABLE</span> Kunde (
+    KundeID  <span class="fn">INT</span>          <span class="kw">PRIMARY KEY</span>,
+    Name     <span class="fn">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,
+    Email    <span class="fn">VARCHAR</span>(<span class="num">150</span>)
+);
+<span class="kw">CREATE TABLE</span> Bestellung (
+    BestellID <span class="fn">INT</span>  <span class="kw">PRIMARY KEY</span>,
+    Datum     <span class="fn">DATE</span>,
+    KundeID   <span class="fn">INT</span>  <span class="kw">REFERENCES</span> Kunde(KundeID)  <span class="cmt">-- Fremdschlüssel 1:N</span>
+);
+<span class="cmt">-- N:M → Zwischentabelle</span>
+<span class="kw">CREATE TABLE</span> Bestellposition (
+    BestellID  <span class="fn">INT</span> <span class="kw">REFERENCES</span> Bestellung(BestellID),
+    ProduktID  <span class="fn">INT</span> <span class="kw">REFERENCES</span> Produkt(ProduktID),
+    Menge      <span class="fn">INT</span>,
+    <span class="kw">PRIMARY KEY</span>(BestellID, ProduktID)
+);</code></pre>
+
+  <h3>Wichtige Datentypen</h3>
+  <table>
+    <tr><th>Datentyp</th><th>Beschreibung</th><th>Beispielwert</th></tr>
+    <tr><td><code>INT</code></td><td>Ganze Zahl</td><td>42, -7, 1000</td></tr>
+    <tr><td><code>VARCHAR(n)</code></td><td>Variable Zeichenkette (max. n Zeichen)</td><td>'Müller', 'Berlin'</td></tr>
+    <tr><td><code>CHAR(n)</code></td><td>Feste Zeichenkette (genau n Zeichen)</td><td>'DE', 'M'</td></tr>
+    <tr><td><code>DECIMAL(p,s)</code></td><td>Dezimalzahl (p Stellen gesamt, s Nachkomma)</td><td>1234.56</td></tr>
+    <tr><td><code>DATE</code></td><td>Datum (JJJJ-MM-TT)</td><td>'2024-04-27'</td></tr>
+    <tr><td><code>BOOLEAN</code></td><td>Wahrheitswert</td><td>TRUE / FALSE</td></tr>
+    <tr><td><code>NULL</code></td><td>Kein Wert vorhanden (≠ 0, ≠ leerer String!)</td><td>—</td></tr>
+  </table>
+  <div class="ok">✅ Texte in SQL immer mit <b>einfachen Anführungszeichen</b>: <code>'Müller'</code> – nicht <code>{}</code>, nicht <code>"Müller"</code></div>
+
+  <div class="quiz-section">
+    <div class="quiz-section-title">🧠 Mini-Quiz: ER-Modell</div>
+    <div id="q-er"></div>
+    <div class="quiz-score" id="s-er"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ 5: SELECT ══ -->
+<div class="section" id="sel">
+  <h2>5 · SELECT-Anweisung (Lektion 1)</h2>
+
+  <h3>Vollständige Syntax (Reihenfolge zwingend!)</h3>
+  <pre><code><span class="kw">SELECT</span>   [DISTINCT] Spalte1, Spalte2 | *      <span class="cmt">-- Was anzeigen?</span>
+<span class="kw">FROM</span>     Tabellenname                          <span class="cmt">-- Aus welcher Tabelle?</span>
+[<span class="kw">WHERE</span>    Bedingung]                            <span class="cmt">-- Filter VOR Gruppierung (Zeilen)</span>
+[<span class="kw">GROUP BY</span> Spalte]                              <span class="cmt">-- Gruppierung</span>
+[<span class="kw">HAVING</span>   Bedingung]                           <span class="cmt">-- Filter NACH Gruppierung (Gruppen)</span>
+[<span class="kw">ORDER BY</span> Spalte [<span class="kw">ASC</span>|<span class="kw">DESC</span>]]                 <span class="cmt">-- Sortierung</span>
+[<span class="kw">LIMIT</span>    n];                                  <span class="cmt">-- Anzahl Ergebnisse begrenzen</span></code></pre>
+  <div class="tip">💡 <b>Merksatz:</b> <b>S</b>ehr <b>F</b>leißige <b>W</b>aschbären <b>G</b>ehen <b>H</b>eimlich <b>O</b>ft <b>L</b>os = SELECT · FROM · WHERE · GROUP BY · HAVING · ORDER BY · LIMIT</div>
+
+  <h3>Vergleichsoperatoren</h3>
+  <table>
+    <tr><th>Operator</th><th>Bedeutung</th><th>Beispiel</th></tr>
+    <tr><td><code>=</code></td><td>Gleich</td><td><code>WHERE Alter = 30</code></td></tr>
+    <tr><td><code>&lt;&gt;</code> / <code>!=</code></td><td>Ungleich</td><td><code>WHERE Stadt &lt;&gt; 'München'</code></td></tr>
+    <tr><td><code>&lt;</code> / <code>&gt;</code></td><td>Kleiner / Größer</td><td><code>WHERE Preis &lt; 100</code></td></tr>
+    <tr><td><code>&lt;=</code> / <code>&gt;=</code></td><td>Kleiner/Größer gleich</td><td><code>WHERE Alter &gt;= 18</code></td></tr>
+    <tr><td><code>BETWEEN a AND b</code></td><td>Im Bereich (inklusiv beider Grenzen)</td><td><code>WHERE Preis BETWEEN 10 AND 50</code></td></tr>
+    <tr><td><code>IN (a,b,c)</code></td><td>Wert in Liste enthalten</td><td><code>WHERE Stadt IN ('Berlin','Hamburg')</code></td></tr>
+    <tr><td><code>NOT IN (...)</code></td><td>Wert nicht in Liste</td><td><code>WHERE Abt NOT IN ('IT','HR')</code></td></tr>
+    <tr><td><code>IS NULL</code></td><td>Wert ist leer/nicht vorhanden</td><td><code>WHERE TelNr IS NULL</code></td></tr>
+    <tr><td><code>IS NOT NULL</code></td><td>Wert ist vorhanden</td><td><code>WHERE TelNr IS NOT NULL</code></td></tr>
+    <tr><td><code>LIKE 'Muster'</code></td><td>Mustervergleich mit Platzhaltern</td><td><code>WHERE Name LIKE 'M%'</code></td></tr>
+  </table>
+
+  <h3>Platzhalter bei LIKE</h3>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title"><code>%</code> – Beliebig viele Zeichen (inkl. 0)</div>
+      <ul style="font-size:13.5px">
+        <li><code>LIKE 'M%'</code> → beginnt mit M</li>
+        <li><code>LIKE '%er'</code> → endet auf "er"</li>
+        <li><code>LIKE '%au%'</code> → enthält "au" irgendwo</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title"><code>_</code> – Genau ein beliebiges Zeichen</div>
+      <ul style="font-size:13.5px">
+        <li><code>LIKE 'M_ller'</code> → Müller, Moller …</li>
+        <li><code>LIKE '__r'</code> → genau 3 Zeichen, endet auf r</li>
+        <li><code>LIKE 'A__'</code> → beginnt mit A, 3 Zeichen lang</li>
+      </ul>
+    </div>
+  </div>
+  <div class="ok">✅ SQL-Platzhalter: <code>%</code> (viele Zeichen) und <code>_</code> (genau ein Zeichen)</div>
+
+  <h3>Logische Operatoren</h3>
+  <table>
+    <tr><th>Operator</th><th>Bedeutung</th><th>Beispiel</th></tr>
+    <tr><td><code>AND</code></td><td>Beide Bedingungen wahr</td><td><code>WHERE Alter &gt; 18 AND Stadt = 'Berlin'</code></td></tr>
+    <tr><td><code>OR</code></td><td>Mind. eine Bedingung wahr</td><td><code>WHERE Abt = 'IT' OR Abt = 'HR'</code></td></tr>
+    <tr><td><code>NOT</code></td><td>Negiert eine Bedingung</td><td><code>WHERE NOT Aktiv = TRUE</code></td></tr>
+  </table>
+
+  <h3>Rechnen in SQL</h3>
+  <pre><code><span class="cmt">-- In SQL KANN gerechnet werden! (Kompetenzcheck-Antwort: FALSCH dass man nicht rechnen kann)</span>
+<span class="kw">SELECT</span> Name, Gehalt, Gehalt * <span class="num">1.19</span> <span class="kw">AS</span> Brutto, Gehalt * <span class="num">12</span> <span class="kw">AS</span> Jahresgehalt
+<span class="kw">FROM</span> Mitarbeiter
+<span class="kw">WHERE</span> Gehalt * <span class="num">12</span> > <span class="num">40000</span>;  <span class="cmt">-- Rechnen auch in WHERE erlaubt</span></code></pre>
+
+  <h3>UPDATE &amp; DELETE</h3>
+  <pre><code><span class="cmt">-- UPDATE setzt Spaltenwerte (kein WHERE → ALLE Zeilen betroffen!)</span>
+<span class="kw">UPDATE</span> Mitarbeiter <span class="kw">SET</span> TelNr = <span class="kw">NULL</span>;                     <span class="cmt">-- TelNr ALLER löschen</span>
+<span class="kw">UPDATE</span> Mitarbeiter <span class="kw">SET</span> TelNr = <span class="kw">NULL</span> <span class="kw">WHERE</span> ID = <span class="num">5</span>;        <span class="cmt">-- Nur ID 5</span>
+
+<span class="cmt">-- DELETE löscht immer ganze Datensätze (Zeilen)</span>
+<span class="kw">DELETE FROM</span> Mitarbeiter <span class="kw">WHERE</span> ID = <span class="num">5</span>;                     <span class="cmt">-- Einen Datensatz</span>
+<span class="kw">DELETE FROM</span> Mitarbeiter;                                   <span class="cmt">-- ALLE (Vorsicht!)</span></code></pre>
+  <div class="danger">⚠️ UPDATE und DELETE ohne WHERE betreffen <b>alle Datensätze</b> der Tabelle!</div>
+
+  <div class="quiz-section">
+    <div class="quiz-section-title">🧠 Mini-Quiz: SELECT-Anweisung</div>
+    <div id="q-sel"></div>
+    <div class="quiz-score" id="s-sel"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ 6: AGGREGAT ══ -->
+<div class="section" id="agg">
+  <h2>6 · Aggregatfunktionen (Lektion 2)</h2>
+  <p>Aggregatfunktionen berechnen einen <b>einzelnen Ergebniswert</b> aus mehreren Zeilen.</p>
+  <div class="warn">⚠️ <b>CALC ist keine SQL-Aggregatfunktion!</b> Existiert schlicht nicht in SQL.</div>
+
+  <h3>Die 5 Standard-Aggregatfunktionen</h3>
+  <table>
+    <tr><th>Funktion</th><th>Beschreibung</th><th>NULL-Behandlung</th></tr>
+    <tr><td><code>COUNT(*)</code></td><td>Anzahl aller Zeilen (inkl. NULL)</td><td>Zählt alles</td></tr>
+    <tr><td><code>COUNT(Spalte)</code></td><td>Anzahl Zeilen <b>mit Wert</b> (NULL ignoriert)</td><td>NULL ignoriert</td></tr>
+    <tr><td><code>SUM(Spalte)</code></td><td>Summe aller Werte</td><td>NULL ignoriert</td></tr>
+    <tr><td><code>AVG(Spalte)</code></td><td>Durchschnitt (Average) der Werte</td><td>NULL ignoriert</td></tr>
+    <tr><td><code>MIN(Spalte)</code></td><td>Kleinster Wert</td><td>NULL ignoriert</td></tr>
+    <tr><td><code>MAX(Spalte)</code></td><td>Größter Wert</td><td>NULL ignoriert</td></tr>
+  </table>
+
+  <pre><code><span class="cmt">-- Beispiel: 10 Mitarbeiter, 3 ohne TelNr</span>
+<span class="kw">SELECT</span> <span class="fn">COUNT</span>(*) <span class="kw">AS</span> Gesamt <span class="kw">FROM</span> Mitarbeiter;           <span class="cmt">-- Ergebnis: 10</span>
+<span class="kw">SELECT</span> <span class="fn">COUNT</span>(TelNr) <span class="kw">AS</span> MitTelNr <span class="kw">FROM</span> Mitarbeiter;     <span class="cmt">-- Ergebnis: 7</span>
+<span class="kw">SELECT</span> <span class="fn">SUM</span>(Gehalt) <span class="kw">AS</span> Gesamtgehalt <span class="kw">FROM</span> Mitarbeiter;
+<span class="kw">SELECT</span> <span class="fn">AVG</span>(Gehalt) <span class="kw">AS</span> Durchschnitt <span class="kw">FROM</span> Mitarbeiter;
+<span class="kw">SELECT</span> <span class="fn">MIN</span>(Gehalt) <span class="kw">AS</span> Min, <span class="fn">MAX</span>(Gehalt) <span class="kw">AS</span> Max <span class="kw">FROM</span> Mitarbeiter;</code></pre>
+
+  <h3>GROUP BY – Aggregation pro Gruppe</h3>
+  <pre><code><span class="cmt">-- Anzahl Mitarbeiter pro Abteilung</span>
+<span class="kw">SELECT</span> Abteilung, <span class="fn">COUNT</span>(*) <span class="kw">AS</span> Anzahl, <span class="fn">AVG</span>(Gehalt) <span class="kw">AS</span> DurchschnittsGehalt
+<span class="kw">FROM</span> Mitarbeiter
+<span class="kw">GROUP BY</span> Abteilung
+<span class="kw">ORDER BY</span> Anzahl <span class="kw">DESC</span>;</code></pre>
+
+  <h3>HAVING – Filter nach Gruppierung</h3>
+  <pre><code><span class="cmt">-- Nur Abteilungen mit mehr als 3 Mitarbeitern</span>
+<span class="kw">SELECT</span> Abteilung, <span class="fn">COUNT</span>(*) <span class="kw">AS</span> Anzahl
+<span class="kw">FROM</span> Mitarbeiter
+<span class="kw">GROUP BY</span> Abteilung
+<span class="kw">HAVING</span> <span class="fn">COUNT</span>(*) > <span class="num">3</span>;</code></pre>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title" style="color:var(--accent)">WHERE vs. HAVING</div>
+      <ul style="font-size:13.5px">
+        <li><code>WHERE</code> filtert <b>vor</b> der Gruppierung (einzelne Zeilen)</li>
+        <li><code>HAVING</code> filtert <b>nach</b> der Gruppierung (Gruppen)</li>
+        <li><code>HAVING</code> darf Aggregatfunktionen verwenden, <code>WHERE</code> nicht!</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--amber)">Häufiger Fehler bei GROUP BY</div>
+      <ul style="font-size:13.5px">
+        <li>Im SELECT dürfen nur GROUP BY-Spalten oder Aggregatfunktionen stehen</li>
+        <li>❌ Falsch: <code>SELECT Name, COUNT(*) … GROUP BY Abt</code></li>
+        <li>✅ Richtig: <code>SELECT Abt, COUNT(*) … GROUP BY Abt</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="quiz-section">
+    <div class="quiz-section-title">🧠 Mini-Quiz: Aggregatfunktionen</div>
+    <div id="q-agg"></div>
+    <div class="quiz-score" id="s-agg"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ 7: JOIN ══ -->
+<div class="section" id="join">
+  <h2>7 · JOINs – Tabellen verknüpfen (Lektion 3)</h2>
+  <p>Mit JOINs werden Daten aus <b>mehreren Tabellen</b> kombiniert. Die Verknüpfung erfolgt über einen gemeinsamen Schlüssel (meist PK ↔ FK).</p>
+
+  <h3>Beispiel-Datenbasis</h3>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Tabelle: Mitarbeiter</div>
+      <table style="margin:.4rem 0"><tr><th>MID</th><th>Name</th><th>AbtID</th></tr>
+        <tr><td>1</td><td>Müller</td><td>10</td></tr>
+        <tr><td>2</td><td>Meier</td><td>20</td></tr>
+        <tr><td>3</td><td>Schmidt</td><td>NULL</td></tr>
+        <tr><td>4</td><td>Weber</td><td>10</td></tr></table>
+    </div>
+    <div class="card">
+      <div class="card-title">Tabelle: Abteilung</div>
+      <table style="margin:.4rem 0"><tr><th>AbtID</th><th>Bezeichnung</th></tr>
+        <tr><td>10</td><td>IT</td></tr>
+        <tr><td>20</td><td>HR</td></tr>
+        <tr><td>30</td><td>Marketing</td></tr></table>
+    </div>
+  </div>
+
+  <h3>INNER JOIN (= Equi-Join)</h3>
+  <p>Liefert nur Zeilen, für die in <b>beiden</b> Tabellen ein übereinstimmender Wert existiert.</p>
+  <pre><code><span class="kw">SELECT</span> m.Name, a.Bezeichnung <span class="kw">AS</span> Abteilung
+<span class="kw">FROM</span> Mitarbeiter m
+<span class="kw">INNER JOIN</span> Abteilung a <span class="kw">ON</span> m.AbtID = a.AbtID;</code></pre>
+  <div class="card"><div class="card-title">Ergebnis INNER JOIN</div>
+    <table style="margin:.4rem 0"><tr><th>Name</th><th>Abteilung</th></tr>
+      <tr><td>Müller</td><td>IT</td></tr><tr><td>Meier</td><td>HR</td></tr><tr><td>Weber</td><td>IT</td></tr></table>
+    <p style="font-size:12px;color:var(--text3)">Schmidt (NULL) fehlt · Marketing (kein Mitarbeiter) fehlt</p>
+  </div>
+
+  <h3>LEFT JOIN</h3>
+  <p>Liefert <b>alle Zeilen der linken Tabelle</b>. Kein Match rechts → NULL.</p>
+  <pre><code><span class="kw">SELECT</span> m.Name, a.Bezeichnung <span class="kw">FROM</span> Mitarbeiter m
+<span class="kw">LEFT JOIN</span> Abteilung a <span class="kw">ON</span> m.AbtID = a.AbtID;</code></pre>
+  <div class="card"><div class="card-title">Ergebnis LEFT JOIN</div>
+    <table style="margin:.4rem 0"><tr><th>Name</th><th>Abteilung</th></tr>
+      <tr><td>Müller</td><td>IT</td></tr><tr><td>Meier</td><td>HR</td></tr>
+      <tr><td>Schmidt</td><td style="color:var(--text3)">NULL</td></tr><tr><td>Weber</td><td>IT</td></tr></table>
+    <p style="font-size:12px;color:var(--text3)">Schmidt erscheint trotz fehlendem Match · Marketing fehlt</p>
+  </div>
+  <div class="warn">⚠️ LEFT JOIN liefert NICHT nur die linke Tabelle! → Alle linken + passende rechte Zeilen. Aussage "nur die linke" = FALSCH!</div>
+
+  <h3>RIGHT JOIN</h3>
+  <p>Liefert <b>alle Zeilen der rechten Tabelle</b>. Kein Match links → NULL.</p>
+  <pre><code><span class="kw">SELECT</span> m.Name, a.Bezeichnung <span class="kw">FROM</span> Mitarbeiter m
+<span class="kw">RIGHT JOIN</span> Abteilung a <span class="kw">ON</span> m.AbtID = a.AbtID;</code></pre>
+  <div class="card"><div class="card-title">Ergebnis RIGHT JOIN</div>
+    <table style="margin:.4rem 0"><tr><th>Name</th><th>Abteilung</th></tr>
+      <tr><td>Müller</td><td>IT</td></tr><tr><td>Weber</td><td>IT</td></tr>
+      <tr><td>Meier</td><td>HR</td></tr>
+      <tr><td style="color:var(--text3)">NULL</td><td>Marketing</td></tr></table>
+    <p style="font-size:12px;color:var(--text3)">Marketing erscheint trotz fehlendem Match · Schmidt fehlt</p>
+  </div>
+
+  <h3>FULL JOIN (FULL OUTER JOIN)</h3>
+  <p>Liefert <b>alle Zeilen beider Tabellen</b>. Kein Match → NULL auf der jeweils anderen Seite.</p>
+  <pre><code><span class="kw">SELECT</span> m.Name, a.Bezeichnung <span class="kw">FROM</span> Mitarbeiter m
+<span class="kw">FULL JOIN</span> Abteilung a <span class="kw">ON</span> m.AbtID = a.AbtID;</code></pre>
+  <div class="card"><div class="card-title">Ergebnis FULL JOIN</div>
+    <table style="margin:.4rem 0"><tr><th>Name</th><th>Abteilung</th></tr>
+      <tr><td>Müller</td><td>IT</td></tr><tr><td>Weber</td><td>IT</td></tr>
+      <tr><td>Meier</td><td>HR</td></tr>
+      <tr><td>Schmidt</td><td style="color:var(--text3)">NULL</td></tr>
+      <tr><td style="color:var(--text3)">NULL</td><td>Marketing</td></tr></table>
+  </div>
+  <div class="ok">✅ FULL JOIN = alle Werte der linken UND rechten Tabelle → richtige Kompetenzcheck-Antwort!</div>
+
+  <h3>JOIN-Übersicht</h3>
+  <table>
+    <tr><th>JOIN-Typ</th><th>Linke Tabelle</th><th>Rechte Tabelle</th><th>Einsatz</th></tr>
+    <tr><td><b>INNER JOIN</b></td><td>Nur Matches</td><td>Nur Matches</td><td>Nur vollständige Datensätze</td></tr>
+    <tr><td><b>LEFT JOIN</b></td><td>Alle Zeilen</td><td>Matches + NULL</td><td>Alle linken + optionale rechte Daten</td></tr>
+    <tr><td><b>RIGHT JOIN</b></td><td>Matches + NULL</td><td>Alle Zeilen</td><td>Alle rechten + optionale linke Daten</td></tr>
+    <tr><td><b>FULL JOIN</b></td><td>Alle Zeilen</td><td>Alle Zeilen</td><td>Vollständige Übersicht beider Tabellen</td></tr>
+  </table>
+
+  <div class="quiz-section">
+    <div class="quiz-section-title">🧠 Mini-Quiz: JOINs</div>
+    <div id="q-join"></div>
+    <div class="quiz-score" id="s-join"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ 8: KOMPETENZCHECK ══ -->
+<div class="section" id="kcheck">
+  <h2>8 · Kompetenzcheck 1 &amp; 2 – Originalfragen</h2>
+  <p>Alle Originalfragen. Klicke auf deine Antwort – du kannst sie jederzeit mit <b>↩ Antwort ändern</b> korrigieren!</p>
+
+  <h3>Kompetenzcheck 1 – Wahr / Falsch</h3>
+  <div id="q-kc1"></div>
+  <div class="quiz-score" id="s-kc1"></div>
+
+  <h3 style="margin-top:2rem">Kompetenzcheck 2 – Multiple Choice</h3>
+  <div id="q-kc2"></div>
+  <div class="quiz-score" id="s-kc2"></div>
+
+  <hr>
+  <h3>Schnell-Merkhilfe</h3>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title" style="color:var(--green)">✅ WAHR – Richtige Aussagen</div>
+      <ul style="font-size:13px">
+        <li>In SQL <b>kann gerechnet</b> werden (<code>+ - * /</code>)</li>
+        <li><b>COUNT(Spalte)</b> zählt nur Zeilen MIT Wert (nicht NULL)</li>
+        <li><b>DELETE FROM</b> löscht ganze Datensätze (Zeilen)</li>
+        <li><b>%</b> und <b>_</b> sind SQL-Platzhalter (mit LIKE)</li>
+        <li><b>TCL</b> sichert Datenintegrität (COMMIT / ROLLBACK)</li>
+        <li><b>VARCHAR</b> = variabler Text-Datentyp</li>
+        <li>Abfragen beginnen mit <b>SELECT</b></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--red)">❌ FALSCH – Falsche Aussagen</div>
+      <ul style="font-size:13px">
+        <li><b>DKL</b> existiert nicht (richtig: DQL DML DDL DCL TCL)</li>
+        <li>LEFT JOIN liefert <b>nicht nur</b> die linke Tabelle</li>
+        <li>Abfragen beginnen <b>nicht</b> mit "GET"</li>
+        <li>Texte <b>nicht</b> mit <code>{}</code> → mit <code>' '</code></li>
+        <li><b>CALC</b> ist keine Aggregatfunktion</li>
+        <li>"LEFT RIGHT JOIN" existiert nicht → <b>FULL JOIN</b></li>
+        <li><b>GROUP BY</b> sortiert nicht → ORDER BY sortiert</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</div><!-- /shell -->
+
+<script>
+// ════════════════════════════════════════════════════════
+// QUIZ DATA
+// ════════════════════════════════════════════════════════
+
+const QUIZ = {
+  gui: [
+    {q:"Was ist ein Event-Handler in einer GUI?", opts:["Ein visuelles Element wie ein Button","Eine Funktion, die bei einem Ereignis ausgeführt wird","Die Hauptschleife des Programms","Ein Layout-Manager"], c:1,
+     e:"Ein Event-Handler (Callback) ist eine Funktion, die registriert wird und automatisch ausgeführt wird, wenn ein Ereignis (z.B. Mausklick) eintritt."},
+    {q:"Was ist die Aufgabe der Hauptschleife (Event Loop)?", opts:["Alle Komponenten grafisch zeichnen","Das Datenbankmodell verwalten","Auf Ereignisse warten und sie an Handler weiterleiten","Den Quellcode kompilieren"], c:2,
+     e:"Der Event Loop läuft so lange das Fenster offen ist. Er wartet auf Events und delegiert sie an registrierte Handler."},
+    {q:"Was bedeutet 'ereignisgesteuerte Programmierung'?", opts:["Das Programm läuft Schritt für Schritt von oben nach unten","Das Programm reagiert auf Benutzeraktionen (Events)","Das Programm verwendet ausschließlich Schleifen","Das Programm hat keine Benutzeroberfläche"], c:1,
+     e:"Bei ereignisgesteuerter Programmierung wartet das Programm auf Events (Klick, Tastendruck) und reagiert mit registrierten Handlern – statt linear abzulaufen."},
+    {q:"Was beschreibt das MVC-Muster?", opts:["Model=Daten, View=Darstellung, Controller=Eingabeverarbeitung","Mouse, View, Click – die drei GUI-Grundelemente","Main, Variables, Code – eine Strukturregel","Model=GUI, View=Logik, Controller=Datenbank"], c:0,
+     e:"MVC trennt Model (Daten/Logik), View (Darstellung) und Controller (Nutzereingaben verarbeiten) für bessere Wartbarkeit."},
+    {q:"Welches Element ermöglicht Einfachauswahl aus mehreren Optionen?", opts:["Textfeld","Checkbox","Radio-Button","Fortschrittsbalken"], c:2,
+     e:"Radio-Buttons erlauben Einfachauswahl: immer nur einer aus einer Gruppe kann ausgewählt sein. Checkboxen erlauben Mehrfachauswahl."},
+  ],
+  cli: [
+    {q:"Welcher Vorteil hat die CLI für erfahrene Nutzer?", opts:["Schönere Darstellung","Einfachere Bedienung für Anfänger","Schnellere Bedienung und Automatisierbarkeit","Keine Lernkurve erforderlich"], c:2,
+     e:"Erfahrene Nutzer arbeiten mit CLI sehr schnell und können Aufgaben per Skript automatisieren – beides ist mit GUI nur schwer möglich."},
+    {q:"Warum wird CLI auf Servern bevorzugt?", opts:["Weil Server keine Mäuse haben","Weil sie ressourcensparend ist und SSH-Fernzugriff ermöglicht","Weil sie intuitiver ist","Weil sie keine Fehler erlaubt"], c:1,
+     e:"CLI verbraucht kaum Ressourcen (kein grafischer Renderer) und ermöglicht Fernzugriff per SSH mit minimaler Bandbreite."},
+    {q:"Was ist ein Nachteil der CLI?", opts:["Zu hoher Ressourcenverbrauch","Schlechte Automatisierbarkeit","Hohe Lernkurve – Befehle müssen auswendig gewusst werden","Kein Fernzugriff möglich"], c:2,
+     e:"Die CLI hat eine steile Lernkurve. Befehle, Parameter und Syntax müssen auswendig gewusst oder nachgeschlagen werden."},
+    {q:"Welches Werkzeug wird für textbasierten Fernzugriff auf Server eingesetzt?", opts:["RDP","VNC","SSH","FTP"], c:2,
+     e:"SSH (Secure Shell) ermöglicht verschlüsselten Fernzugriff auf Server mit sehr wenig Bandbreite – Standard für Server-Administration."},
+  ],
+  sqlg: [
+    {q:"Welche SQL-Gruppe ist für das Lesen von Daten zuständig?", opts:["DML","DDL","DQL","TCL"], c:2,
+     e:"DQL (Data Query Language) = Abfragen. Der einzige Befehl ist SELECT. DQL verändert keine Daten."},
+    {q:"Zu welcher SQL-Gruppe gehören INSERT, UPDATE und DELETE?", opts:["DDL","DCL","TCL","DML"], c:3,
+     e:"DML (Data Manipulation Language) umfasst INSERT INTO, UPDATE und DELETE FROM."},
+    {q:"Was bewirkt ROLLBACK?", opts:["Löscht die Datenbank","Macht alle Änderungen der aktuellen Transaktion rückgängig","Bestätigt eine Transaktion dauerhaft","Gibt Zugriffsrechte frei"], c:1,
+     e:"ROLLBACK (TCL) macht alle Änderungen der aktuellen Transaktion rückgängig. Gegenstück zu COMMIT."},
+    {q:"Mit welchem Befehl werden Zugriffsrechte vergeben?", opts:["ALLOW","PERMIT","GRANT","ENABLE"], c:2,
+     e:"GRANT (DCL) vergibt Zugriffsrechte. Gegenstück ist REVOKE (entzieht Rechte)."},
+    {q:"DKL ist eine SQL-Befehlsgruppe.", opts:["Wahr","Falsch"], c:1,
+     e:"Falsch! DKL existiert nicht. Die 5 echten SQL-Gruppen sind: DQL, DML, DDL, DCL, TCL."},
+    {q:"TCL-Befehle können die Datenintegrität sicherstellen.", opts:["Wahr","Falsch"], c:0,
+     e:"Wahr! COMMIT und ROLLBACK (TCL) steuern Transaktionen. Bei Fehlern macht ROLLBACK Änderungen rückgängig."},
+  ],
+  er: [
+    {q:"Wie wird eine Entität im ER-Diagramm dargestellt?", opts:["Ellipse","Raute","Rechteck","Kreis"], c:2,
+     e:"Entitäten = Rechteck. Beziehungen = Raute. Attribute = Ellipse."},
+    {q:"Was ist ein Primärschlüssel?", opts:["Ein beliebiger Spaltenwert","Ein Attribut, das jeden Datensatz eindeutig identifiziert","Ein Fremdschlüssel aus einer anderen Tabelle","Der erste Eintrag in einer Tabelle"], c:1,
+     e:"Ein Primärschlüssel (PK) identifiziert jeden Datensatz eindeutig. Darf nicht NULL sein und muss einmalig sein."},
+    {q:"Welche Kardinalität liegt vor, wenn ein Kunde viele Bestellungen aufgeben kann?", opts:["1:1","N:M","1:N","M:1"], c:2,
+     e:"1:N – ein Kunde (1) kann viele Bestellungen (N) haben. Der Fremdschlüssel liegt auf der N-Seite."},
+    {q:"Was wird benötigt, um eine N:M-Beziehung umzusetzen?", opts:["Nur ein FK in einer der Tabellen","Eine Zwischentabelle mit beiden FKs","Ein zusätzliches Attribut in beiden Tabellen","Nichts – N:M ist direkt umsetzbar"], c:1,
+     e:"N:M → Zwischentabelle, die die PKs beider Tabellen als FKs enthält."},
+    {q:"Texte werden in SQL mit {} gekennzeichnet.", opts:["Wahr","Falsch"], c:1,
+     e:"Falsch! Texte = einfache Anführungszeichen: 'Müller'. Geschweifte Klammern {} haben in SQL für Strings keine Bedeutung."},
+  ],
+  sel: [
+    {q:"In welcher Reihenfolge müssen SQL-Klauseln stehen?", opts:["FROM→SELECT→WHERE→ORDER BY","SELECT→FROM→WHERE→GROUP BY→HAVING→ORDER BY","WHERE→SELECT→FROM→ORDER BY","SELECT→WHERE→FROM→ORDER BY"], c:1,
+     e:"SELECT → FROM → WHERE → GROUP BY → HAVING → ORDER BY → LIMIT. Merksatz: Sehr Fleißige Waschbären Gehen Heimlich Oft Los."},
+    {q:"Welcher Operator prüft ob ein Wert in einer Liste ist?", opts:["LIKE","BETWEEN","IN","IS NULL"], c:2,
+     e:"IN(a, b, c) prüft ob ein Wert in der Liste enthalten ist. z.B.: WHERE Stadt IN ('Berlin', 'München')"},
+    {q:"Was macht SELECT DISTINCT?", opts:["Sortiert die Ergebnisse","Entfernt doppelte Zeilen","Zeigt nur NULL-Werte an","Begrenzt die Anzahl Ergebnisse"], c:1,
+     e:"SELECT DISTINCT entfernt Duplikate. Jede Wert-Kombination erscheint nur einmal."},
+    {q:"Was ist der Unterschied zwischen WHERE und HAVING?", opts:["Keiner – beide filtern identisch","WHERE filtert vor Gruppierung (Zeilen), HAVING filtert nach Gruppierung (Gruppen)","HAVING wird vor WHERE ausgeführt","WHERE kann nur mit Aggregatfunktionen verwendet werden"], c:1,
+     e:"WHERE filtert Zeilen VOR der Gruppierung. HAVING filtert Gruppen NACH der Gruppierung. Nur HAVING darf Aggregatfunktionen enthalten."},
+    {q:"In SQL-Abfragen kann nicht gerechnet werden.", opts:["Wahr","Falsch"], c:1,
+     e:"Falsch! In SQL kann gerechnet werden: SELECT Preis * 1.19 AS Brutto oder WHERE Gehalt * 12 > 40000."},
+    {q:"Welcher Platzhalter steht in LIKE für genau ein beliebiges Zeichen?", opts:["%","_","*","?"], c:1,
+     e:"_ = genau ein Zeichen. % = beliebig viele Zeichen. Beispiel: LIKE 'M_ller' findet Müller, Moller, Maller."},
+  ],
+  agg: [
+    {q:"Was ist KEINE SQL-Aggregatfunktion?", opts:["SUM","COUNT","CALC","AVG"], c:2,
+     e:"CALC existiert nicht in SQL! Echte Aggregatfunktionen: COUNT, SUM, AVG, MIN, MAX."},
+    {q:"Was liefert COUNT(TelNr) wenn 3 von 10 Mitarbeitern keine TelNr haben?", opts:["10","3","7","0"], c:2,
+     e:"COUNT(Spalte) zählt nur Zeilen MIT Wert (nicht NULL). Bei 3 leeren TelNr = 7 gezählt."},
+    {q:"Was berechnet AVG(Gehalt)?", opts:["Das höchste Gehalt","Das niedrigste Gehalt","Die Summe aller Gehälter","Den Durchschnitt aller Gehälter"], c:3,
+     e:"AVG() = Average = Durchschnitt. NULL-Werte werden ignoriert."},
+    {q:"Was filtert HAVING?", opts:["Einzelne Zeilen vor der Gruppierung","Gruppen nach der Gruppierung","Nur Spalten mit NULL","Duplikate"], c:1,
+     e:"HAVING filtert Gruppen nach GROUP BY. WHERE filtert einzelne Zeilen vorher."},
+    {q:"Wie heißt der SQL-Befehl für die Gruppierung?", opts:["ORDER BY","SORT BY","GROUP BY","CLUSTER BY"], c:2,
+     e:"GROUP BY gruppiert Zeilen, damit Aggregatfunktionen pro Gruppe berechnet werden. ORDER BY sortiert (gruppiert nicht)!"},
+  ],
+  join: [
+    {q:"Was liefert INNER JOIN?", opts:["Alle Zeilen der linken Tabelle","Alle Zeilen beider Tabellen","Nur Zeilen mit passendem Wert in beiden Tabellen","Alle Zeilen der rechten Tabelle"], c:2,
+     e:"INNER JOIN liefert nur Zeilen, für die auf beiden Seiten ein übereinstimmender Schlüssel existiert."},
+    {q:"Was passiert beim LEFT JOIN, wenn ein Mitarbeiter keiner Abteilung zugeordnet ist?", opts:["Der Mitarbeiter wird nicht angezeigt","Der Mitarbeiter wird angezeigt, Abteilungsspalte ist NULL","Ein Fehler wird ausgegeben","Der Mitarbeiter bekommt die erste Abteilung"], c:1,
+     e:"Beim LEFT JOIN werden alle linken Zeilen angezeigt. Hat ein Mitarbeiter keinen Match, erscheinen rechte Spalten als NULL."},
+    {q:"Welcher JOIN liefert alle Werte der linken UND der rechten Tabelle?", opts:["INNER JOIN","LEFT JOIN","RIGHT JOIN","FULL JOIN"], c:3,
+     e:"FULL JOIN liefert alle Zeilen beider Tabellen. Kein Match → NULL auf der jeweiligen Seite."},
+    {q:"Welche Klausel verbindet Tabellen in einem JOIN?", opts:["WHERE","HAVING","ON","USING_KEY"], c:2,
+     e:"ON gibt die Join-Bedingung an: z.B. INNER JOIN Abteilung a ON m.AbtID = a.AbtID."},
+    {q:"LEFT JOIN liefert nur die Zeilen der linken Tabelle.", opts:["Wahr","Falsch"], c:1,
+     e:"Falsch! LEFT JOIN = ALLE linken Zeilen + passende rechte Zeilen. Kein Match rechts → NULL in rechten Spalten."},
+  ],
+};
+
+const KC1 = [
+  {q:"In SQL-Abfragen kann nicht gerechnet werden.", opts:["Wahr","Falsch"], c:1,
+   e:"FALSCH – In SQL kann gerechnet werden. Beispiel: SELECT Preis * 1.19 AS Brutto FROM Produkte."},
+  {q:"DKL ist ein Bestandteil von SQL.", opts:["Wahr","Falsch"], c:1,
+   e:"FALSCH – DKL existiert nicht. Die 5 SQL-Gruppen: DQL, DML, DDL, DCL, TCL."},
+  {q:"COUNT( ... ) liefert die Anzahl der Datensätze der Spalte, welche einen Wert enthalten.", opts:["Wahr","Falsch"], c:0,
+   e:"WAHR – COUNT(Spalte) zählt nur Zeilen, die einen Wert haben (nicht NULL). COUNT(*) zählt alle inkl. NULL."},
+  {q:"Mit DELETE FROM ... werden immer komplette Datensätze gelöscht.", opts:["Wahr","Falsch"], c:0,
+   e:"WAHR – DELETE FROM löscht immer ganze Zeilen. Einzelne Spalten kann man nicht löschen, nur mit UPDATE auf NULL setzen."},
+  {q:"LEFT JOIN liefert nur die Werte der linken Tabelle.", opts:["Wahr","Falsch"], c:1,
+   e:"FALSCH – LEFT JOIN liefert alle Zeilen der linken Tabelle PLUS passende Zeilen der rechten. Kein Match rechts → NULL."},
+  {q:"Platzhalter in SQL sind \"%\" und \"_\".", opts:["Wahr","Falsch"], c:0,
+   e:"WAHR – % = beliebig viele Zeichen, _ = genau ein Zeichen. Beide werden mit LIKE verwendet."},
+  {q:"Abfragen beginnen mit dem Schlüsselwort \"GET\".", opts:["Wahr","Falsch"], c:1,
+   e:"FALSCH – SQL-Abfragen beginnen immer mit SELECT. GET ist kein SQL-Schlüsselwort."},
+  {q:"Mithilfe der Befehle der TCL kann die Datenintegrität sichergestellt werden.", opts:["Wahr","Falsch"], c:0,
+   e:"WAHR – TCL (COMMIT, ROLLBACK) steuert Transaktionen und sichert damit die Datenintegrität."},
+  {q:"Texte werden mit den Klammern {} gekennzeichnet.", opts:["Wahr","Falsch"], c:1,
+   e:"FALSCH – Texte in SQL = einfache Anführungszeichen: WHERE Name = 'Müller'. {} haben keine Bedeutung für Strings."},
+  {q:"VARCHAR ist der Datentyp für variable Texte.", opts:["Wahr","Falsch"], c:0,
+   e:"WAHR – VARCHAR(n) = VARiable CHARacter. Speichert Texte variabler Länge bis maximal n Zeichen."},
+];
+
+const KC2 = [
+  {q:"Welcher SQL-Befehl ist keine SQL-Aggregatfunktion?",
+   opts:["CALC","COUNT","MIN","SUM","AVG"], c:0,
+   e:"CALC ist keine SQL-Aggregatfunktion – existiert schlicht nicht. Echte: COUNT, SUM, AVG, MIN, MAX."},
+  {q:"Welche Anweisung liefert alle Werte der linken und der rechten Tabelle?",
+   opts:["ALL JOIN","INNER JOIN","RIGHT JOIN","FULL JOIN","LEFT RIGHT JOIN","LEFT JOIN"], c:3,
+   e:"FULL JOIN liefert alle Zeilen beider Tabellen. 'ALL JOIN' und 'LEFT RIGHT JOIN' existieren nicht in SQL."},
+  {q:"Mit welchem Schlüsselwort beginnt eine SQL-Abfrage?",
+   opts:["READ","GIVE","ERMITTLE","CALCULATE","SELECT"], c:4,
+   e:"SELECT ist das erste Schlüsselwort jeder SQL-Abfrage. Alle anderen Optionen sind keine SQL-Befehle."},
+  {q:"Mit welchem Befehl wird die Ergebnismenge einer SQL-Abfrage sortiert?",
+   opts:["ORDER","GROUP BY","ORDER BY","SORT BY","SORT"], c:2,
+   e:"ORDER BY sortiert das Ergebnis. GROUP BY gruppiert (sortiert nicht). SORT/SORT BY existieren in Standard-SQL nicht."},
+  {q:"Welche SQL-Befehle werden nicht zur Manipulation von Tabellen verwendet?",
+   opts:["DROP DATABASE","DROP TABLE","CREATE TABLE","INSERT INTO","SELECT Table"], c:0,
+   e:"DROP DATABASE löscht eine Datenbank (kein Tabellenbefehl). DROP TABLE, CREATE TABLE, INSERT INTO beziehen sich direkt auf Tabellen."},
+  {q:"Was löst diese SQL-Anweisung aus? UPDATE Mitarbeiter SET TelNr = NULL",
+   opts:["Schreibt das Wort \"NULL\" in TelNr","Ermittelt die TelNr aller Mitarbeiter","Schreibt eine \"0\" in TelNr","Löscht alle Mitarbeiter","Löscht die TelNr von allen Mitarbeitern"], c:4,
+   e:"SET TelNr = NULL setzt die TelNr ALLER Mitarbeiter auf leer/NULL (kein WHERE → alle betroffen). NULL ist kein Text, keine Zahl – 'kein Wert'. Datensätze bleiben erhalten."},
+];
+
+// ════════════════════════════════════════════════════════
+// RENDER ENGINE
+// ════════════════════════════════════════════════════════
+
+function renderQuiz(containerId, data, scoreId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = '';
+
+  data.forEach((item, qi) => {
+    const qDiv = document.createElement('div');
+    qDiv.className = 'quiz-q';
+    qDiv.id = `${containerId}-${qi}`;
+
+    // Num
+    const num = document.createElement('div');
+    num.className = 'qnum';
+    num.textContent = `Frage ${qi + 1} / ${data.length}`;
+    qDiv.appendChild(num);
+
+    // Question text
+    const qtext = document.createElement('div');
+    qtext.className = 'qtext';
+    qtext.innerHTML = escQ(item.q);
+    qDiv.appendChild(qtext);
+
+    // Buttons row
+    const row = document.createElement('div');
+    row.className = 'ans-row';
+    item.opts.forEach((opt, oi) => {
+      const btn = document.createElement('button');
+      btn.className = 'ans-btn';
+      btn.innerHTML = escQ(opt);
+      btn.addEventListener('click', () => handleAns(containerId, scoreId, data, qi, oi));
+      row.appendChild(btn);
+    });
+    qDiv.appendChild(row);
+
+    // Feedback
+    const fb = document.createElement('div');
+    fb.className = 'quiz-fb';
+    qDiv.appendChild(fb);
+
+    // Reset button
+    const rb = document.createElement('button');
+    rb.className = 'reset-btn';
+    rb.textContent = '↩ Antwort ändern';
+    rb.addEventListener('click', () => resetAns(containerId, scoreId, data, qi));
+    qDiv.appendChild(rb);
+
+    container.appendChild(qDiv);
+  });
+}
+
+function escQ(s) {
+  return s.replace(/`([^`]+)`/g, '<code>$1</code>');
+}
+
+function handleAns(cid, sid, data, qi, oi) {
+  const item = data[qi];
+  const qDiv = document.getElementById(`${cid}-${qi}`);
+  if (!qDiv) return;
+
+  const btns = qDiv.querySelectorAll('.ans-btn');
+  const fb = qDiv.querySelector('.quiz-fb');
+  const rb = qDiv.querySelector('.reset-btn');
+
+  const correct = (oi === item.c);
+
+  // Lock all buttons
+  btns.forEach((b, bi) => {
+    b.className = 'ans-btn';
+    if (bi === oi && correct) b.classList.add('sel-correct');
+    else if (bi === oi && !correct) b.classList.add('sel-wrong');
+    else if (bi === item.c && !correct) b.classList.add('hint-correct');
+    else b.classList.add('locked');
+    // prevent re-click by removing event – will be re-added on reset
+    b.replaceWith(b.cloneNode(true));
+  });
+
+  fb.className = 'quiz-fb ' + (correct ? 'show-ok' : 'show-fail');
+  fb.textContent = (correct ? '✅ ' : '❌ ') + item.e;
+  rb.style.display = 'inline-block';
+
+  qDiv.className = 'quiz-q ' + (correct ? 'answered-correct' : 'answered-wrong');
+
+  updateScore(cid, sid, data);
+}
+
+function resetAns(cid, sid, data, qi) {
+  const item = data[qi];
+  const qDiv = document.getElementById(`${cid}-${qi}`);
+  if (!qDiv) return;
+
+  // Re-build buttons with fresh listeners
+  const row = qDiv.querySelector('.ans-row');
+  row.innerHTML = '';
+  item.opts.forEach((opt, oi) => {
+    const btn = document.createElement('button');
+    btn.className = 'ans-btn';
+    btn.innerHTML = escQ(opt);
+    btn.addEventListener('click', () => handleAns(cid, sid, data, qi, oi));
+    row.appendChild(btn);
+  });
+
+  const fb = qDiv.querySelector('.quiz-fb');
+  fb.className = 'quiz-fb';
+  fb.textContent = '';
+
+  const rb = qDiv.querySelector('.reset-btn');
+  rb.style.display = 'none';
+
+  qDiv.className = 'quiz-q';
+  updateScore(cid, sid, data);
+}
+
+function updateScore(cid, sid, data) {
+  const scoreEl = document.getElementById(sid);
+  if (!scoreEl) return;
+  let answered = 0, correct = 0;
+  data.forEach((_, qi) => {
+    const qDiv = document.getElementById(`${cid}-${qi}`);
+    if (!qDiv) return;
+    if (qDiv.classList.contains('answered-correct')) { answered++; correct++; }
+    else if (qDiv.classList.contains('answered-wrong')) { answered++; }
+  });
+  if (answered === 0) { scoreEl.className = 'quiz-score'; return; }
+  const pct = Math.round(correct / data.length * 100);
+  const col = pct >= 80 ? 'var(--green)' : pct >= 50 ? 'var(--amber)' : 'var(--red)';
+  scoreEl.className = 'quiz-score show';
+  scoreEl.innerHTML = `<span style="color:${col};font-weight:600">${correct} / ${data.length} richtig (${pct}%)</span> &nbsp;·&nbsp; ${data.length - answered} noch offen`;
+}
+
+// ════════════════════════════════════════════════════════
+// TAB NAVIGATION
+// ════════════════════════════════════════════════════════
+
+const TAB_IDS = ['gui','cli','sqlg','er','sel','agg','join','kcheck'];
+
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  const sec = document.getElementById(id);
+  if (sec) sec.classList.add('active');
+  const idx = TAB_IDS.indexOf(id);
+  const tabs = document.querySelectorAll('.tab');
+  if (idx >= 0 && tabs[idx]) tabs[idx].classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Mini-quizzes per section
+  renderQuiz('q-gui',  QUIZ.gui,  's-gui');
+  renderQuiz('q-cli',  QUIZ.cli,  's-cli');
+  renderQuiz('q-sqlg', QUIZ.sqlg, 's-sqlg');
+  renderQuiz('q-er',   QUIZ.er,   's-er');
+  renderQuiz('q-sel',  QUIZ.sel,  's-sel');
+  renderQuiz('q-agg',  QUIZ.agg,  's-agg');
+  renderQuiz('q-join', QUIZ.join, 's-join');
+  // Kompetenzcheck
+  renderQuiz('q-kc1',  KC1, 's-kc1');
+  renderQuiz('q-kc2',  KC2, 's-kc2');
+});
+</script>
+</body>
+</html>
