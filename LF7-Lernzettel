@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LF7 – Cyberphysische Systeme | Lernzettel</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0e0f14; --surface:#161820; --card:#1c1e27; --border:#2a2d3a;
+  --accent:#7c6aff; --accent2:#ff6a8a; --accent3:#3de8b0; --accent4:#ffb347;
+  --text:#e8eaf0; --muted:#7b7f96; --code-bg:#11121a;
+  --correct:#3de8b0; --wrong:#ff6a8a;
+  --mono:'JetBrains Mono',monospace; --sans:'Syne',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden;}
+
+/* NAV */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:stretch;overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:200;}
+.topbar::-webkit-scrollbar{display:none;}
+.tab{padding:14px 16px;border:none;background:transparent;color:var(--muted);font-family:var(--mono);font-size:12px;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:color .15s,border-color .15s;display:flex;align-items:center;gap:6px;}
+.tab:hover{color:var(--text);}
+.tab.active{color:white;border-bottom-color:var(--accent);}
+
+/* PAGES */
+.page{display:none;}
+.page.active{display:block;animation:fadeUp .25s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* HERO */
+.page-hero{padding:36px 36px 28px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.page-hero::after{content:'';position:absolute;top:-60px;right:-60px;width:280px;height:280px;background:radial-gradient(circle,var(--glow,rgba(124,106,255,.15)) 0%,transparent 70%);pointer-events:none;}
+.hero-label{font-family:var(--mono);font-size:10px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+.hero-title{font-size:clamp(22px,4vw,38px);font-weight:800;line-height:1.1;}
+.hero-title span{color:var(--accent);}
+.hero-sub{color:var(--muted);font-size:12px;font-family:var(--mono);margin-top:7px;}
+
+/* HOME */
+.home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;padding:28px;}
+.home-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;cursor:pointer;transition:transform .15s,border-color .15s;}
+.home-card:hover{transform:translateY(-2px);border-color:var(--accent);}
+.hc-icon{font-size:26px;margin-bottom:10px;}
+.hc-title{font-size:16px;font-weight:700;margin-bottom:5px;}
+.hc-desc{font-size:11px;color:var(--muted);line-height:1.6;font-family:var(--mono);}
+.hc-score{margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--accent3);}
+
+/* CONTENT */
+.content{max-width:900px;margin:0 auto;padding:28px 22px 80px;}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:14px;}
+.card h3{font-size:13px;font-weight:700;margin-bottom:11px;color:var(--accent3);text-transform:uppercase;letter-spacing:.5px;}
+.card p,.card li{font-size:13px;line-height:1.8;color:#c5c8d8;}
+.card ul,.card ol{padding-left:18px;}
+.card li{margin-bottom:5px;}
+
+/* 2-COL GRID */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+@media(max-width:600px){.two-col,.three-col{grid-template-columns:1fr;}}
+
+/* DEF CARD */
+.def-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.def-card .tag{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:4px;margin-bottom:9px;display:inline-block;}
+.def-card p{font-size:12px;line-height:1.65;color:#b0b4cc;}
+.def-card h4{font-size:13px;font-weight:700;margin-bottom:7px;}
+
+/* TABLE */
+.styled-table{width:100%;border-collapse:collapse;font-size:13px;border-radius:10px;overflow:hidden;}
+.styled-table th{background:var(--accent);color:white;padding:10px 14px;text-align:left;font-size:11px;letter-spacing:.5px;}
+.styled-table td{padding:10px 14px;border-bottom:1px solid var(--border);background:var(--card);color:#c5c8d8;vertical-align:top;font-size:13px;}
+.styled-table tr:last-child td{border-bottom:none;}
+.styled-table code{font-family:var(--mono);background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:11px;color:var(--accent3);}
+
+/* CODE */
+.code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:16px;font-family:var(--mono);font-size:12px;line-height:1.9;overflow-x:auto;}
+.cl{display:flex;gap:12px;}
+.ln{color:var(--muted);min-width:20px;user-select:none;}
+.kw{color:#7c6aff;} .fn{color:#ffb347;} .str{color:var(--accent3);} .cm{color:#555d7a;font-style:italic;} .num{color:var(--accent2);}
+
+/* HIGHLIGHT BOXES */
+.hb{border-radius:10px;padding:13px 17px;margin:11px 0;font-size:13px;line-height:1.7;}
+.hb-purple{background:rgba(124,106,255,.08);border-left:3px solid var(--accent);}
+.hb-green{background:rgba(61,232,176,.08);border-left:3px solid var(--accent3);}
+.hb-orange{background:rgba(255,179,71,.08);border-left:3px solid var(--accent4);}
+.hb-pink{background:rgba(255,106,138,.08);border-left:3px solid var(--accent2);}
+.hb strong{color:var(--text);}
+
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:8px;}
+.step{display:flex;gap:14px;align-items:flex-start;}
+.step-num{background:var(--accent);color:white;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px;}
+.step-body{font-size:13px;line-height:1.7;color:#c5c8d8;}
+.step-body strong{color:var(--text);}
+
+/* DEVOPS */
+.devops-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0;}
+@media(max-width:540px){.devops-grid{grid-template-columns:repeat(2,1fr);}}
+.dp{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:11px;text-align:center;}
+.dp .dn{font-family:var(--mono);font-size:9px;color:var(--muted);margin-bottom:3px;}
+.dp .dt{font-weight:700;font-size:14px;}
+.dp .de{color:var(--muted);font-size:10px;margin-top:2px;}
+.dp.dev{border-top:2px solid var(--accent);}
+.dp.ops{border-top:2px solid var(--accent3);}
+
+/* RPZ */
+.rpz-box{background:var(--card);border-radius:10px;padding:20px;text-align:center;font-family:var(--mono);}
+.rpz-formula{font-size:22px;color:var(--accent4);margin:8px 0;font-weight:700;}
+.rpz-legend{display:flex;justify-content:center;gap:16px;font-size:11px;color:var(--muted);margin-top:10px;flex-wrap:wrap;}
+
+/* QUIZ */
+.quiz-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px;margin-top:26px;}
+.quiz-label{font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent2);margin-bottom:18px;display:flex;align-items:center;gap:7px;}
+.quiz-label::before{content:'◆';font-size:7px;}
+.q-item{margin-bottom:26px;padding-bottom:26px;border-bottom:1px solid var(--border);}
+.q-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.q-num{font-family:var(--mono);font-size:10px;color:var(--accent);margin-bottom:4px;letter-spacing:1px;}
+.q-text{font-size:14px;font-weight:600;margin-bottom:12px;line-height:1.5;}
+.options{display:flex;flex-direction:column;gap:7px;}
+.opt-btn{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:9px 14px;text-align:left;color:var(--text);font-size:13px;font-family:var(--sans);cursor:pointer;transition:all .12s;display:flex;align-items:center;gap:9px;}
+.opt-btn:hover:not([disabled]){border-color:var(--accent);background:rgba(124,106,255,.07);}
+.opt-letter{font-family:var(--mono);font-size:10px;color:var(--muted);min-width:16px;font-weight:700;flex-shrink:0;}
+.opt-btn.correct{border-color:var(--correct);background:rgba(61,232,176,.07);}
+.opt-btn.correct .opt-letter{color:var(--correct);}
+.opt-btn.wrong{border-color:var(--wrong);background:rgba(255,106,138,.07);}
+.opt-btn.wrong .opt-letter{color:var(--wrong);}
+.feedback{display:none;margin-top:9px;padding:9px 13px;border-radius:8px;font-size:12px;line-height:1.55;}
+.feedback.show{display:block;}
+.feedback.ok{background:rgba(61,232,176,.07);border-left:3px solid var(--correct);color:#8fffd8;}
+.feedback.no{background:rgba(255,106,138,.07);border-left:3px solid var(--wrong);color:#ffb0c0;}
+
+/* SCORE */
+.score-corner{position:fixed;top:0;right:0;background:var(--card);border-left:1px solid var(--border);border-bottom:1px solid var(--border);border-radius:0 0 0 10px;padding:7px 14px;font-family:var(--mono);font-size:11px;color:var(--accent3);z-index:300;}
+
+/* PROGRESS */
+.page-progress{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:11px 16px;margin-bottom:22px;}
+.prog-bar-outer{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.prog-bar-inner{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent3));border-radius:3px;transition:width .4s;width:0%;}
+.prog-label{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap;}
+
+/* SECTION DIVIDER */
+.section-divider{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent4);margin:22px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+
+strong{color:var(--text);}
+code{font-family:var(--mono);background:var(--code-bg);padding:1px 5px;border-radius:4px;font-size:11px;color:var(--accent3);}
+em{color:var(--accent4);font-style:normal;}
+</style>
+</head>
+<body>
+
+<div class="score-corner">Score: <span id="score-disp">0/0</span></div>
+
+<div class="topbar" id="topbar">
+  <button class="tab active"  data-page="home">🏠 Start</button>
+  <button class="tab" data-page="prototypen">🧪 Prototypen</button>
+  <button class="tab" data-page="git">🔀 Git</button>
+  <button class="tab" data-page="requirements">📋 Requirements</button>
+  <button class="tab" data-page="arduino">⚡ Arduino</button>
+  <button class="tab" data-page="devops">🔄 DevOps</button>
+  <button class="tab" data-page="fmea">⚠️ FMEA</button>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     HOME
+══════════════════════════════════════════════════════ -->
+<div class="page active" id="page-home">
+  <div class="page-hero" style="--glow:rgba(124,106,255,.18);">
+    <div class="hero-label">FiSi Ausbildung · Lernfeld 7</div>
+    <div class="hero-title">Cyberphysische <span>Systeme</span> ergänzen</div>
+    <div class="hero-sub">Lernzettel · Klassenarbeit-Vorbereitung · August-Bebel-Schule</div>
+  </div>
+  <div class="home-grid">
+    <div class="home-card" onclick="goTo('prototypen')">
+      <div class="hc-icon">🧪</div>
+      <div class="hc-title">Prototypen</div>
+      <div class="hc-desc">Arten · Entwicklungsschritte · Anwendungsbeispiele</div>
+      <div class="hc-score" id="hs-prototypen">5 Fragen</div>
+    </div>
+    <div class="home-card" onclick="goTo('git')">
+      <div class="hc-icon">🔀</div>
+      <div class="hc-title">Versionierung mit Git</div>
+      <div class="hc-desc">Befehle · Workflow · Grafische Darstellung</div>
+      <div class="hc-score" id="hs-git">5 Fragen</div>
+    </div>
+    <div class="home-card" onclick="goTo('requirements')">
+      <div class="hc-icon">📋</div>
+      <div class="hc-title">Requirements Engineering</div>
+      <div class="hc-desc">Kategorien · Stakeholder · Akzeptanzkriterien</div>
+      <div class="hc-score" id="hs-requirements">5 Fragen</div>
+    </div>
+    <div class="home-card" onclick="goTo('arduino')">
+      <div class="hc-icon">⚡</div>
+      <div class="hc-title">Arduino-Sketch</div>
+      <div class="hc-desc">Aufbau · Serielle Komm. · Code-Analyse</div>
+      <div class="hc-score" id="hs-arduino">5 Fragen</div>
+    </div>
+    <div class="home-card" onclick="goTo('devops')">
+      <div class="hc-icon">🔄</div>
+      <div class="hc-title">DevOps</div>
+      <div class="hc-desc">8 Phasen · CI/CD · Rollen &amp; Ziele</div>
+      <div class="hc-score" id="hs-devops">5 Fragen</div>
+    </div>
+    <div class="home-card" onclick="goTo('fmea')">
+      <div class="hc-icon">⚠️</div>
+      <div class="hc-title">FMEA</div>
+      <div class="hc-desc">Strukturanalyse · RPZ · Risikobewertung</div>
+      <div class="hc-score" id="hs-fmea">5 Fragen</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     PROTOTYPEN
+══════════════════════════════════════════════════════ -->
+<div class="page" id="page-prototypen">
+  <div class="page-hero" style="--glow:rgba(124,106,255,.18);">
+    <div class="hero-label">Thema 1 · LF7</div>
+    <div class="hero-title">🧪 <span>Prototypen</span></div>
+    <div class="hero-sub">Arten · Entwicklungsschritte · Einordnung in den Produktlebenszyklus</div>
+  </div>
+  <div class="content">
+
+    <div class="card">
+      <h3>Was ist ein Prototyp? – Grundbegriff</h3>
+      <p>Ein Prototyp ist ein <strong>frühes, vereinfachtes Modell</strong> eines geplanten Produkts. Er dient nicht der finalen Produktion, sondern dem <strong>Erkunden, Testen und Validieren</strong> – bevor teurer Entwicklungsaufwand betrieben wird. In der Softwareentwicklung und im CPS-Umfeld sind Prototypen ein zentrales Werkzeug des iterativen Designs.</p>
+      <div class="hb hb-purple" style="margin-top:12px;">
+        <strong>Warum Prototypen?</strong> Anforderungen werden oft erst klar, wenn man etwas „anfassen" kann. Ein Prototyp macht Ideen greifbar, ermöglicht frühes Feedback und reduziert das Risiko, am Ende ein falsches Produkt fertiggestellt zu haben.
+      </div>
+    </div>
+
+    <div class="section-divider">Arten des Prototypings</div>
+
+    <div class="two-col">
+      <div class="def-card">
+        <div class="tag" style="background:rgba(124,106,255,.15);color:var(--accent);">Evolutionäres Prototyping</div>
+        <h4>„Verbessern statt verwerfen"</h4>
+        <p>Der Prototyp wird schrittweise weiterentwickelt, bis er zum fertigen Produkt wird. Jede Iteration baut auf der vorherigen auf. Gut geeignet, wenn Anforderungen von Beginn an <strong>weitgehend bekannt</strong> sind.<br><br>
+        <strong>Typisches Beispiel:</strong> Eine App existiert bereits. Nutzerfeedback zeigt: Benachrichtigungen fehlen. Diese werden als Prototyp implementiert, getestet und dann produktiv genommen.</p>
+      </div>
+      <div class="def-card">
+        <div class="tag" style="background:rgba(255,106,138,.15);color:var(--accent2);">Exploratives Prototyping</div>
+        <h4>„Erkunden statt fertigstellen"</h4>
+        <p>Dient dem <strong>Erkunden unbekannter Konzepte</strong> oder neuer Anforderungsfelder. Das Ergebnis ist Wissen, nicht das Produkt selbst – der Prototyp wird danach oft verworfen.<br><br>
+        <strong>Typisches Beispiel:</strong> Neues Produkt soll auf einer Messe präsentiert werden, auch wenn es noch nicht fertig ist. Gezeigt wird ein Konzeptmodell oder Mock-up, um Reaktionen einzuholen.</p>
+      </div>
+      <div class="def-card">
+        <div class="tag" style="background:rgba(61,232,176,.15);color:var(--accent3);">Experimentelles Prototyping</div>
+        <h4>„Machbarkeit beweisen"</h4>
+        <p>Zielt darauf ab, die <strong>technische Umsetzbarkeit</strong> einer bestimmten Lösung zu prüfen. Typisch im Bereich Hardware-Software-Integration, Kommunikationsprotokolle oder neue Fertigungsverfahren.<br><br>
+        <strong>Typisches Beispiel:</strong> Kann ein Arduino-Mikrocontroller zuverlässig Sensordaten per UART seriell übertragen und korrekt interpretieren?</p>
+      </div>
+      <div class="def-card">
+        <div class="tag" style="background:rgba(255,179,71,.15);color:var(--accent4);">Rapid Prototyping</div>
+        <h4>„Schnell greifbar machen"</h4>
+        <p>Betont die <strong>Geschwindigkeit</strong> der Erstellung. Ziel ist es, möglichst schnell ein sichtbares Modell zu haben (z.B. 3D-Druck, Papier-Mockup, Klick-Prototyp). Feedbackzyklen sind kurz.<br><br>
+        <strong>Typisches Beispiel:</strong> UX-Designer erstellt in 2 Stunden einen Papier-Prototyp einer App-Oberfläche, um diese direkt mit Nutzern zu testen.</p>
+      </div>
+    </div>
+
+    <div class="section-divider">Entwicklungsschritte</div>
+
+    <div class="card">
+      <h3>Allgemeiner Prototyping-Prozess</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Anforderungsanalyse:</strong> Was soll der Prototyp zeigen oder testen? Ziele und Erfolgskriterien festlegen.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Entwurf / Konzept:</strong> Skizze, Wireframe, Systemarchitektur oder Schaltplan erstellen. Scope klar abgrenzen.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Implementierung:</strong> Aufbau des Prototyps – bewusst vereinfacht, nicht produktionsreif. Nur das Wesentliche umsetzen.</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Test &amp; Evaluation:</strong> Funktioniert es? Feedback von Stakeholdern einholen, Anforderungen abgleichen, Probleme dokumentieren.</div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><strong>Entscheidung:</strong> Je nach Art: Weiterentwickeln (evolutionär) → zurück zu Schritt 3, oder Erkenntnisse sichern und verwerfen (explorativ/experimentell).</div></div>
+      </div>
+    </div>
+
+    <div class="section-divider">Horizontales vs. Vertikales Prototyping</div>
+
+    <div class="two-col">
+      <div class="def-card">
+        <div class="tag" style="background:rgba(124,106,255,.15);color:var(--accent);">Horizontaler Prototyp</div>
+        <p>Zeigt <strong>viele Funktionen oberflächlich</strong>. Breite Abdeckung, aber keine Tiefe. Typisch für UI-Demos: Alle Bildschirme sind klickbar, aber keine echte Logik dahinter.<br><br>→ Gut für frühe Präsentationen und Stakeholder-Feedback zur Gesamtstruktur.</p>
+      </div>
+      <div class="def-card">
+        <div class="tag" style="background:rgba(255,179,71,.15);color:var(--accent4);">Vertikaler Prototyp</div>
+        <p>Zeigt <strong>eine einzelne Funktion vollständig</strong> von der Oberfläche bis zur Datenbank. Wenig Breite, viel Tiefe.<br><br>→ Gut für technische Machbarkeitsprüfungen oder kritische Kernfunktionen.</p>
+      </div>
+    </div>
+
+    <div class="hb hb-orange">
+      <strong>Abgrenzung: Prototyp vs. MVP</strong><br>
+      Ein <strong>Prototyp</strong> ist meist intern, nicht produktionsreif und dient dem Lernen. Ein <strong>MVP (Minimum Viable Product)</strong> ist das kleinstmögliche Produkt, das echten Nutzern geliefert wird und echten Mehrwert bietet. Der MVP ist bereits ein Produkt – der Prototyp noch nicht.
+    </div>
+
+    <!-- QUIZ PROTOTYPEN -->
+    <div class="quiz-block">
+      <div class="quiz-label">Quiz · Prototypen</div>
+      <div class="page-progress">
+        <div class="prog-bar-outer"><div class="prog-bar-inner" id="prog-prototypen"></div></div>
+        <div class="prog-label" id="plbl-prototypen">0 / 5</div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 01</div>
+        <div class="q-text">Ein Unternehmen hat eine Hausautomations-App auf dem Markt. Durch Nutzerbefragungen wurden fehlende Funktionen (z.B. Sprachsteuerung) identifiziert, die nun als Prototyp entwickelt und getestet werden. Welche Prototyping-Art liegt vor?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'prototypen',false,'Exploratives Prototyping dient dem Erkunden gänzlich unbekannter Konzepte – hier sind die Anforderungen bereits durch Befragungen bekannt.')"><span class="opt-letter">A</span>Exploratives Prototyping</button>
+          <button class="opt-btn" onclick="ans(this,'prototypen',true,'Richtig! Das Produkt existiert bereits und wird iterativ um neue Funktionen erweitert – klassisches evolutionäres Prototyping.')"><span class="opt-letter">B</span>Evolutionäres Prototyping</button>
+          <button class="opt-btn" onclick="ans(this,'prototypen',false,'Experimentelles Prototyping testet technische Machbarkeit, nicht die Integration bekannter Features.')"><span class="opt-letter">C</span>Experimentelles Prototyping</button>
+          <button class="opt-btn" onclick="ans(this,'prototypen',false,'Rapid Prototyping betont Geschwindigkeit der Erstellung, nicht die iterative Produktverbesserung.')"><span class="opt-letter">D</span>Rapid Prototyping</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 02</div>
+        <div class="q-text">Ein Startup will ein komplett neues CPS-Produkt auf einer Messe vorstellen, obwohl noch kein funktionsfähiges Endprodukt existiert. Welche Art von Entwicklungsstand wird präsentiert?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'prototypen',false,'Das fertige Produkt liegt ausdrücklich noch nicht vor.')"><span class="opt-letter">A</span>Das vollständige, produktionsreife Endprodukt</button>
+          <button class="opt-btn" onclick="ans(this,'prototypen',true,'Richtig! Gezeigt wird ein Konzeptprototyp oder Mock-up – ein früher Entwicklungsstand aus dem explorativen Prototyping.')"><span class="opt-letter">B</span>Ein früher Konzeptprototyp / exploratives Modell</button>
+          <button class="opt-btn" onclick="ans(this,'prototypen',false,'Ein MVP wäre bereits ein lieferbares Produkt mit echtem Nutzen – das ist hier nicht der Fall.')"><span class="opt-letter">C</span>Ein MVP (Minimum Viable Product)</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 03</div>
+        <div class="q-text">Was ist der Hauptunterschied zwischen einem <strong>horizontalen</strong> und einem <strong>vertikalen</strong> Prototyp?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'prototypen',false,'Beide können Software betreffen. Der Unterschied liegt in Breite vs. Tiefe der Abdeckung.')"><span class="opt-letter">A</span>Horizontal = Software, Vertikal = Hardware</button>
+          <button class="opt-btn" onclick="ans(this,'prototypen',false,'Es ist genau umgekehrt: Horizontal = viele Funktionen oberflächlich, Vertikal = eine Funktion vollständig.')"><span class="opt-letter">B</span>Horizontal = eine Funktion vollständig, Vertikal = viele Funktionen oberflächlich</button>
+          <button class="opt-btn" onclick="ans(this,'prototypen',true,'Richtig! Horizontaler Prototyp = breite Abdeckung vieler Funktionen (UI-Demo). Vertikaler Prototyp = tiefe Abdeckung einer einzelnen Funktion (inkl. Backend).')"><span class="opt-letter">C</span>Horizontal = viele Funktionen oberflächlich, Vertikal = eine Funktion vollständig</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 04</div>
+        <div class="q-text">Richtig oder Falsch: Ein MVP (Minimum Viable Product) und ein Prototyp sind dasselbe Konzept.</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'prototypen',false,'Falsch! Ein Prototyp dient dem internen Lernen und ist nicht produktionsreif. Ein MVP ist ein echtes lieferbares Produkt für echte Nutzer.')"><span class="opt-letter">A</span>Richtig</button>
+          <button class="opt-btn" onclick="ans(this,'prototypen',true,'Korrekt! Ein Prototyp ist meist intern und dient dem Lernen. Ein MVP ist bereits ein Produkt mit echtem Mehrwert für echte Nutzer.')"><span class="opt-letter">B</span>Falsch</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 05</div>
+        <div class="q-text">Ein Team möchte prüfen, ob ein Sensor-Chip über SPI zuverlässig mit einem Mikrocontroller kommunizieren kann. Welche Prototyping-Art ist am besten geeignet?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'prototypen',false,'Rapid Prototyping betont Geschwindigkeit und UI-Sichtbarkeit, nicht technische Machbarkeitstests.')"><span class="opt-letter">A</span>Rapid Prototyping</button>
+          <button class="opt-btn" onclick="ans(this,'prototypen',false,'Evolutionäres Prototyping baut auf einem bestehenden Produkt auf.')"><span class="opt-letter">B</span>Evolutionäres Prototyping</button>
+          <button class="opt-btn" onclick="ans(this,'prototypen',true,'Richtig! Experimentelles Prototyping zielt genau darauf ab, die technische Machbarkeit einer spezifischen Lösung (hier: Kommunikationsprotokoll) zu beweisen.')"><span class="opt-letter">C</span>Experimentelles Prototyping</button>
+          <button class="opt-btn" onclick="ans(this,'prototypen',false,'Exploratives Prototyping dient dem Erkunden unbekannter Anforderungen, nicht dem Machbarkeitstest.')"><span class="opt-letter">D</span>Exploratives Prototyping</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     GIT
+══════════════════════════════════════════════════════ -->
+<div class="page" id="page-git">
+  <div class="page-hero" style="--glow:rgba(255,106,138,.15);">
+    <div class="hero-label">Thema 2 · LF7</div>
+    <div class="hero-title">🔀 <span>Versionierung mit Git</span></div>
+    <div class="hero-sub">Befehle · Workflow · Branches &amp; Merge · Grafische Darstellung</div>
+  </div>
+  <div class="content">
+
+    <div class="card">
+      <h3>Was ist Git? – Grundbegriff</h3>
+      <p>Git ist ein <strong>dezentrales Versionskontrollsystem (DVCS)</strong>, das Änderungen an Dateien über die Zeit nachverfolgt. Jede Arbeitskopie ist ein vollständiges Repository mit der gesamten Projekthistorie. Git ist heute der Standard in der Softwareentwicklung und zunehmend auch in der CPS-Entwicklung (z.B. Firmware-Versionierung).</p>
+      <div class="hb hb-purple" style="margin-top:12px;">
+        <strong>Grundkonzepte:</strong><br>
+        • <strong>Repository (Repo):</strong> Das Projektverzeichnis inkl. gesamter History.<br>
+        • <strong>Commit:</strong> Ein gespeicherter Zustand des Projekts (Snapshot mit Nachricht).<br>
+        • <strong>Branch:</strong> Ein paralleler Entwicklungsstrang (Zweig).<br>
+        • <strong>Remote:</strong> Die zentrale Version des Repos (z.B. auf GitHub/GitLab).<br>
+        • <strong>Working Copy / Local:</strong> Die lokale Arbeitskopie auf dem eigenen Rechner.
+      </div>
+    </div>
+
+    <div class="section-divider">Die wichtigsten Befehle im Überblick</div>
+
+    <table class="styled-table">
+      <thead><tr><th>Befehl</th><th>Funktion</th><th>Richtung / Kontext</th></tr></thead>
+      <tbody>
+        <tr><td><code>git init</code></td><td>Repo initialisieren</td><td>Erstellt ein neues Git-Repository im aktuellen Verzeichnis.</td></tr>
+        <tr><td><code>git clone &lt;url&gt;</code></td><td>Repo klonen</td><td>Erstellt eine vollständige lokale Kopie eines Remote-Repos.</td></tr>
+        <tr><td><code>git add &lt;datei&gt;</code></td><td>Datei stagen</td><td>Fügt Änderungen zur Staging Area hinzu (Vorstufe zum Commit).</td></tr>
+        <tr><td><code>git commit -m "..."</code></td><td>Snapshot speichern</td><td>Speichert alle gestagten Änderungen als Commit mit Nachricht.</td></tr>
+        <tr><td><code>git pull</code></td><td>Remote → Lokal</td><td>Holt Änderungen vom Remote und aktualisiert den lokalen Branch.</td></tr>
+        <tr><td><code>git push origin master</code></td><td>Lokal → Remote</td><td>Überträgt lokale Commits ins Remote-Repository (Branch: master).</td></tr>
+        <tr><td><code>git branch branch_neu</code></td><td>Branch erstellen</td><td>Erstellt neuen Branch. Kein automatischer Wechsel.</td></tr>
+        <tr><td><code>git checkout branch_neu</code></td><td>Branch wechseln</td><td>Wechselt das Arbeitsverzeichnis in den angegebenen Branch.</td></tr>
+        <tr><td><code>git checkout master</code> + <code>git merge branch_neu</code></td><td>Branches zusammenführen</td><td>Erst in Ziel-Branch wechseln, dann Quell-Branch hineinmergen.</td></tr>
+        <tr><td><code>git tag v1.0</code></td><td>Tag erstellen</td><td>Markiert den aktuellen Commit als Version v1.0 in der History.</td></tr>
+        <tr><td><code>git tag</code></td><td>Tags auflisten</td><td>Zeigt alle vorhandenen Tags im Repository.</td></tr>
+        <tr><td><code>git log</code></td><td>History anzeigen</td><td>Zeigt die Commit-History mit Autor, Datum und Nachricht.</td></tr>
+        <tr><td><code>git status</code></td><td>Status prüfen</td><td>Zeigt Änderungen im Working Tree und der Staging Area.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-divider">Der Git-Workflow: Schritt für Schritt</div>
+
+    <div class="card">
+      <h3>Typischer Feature-Entwicklungs-Workflow</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Aktuellen Stand holen:</strong> <code>git pull</code> – stellt sicher, dass die lokale Kopie auf dem neuesten Stand ist.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Feature-Branch erstellen:</strong> <code>git branch feature-x</code> und dann <code>git checkout feature-x</code> – oder in einem Schritt: <code>git checkout -b feature-x</code>.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Änderungen entwickeln &amp; committen:</strong> <code>git add .</code> dann <code>git commit -m "Feature X implementiert"</code> – so oft wie nötig.</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Zurück zu master &amp; mergen:</strong> <code>git checkout master</code> → <code>git merge feature-x</code> – bringt den Feature-Branch in master ein.</div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><strong>Hochladen:</strong> <code>git push origin master</code> – überträgt alle lokalen Commits ins Remote-Repository.</div></div>
+      </div>
+    </div>
+
+    <div class="section-divider">Grafische Darstellung</div>
+
+    <div class="card">
+      <h3>Branch &amp; Merge visualisiert</h3>
+      <div class="code-block" style="font-size:12px;line-height:2.2;">
+        <div style="color:var(--muted);font-size:10px;margin-bottom:8px;">LEGENDE: ● = Commit &nbsp;&nbsp; ─ = Zeitachse</div>
+        <div style="color:var(--accent);">master &nbsp;&nbsp;&nbsp;───●───────────────────────────●──▶</div>
+        <div style="color:var(--accent3);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;╲ (git branch + checkout)&nbsp;&nbsp;&nbsp;╱ (git merge)</div>
+        <div style="color:var(--accent3);">branch_neu &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;●────●────●────●</div>
+        <div style="margin-top:14px;color:var(--muted);font-size:11px;">1. git checkout master &nbsp;&nbsp;&nbsp;&nbsp;→ In master wechseln (aufnehmender Branch)</div>
+        <div style="color:var(--muted);font-size:11px;">2. git merge branch_neu &nbsp;→ branch_neu in master einmergen</div>
+        <div style="margin-top:8px;color:var(--accent4);font-size:11px;">→ Nach dem Merge enthält master alle Commits aus branch_neu</div>
+      </div>
+    </div>
+
+    <div class="two-col" style="margin-top:14px;">
+      <div class="hb hb-green" style="margin:0;">
+        <strong>pull vs. push:</strong><br>
+        <em>pull</em> = ziehen → Remote → Lokal<br>
+        <em>push</em> = schieben → Lokal → Remote<br><br>
+        Merkhilfe: Du <strong>pullst</strong> dir etwas ran, du <strong>pushst</strong> es weg.
+      </div>
+      <div class="hb hb-orange" style="margin:0;">
+        <strong>merge vs. rebase:</strong><br>
+        <em>merge</em> = Branches zusammenführen, History bleibt erhalten (Fork-Symbol).<br>
+        <em>rebase</em> = History umschreiben, sodass es aussieht als wäre linear gearbeitet worden. (Fortgeschritten)
+      </div>
+    </div>
+
+    <!-- QUIZ GIT -->
+    <div class="quiz-block">
+      <div class="quiz-label">Quiz · Git</div>
+      <div class="page-progress">
+        <div class="prog-bar-outer"><div class="prog-bar-inner" id="prog-git"></div></div>
+        <div class="prog-label" id="plbl-git">0 / 5</div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 06</div>
+        <div class="q-text">Welcher Befehl holt Änderungen aus dem Remote-Repository und aktualisiert den lokalen Branch automatisch?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'git',false,'git fetch lädt Metadaten, merged aber nicht automatisch in den lokalen Branch.')"><span class="opt-letter">A</span><code>git fetch</code></button>
+          <button class="opt-btn" onclick="ans(this,'git',true,'Richtig! git pull ist im Grunde ein git fetch + git merge in einem – es holt und integriert Änderungen vom Remote.')"><span class="opt-letter">B</span><code>git pull</code></button>
+          <button class="opt-btn" onclick="ans(this,'git',false,'git push überträgt lokale Commits ins Remote – die entgegengesetzte Richtung.')"><span class="opt-letter">C</span><code>git push origin master</code></button>
+          <button class="opt-btn" onclick="ans(this,'git',false,'git clone erstellt eine komplette Kopie eines Repos – nicht für Updates.')"><span class="opt-letter">D</span><code>git clone</code></button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 07</div>
+        <div class="q-text">Du arbeitest an einem neuen Feature und möchtest einen Branch namens „sensor-fix" erstellen und direkt dorthin wechseln. Welche Befehlsfolge ist korrekt?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'git',false,'Die Reihenfolge ist falsch: erst den Branch erstellen (branch), dann wechseln (checkout).')"><span class="opt-letter">A</span><code>git checkout sensor-fix</code> → <code>git branch sensor-fix</code></button>
+          <button class="opt-btn" onclick="ans(this,'git',true,'Richtig! Erst Branch erstellen, dann wechseln. Alternativ beides in einem: git checkout -b sensor-fix')"><span class="opt-letter">B</span><code>git branch sensor-fix</code> → <code>git checkout sensor-fix</code></button>
+          <button class="opt-btn" onclick="ans(this,'git',false,'git merge sensor-fix würde versuchen, einen Branch hineinzumergen – nicht erstellen oder wechseln.')"><span class="opt-letter">C</span><code>git merge sensor-fix</code></button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 08</div>
+        <div class="q-text">Du möchtest den Branch „feature-display" in master zusammenführen. In welchem Branch musst du dich befinden, wenn du <code>git merge feature-display</code> ausführst?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'git',false,'Du musst im aufnehmenden Branch (master) sein. Merge zieht den anderen Branch in den aktiven.')"><span class="opt-letter">A</span>In feature-display</button>
+          <button class="opt-btn" onclick="ans(this,'git',true,'Richtig! Du musst in master sein. git merge feature-display zieht alle Commits aus feature-display in den aktuell aktiven Branch (master) hinein.')"><span class="opt-letter">B</span>In master</button>
+          <button class="opt-btn" onclick="ans(this,'git',false,'Es spielt keine Rolle, in welchem Branch man ist – das ist falsch. Der aktive Branch ist der Ziel-Branch des Merges.')"><span class="opt-letter">C</span>Es spielt keine Rolle</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 09</div>
+        <div class="q-text">Was ist der Unterschied zwischen <code>git tag</code> (ohne Argumente) und <code>git tag v2.0</code>?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'git',false,'git tag ohne Argument listet nur Tags auf, löscht nichts.')"><span class="opt-letter">A</span><code>git tag</code> löscht alle Tags, <code>git tag v2.0</code> erstellt einen neuen</button>
+          <button class="opt-btn" onclick="ans(this,'git',true,'Richtig! git tag ohne Argument zeigt alle vorhandenen Tags. git tag v2.0 erstellt einen neuen Tag am aktuellen Commit.')"><span class="opt-letter">B</span><code>git tag</code> listet vorhandene Tags, <code>git tag v2.0</code> erstellt einen neuen</button>
+          <button class="opt-btn" onclick="ans(this,'git',false,'Beide Befehle verwalten Tags – sie betreffen keine Branches.')"><span class="opt-letter">C</span>Beide Befehle machen dasselbe, nur auf verschiedenen Branches</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 10</div>
+        <div class="q-text">Was beschreibt der Begriff „Commit" in Git am besten?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'git',false,'Ein Branch ist ein paralleler Entwicklungsstrang, kein Commit.')"><span class="opt-letter">A</span>Ein paralleler Entwicklungsstrang des Projekts</button>
+          <button class="opt-btn" onclick="ans(this,'git',false,'Das Remote-Repository ist der zentrale Server – kein Commit.')"><span class="opt-letter">B</span>Eine Kopie des Repos auf einem Server</button>
+          <button class="opt-btn" onclick="ans(this,'git',true,'Richtig! Ein Commit ist ein gespeicherter Snapshot des Projekts zu einem bestimmten Zeitpunkt, mit Autor, Datum und Nachricht.')"><span class="opt-letter">C</span>Ein gespeicherter Snapshot des Projektzustands mit Nachricht und Autor</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     REQUIREMENTS
+══════════════════════════════════════════════════════ -->
+<div class="page" id="page-requirements">
+  <div class="page-hero" style="--glow:rgba(61,232,176,.12);">
+    <div class="hero-label">Thema 3 · LF7</div>
+    <div class="hero-title">📋 <span>Requirements Engineering</span></div>
+    <div class="hero-sub">Anforderungsarten · Stakeholder · Akzeptanzkriterien · Prozess</div>
+  </div>
+  <div class="content">
+
+    <div class="card">
+      <h3>Was ist Requirements Engineering?</h3>
+      <p>Requirements Engineering (RE) ist der systematische Prozess des <strong>Erhebens, Dokumentierens, Analysierens und Verwaltens von Anforderungen</strong> an ein System. Es ist einer der kritischsten Schritte in der Softwareentwicklung – Fehler in der Anforderungsanalyse sind die häufigste Ursache für gescheiterte Projekte.</p>
+      <div class="hb hb-pink" style="margin-top:12px;">
+        <strong>Studie der Standish Group (CHAOS Report):</strong> Über 40 % aller Projektprobleme lassen sich auf mangelhafte Anforderungen zurückführen – sei es durch fehlende, widersprüchliche oder sich ändernde Requirements.
+      </div>
+    </div>
+
+    <div class="section-divider">Kategorien von Anforderungen</div>
+
+    <div class="two-col">
+      <div class="def-card">
+        <div class="tag" style="background:rgba(124,106,255,.15);color:var(--accent);">Funktionale Anforderungen</div>
+        <p>Beschreiben, <strong>was das System tun soll</strong> – konkrete Funktionen und Verhaltensweisen.<br><br>
+        <strong>Beispiele:</strong><br>
+        • „Das System soll Temperaturwerte alle 5 Sekunden messen."<br>
+        • „Nutzer können sich per QR-Code anmelden."<br>
+        • „Bei Überschreitung von 80°C sendet das System eine Warnung."</p>
+      </div>
+      <div class="def-card">
+        <div class="tag" style="background:rgba(255,106,138,.15);color:var(--accent2);">Nicht-funktionale Anforderungen</div>
+        <p>Beschreiben, <strong>wie gut das System es tun soll</strong> – Qualitätsmerkmale.<br><br>
+        <strong>Beispiele:</strong><br>
+        • Performance: Antwortzeit &lt; 200 ms<br>
+        • Verfügbarkeit: System läuft zu 99,5 % der Zeit<br>
+        • Sicherheit: Kommunikation muss verschlüsselt sein<br>
+        • Wartbarkeit: Code muss dokumentiert sein</p>
+      </div>
+      <div class="def-card">
+        <div class="tag" style="background:rgba(61,232,176,.15);color:var(--accent3);">Stakeholder-Anforderungen</div>
+        <p>Wünsche, Ziele und Einschränkungen der <strong>am Projekt beteiligten Personen und Gruppen</strong>.<br><br>
+        <strong>Typische Stakeholder:</strong> Auftraggeber, Endnutzer, Management, Entwicklungsteam, Vertrieb, Behörden, Betreiber.</p>
+      </div>
+      <div class="def-card">
+        <div class="tag" style="background:rgba(255,179,71,.15);color:var(--accent4);">Normative / gesetzliche Anforderungen</div>
+        <p>Anforderungen, die durch <strong>Gesetze, Normen oder Standards</strong> verpflichtend vorgegeben sind. Diese können nicht verhandelt werden.<br><br>
+        <strong>Beispiele:</strong> DSGVO (Datenschutz), CE-Kennzeichnung (Sicherheit), IEC 61508 (funktionale Sicherheit in CPS).</p>
+      </div>
+    </div>
+
+    <div class="section-divider">Stakeholder – Wer ist beteiligt?</div>
+
+    <div class="card">
+      <h3>Stakeholder-Analyse</h3>
+      <p style="margin-bottom:12px;">Stakeholder sind alle Personen oder Gruppen, die <strong>ein Interesse am Projekt haben oder von ihm beeinflusst werden</strong>. Ihre Interessen können sich widersprechen – das zu erkennen ist Aufgabe des RE.</p>
+      <table class="styled-table">
+        <thead><tr><th>Stakeholder</th><th>Typisches Interesse</th><th>Typischer Konflikt mit</th></tr></thead>
+        <tbody>
+          <tr><td>Auftraggeber / Management</td><td>Kosten niedrig, Termin einhalten, ROI</td><td>Entwicklungsteam (braucht Zeit)</td></tr>
+          <tr><td>Endnutzer</td><td>Einfache Bedienung, Zuverlässigkeit</td><td>Management (kostet Features)</td></tr>
+          <tr><td>Entwicklungsteam</td><td>Klare Anforderungen, technische Freiheit</td><td>Auftraggeber (ändert Requirements)</td></tr>
+          <tr><td>Vertrieb / Marketing</td><td>Verkaufbare Features, Differenzierung</td><td>Entwicklung (zu aufwendig)</td></tr>
+          <tr><td>Behörden / Normen</td><td>Einhaltung von Standards, Zertifizierung</td><td>Alle (erzwingt Aufwand)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-divider">Akzeptanzkriterien</div>
+
+    <div class="card">
+      <h3>Was sind Akzeptanzkriterien?</h3>
+      <p>Akzeptanzkriterien legen <strong>messbar und testbar</strong> fest, wann eine Anforderung als erfüllt gilt. Sie sind die Grundlage für Abnahmetests und verhindern Interpretationsspielräume.</p>
+      <div class="hb hb-green" style="margin-top:12px;">
+        <strong>Gutes Akzeptanzkriterium:</strong><br>
+        ✓ „Wenn die Temperatur 80°C überschreitet, sendet das System innerhalb von 3 Sekunden eine E-Mail-Benachrichtigung an den Betreiber."<br><br>
+        <strong>Schlechtes Akzeptanzkriterium:</strong><br>
+        ✗ „Das System soll schnell auf Temperaturänderungen reagieren." (nicht messbar!)
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Bildungsprozess: Akzeptanzkriterien erstellen</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Anforderung identifizieren:</strong> Was soll das System konkret tun? (Funktionale Anforderung)</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Bedingungen formulieren:</strong> Unter welchen Umständen gilt die Anforderung als erfüllt? (Gegeben / Wenn / Dann – „Given / When / Then"-Format)</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Messbar machen:</strong> Konkrete Zahlen, Grenzwerte, Zeitrahmen einfügen. Kein „schnell", „benutzerfreundlich", „gut".</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Mit Stakeholdern abstimmen:</strong> Alle Beteiligten müssen das Kriterium verstehen und akzeptieren – sonst gibt es Streit bei der Abnahme.</div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><strong>Testfälle ableiten:</strong> Aus jedem Akzeptanzkriterium kann direkt ein Testfall abgeleitet werden.</div></div>
+      </div>
+    </div>
+
+    <!-- QUIZ REQUIREMENTS -->
+    <div class="quiz-block">
+      <div class="quiz-label">Quiz · Requirements Engineering</div>
+      <div class="page-progress">
+        <div class="prog-bar-outer"><div class="prog-bar-inner" id="prog-requirements"></div></div>
+        <div class="prog-label" id="plbl-requirements">0 / 5</div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 11</div>
+        <div class="q-text">Welche der folgenden Anforderungen ist eine <strong>nicht-funktionale</strong> Anforderung?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'requirements',false,'Das ist eine funktionale Anforderung – sie beschreibt eine konkrete Funktion (was das System tun soll).')"><span class="opt-letter">A</span>„Das System soll Temperaturwerte alle 5 Sekunden messen."</button>
+          <button class="opt-btn" onclick="ans(this,'requirements',false,'Das ist eine funktionale Anforderung – sie beschreibt eine konkrete Funktion.')"><span class="opt-letter">B</span>„Nutzer sollen sich per QR-Code anmelden können."</button>
+          <button class="opt-btn" onclick="ans(this,'requirements',true,'Richtig! Die Antwortzeit ist ein Qualitätsmerkmal (Performance) – das ist eine nicht-funktionale Anforderung.')"><span class="opt-letter">C</span>„Die Antwortzeit der API darf 200 ms nicht überschreiten."</button>
+          <button class="opt-btn" onclick="ans(this,'requirements',false,'Das ist eine funktionale Anforderung – sie beschreibt eine konkrete Aktion des Systems.')"><span class="opt-letter">D</span>„Bei Überschreitung von 80°C sendet das System eine Warnung."</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 12</div>
+        <div class="q-text">Welche der folgenden Aussagen beschreibt ein gutes Akzeptanzkriterium?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'requirements',false,'„Benutzerfreundlich" ist nicht messbar und daher kein gutes Akzeptanzkriterium.')"><span class="opt-letter">A</span>„Die App soll benutzerfreundlich sein."</button>
+          <button class="opt-btn" onclick="ans(this,'requirements',false,'„Schnell" ist nicht messbar. Wie schnell genau? Das ist kein testbares Kriterium.')"><span class="opt-letter">B</span>„Das System soll schnell auf Eingaben reagieren."</button>
+          <button class="opt-btn" onclick="ans(this,'requirements',true,'Richtig! Dieses Kriterium ist messbar (95 %, 24 Stunden) und testbar – das sind die Merkmale eines guten Akzeptanzkriteriums.')"><span class="opt-letter">C</span>„Wenn ein Fehler auftritt, muss das System innerhalb von 24 Stunden zu 95 % der Zeit wieder verfügbar sein."</button>
+          <button class="opt-btn" onclick="ans(this,'requirements',false,'„Zuverlässig" ist subjektiv und nicht messbar.')"><span class="opt-letter">D</span>„Das System soll zuverlässig funktionieren."</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 13</div>
+        <div class="q-text">Welche Stakeholder-Gruppe hat typischerweise das Interesse, die <strong>Entwicklungskosten so niedrig wie möglich</strong> zu halten?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'requirements',false,'Das Entwicklungsteam möchte eher ausreichend Zeit und Ressourcen haben.')"><span class="opt-letter">A</span>Entwicklungsteam</button>
+          <button class="opt-btn" onclick="ans(this,'requirements',false,'Endnutzer interessieren sich primär für Funktionalität und Bedienbarkeit.')"><span class="opt-letter">B</span>Endnutzer</button>
+          <button class="opt-btn" onclick="ans(this,'requirements',true,'Richtig! Auftraggeber und Management haben typischerweise das Interesse, Budget und Termine einzuhalten und den ROI zu maximieren.')"><span class="opt-letter">C</span>Auftraggeber / Management</button>
+          <button class="opt-btn" onclick="ans(this,'requirements',false,'Behörden interessieren sich für Normenkonformität, nicht Kosten.')"><span class="opt-letter">D</span>Behörden / Normungsgremien</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 14</div>
+        <div class="q-text">Die DSGVO schreibt vor, dass Nutzerdaten verschlüsselt gespeichert werden müssen. Welcher Kategorie von Anforderungen ist das zuzuordnen?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'requirements',false,'Das ist keine funktionale Anforderung – sie beschreibt kein Systemverhalten, sondern eine externe Vorgabe.')"><span class="opt-letter">A</span>Funktionale Anforderung</button>
+          <button class="opt-btn" onclick="ans(this,'requirements',false,'Es ist keine Stakeholder-Anforderung im engeren Sinne – sie kommt von einer externen Behörde.')"><span class="opt-letter">B</span>Stakeholder-Anforderung</button>
+          <button class="opt-btn" onclick="ans(this,'requirements',true,'Richtig! Gesetzliche Vorgaben wie die DSGVO sind normative/gesetzliche Anforderungen – sie können nicht verhandelt werden.')"><span class="opt-letter">C</span>Normative / gesetzliche Anforderung</button>
+          <button class="opt-btn" onclick="ans(this,'requirements',false,'Marktanforderungen kommen vom Wettbewerb und Markt, nicht von Gesetzen.')"><span class="opt-letter">D</span>Marktanforderung</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 15</div>
+        <div class="q-text">Richtig oder Falsch: Anforderungen im Requirements Engineering stammen ausschließlich von direkten Stakeholdern des Projekts (z.B. Auftraggeber und Nutzer).</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'requirements',false,'Falsch! Neben Stakeholder-Anforderungen gibt es z.B. gesetzliche Vorschriften, technische Systemanforderungen und Qualitätsnormen.')"><span class="opt-letter">A</span>Richtig</button>
+          <button class="opt-btn" onclick="ans(this,'requirements',true,'Korrekt! Anforderungen kommen aus vielen Quellen: Stakeholder, Gesetze, Normen, technische Systeme, Markt. Nicht nur von direkt Beteiligten.')"><span class="opt-letter">B</span>Falsch</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     ARDUINO
+══════════════════════════════════════════════════════ -->
+<div class="page" id="page-arduino">
+  <div class="page-hero" style="--glow:rgba(255,179,71,.15);">
+    <div class="hero-label">Thema 4 · LF7</div>
+    <div class="hero-title">⚡ <span>Arduino-Sketch</span></div>
+    <div class="hero-sub">Aufbau · Serielle Kommunikation · UART · Code-Analyse</div>
+  </div>
+  <div class="content">
+
+    <div class="card">
+      <h3>Was ist Arduino?</h3>
+      <p>Arduino ist eine <strong>Open-Source-Plattform</strong> für Mikrocontroller, die aus Hardware (z.B. Arduino Uno, Mega, Nano) und Software (Arduino IDE) besteht. Sie wird häufig in CPS-Projekten eingesetzt, um Sensoren zu lesen, Aktoren zu steuern und mit anderen Systemen zu kommunizieren. Die Programmiersprache basiert auf <strong>C/C++</strong> mit vereinfachter Bibliotheksstruktur.</p>
+    </div>
+
+    <div class="section-divider">Dreiteilige Sketch-Struktur</div>
+
+    <div class="three-col" style="margin-bottom:14px;">
+      <div class="def-card" style="border-top:2px solid var(--accent);">
+        <div class="tag" style="background:rgba(124,106,255,.15);color:var(--accent);">① Globaler Bereich</div>
+        <p><strong>Wann:</strong> Ganz oben im Sketch, vor setup().<br><br>
+        <strong>Was steht hier:</strong> Bibliotheken einbinden (<code>#include</code>), globale Variablen und Konstanten deklarieren, Pin-Nummern festlegen.<br><br>
+        <strong>Wann ausgeführt:</strong> Beim Kompilieren und einmal beim Start geladen – immer verfügbar.</p>
+      </div>
+      <div class="def-card" style="border-top:2px solid var(--accent4);">
+        <div class="tag" style="background:rgba(255,179,71,.15);color:var(--accent4);">② setup()</div>
+        <p><strong>Wann:</strong> Einmal beim Programmstart (nach dem Einschalten oder Reset).<br><br>
+        <strong>Was steht hier:</strong> Initialisierungen – Pinmodi setzen (<code>pinMode()</code>), serielle Schnittstelle starten (<code>Serial.begin()</code>), Displays initialisieren.<br><br>
+        <strong>Wann ausgeführt:</strong> Genau <strong>einmal</strong>.</p>
+      </div>
+      <div class="def-card" style="border-top:2px solid var(--accent3);">
+        <div class="tag" style="background:rgba(61,232,176,.15);color:var(--accent3);">③ loop()</div>
+        <p><strong>Wann:</strong> Direkt nach setup(), dann endlos.<br><br>
+        <strong>Was steht hier:</strong> Die Hauptprogrammlogik – Sensoren lesen, Berechnungen durchführen, Ausgaben schreiben, Bedingungen prüfen.<br><br>
+        <strong>Wann ausgeführt:</strong> <strong>Endlos wiederholt</strong> (kein Sleep ohne delay()).</p>
+      </div>
+    </div>
+
+    <div class="section-divider">Serielle Kommunikation (UART)</div>
+
+    <div class="card">
+      <h3>Was ist serielle Kommunikation?</h3>
+      <p>Serielle Kommunikation überträgt Daten <strong>Bit für Bit</strong> über eine Leitung. Arduino verwendet standardmäßig <strong>UART (Universal Asynchronous Receiver Transmitter)</strong> über die Pins TX (senden) und RX (empfangen).</p>
+      <div class="two-col" style="margin-top:12px;">
+        <div class="hb hb-purple" style="margin:0;">
+          <strong>Baudrate (z.B. 9600):</strong><br>
+          Gibt an, wie viele Bits pro Sekunde übertragen werden. Sender und Empfänger müssen <strong>dieselbe Baudrate</strong> verwenden – sonst ist die Kommunikation fehlerhaft. 9600 Baud = 9600 Bits/Sekunde.
+        </div>
+        <div class="hb hb-orange" style="margin:0;">
+          <strong>print vs println:</strong><br>
+          <code>Serial.print()</code> gibt Text/Wert aus – <em>kein</em> Zeilenumbruch am Ende.<br>
+          <code>Serial.println()</code> gibt Text/Wert aus + fügt <code>\n</code> (Zeilenumbruch) an.<br>
+          Kombination: erst <code>print</code>, dann <code>println</code> für eine vollständige Zeile.
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider">Kommentierter Code – Empfänger</div>
+
+    <div class="card">
+      <h3>Code aus der Klausur – vollständig kommentiert</h3>
+      <div class="code-block">
+        <div class="cl"><span class="ln"> </span><span class="cm">// ① GLOBALER BEREICH: Hier könnten #include und Variablen stehen</span></div>
+        <div class="cl"><span class="ln"> </span><span class="cm">// Dieses Sketch hat keine globalen Variablen → Bereich leer</span></div>
+        <div style="height:8px"></div>
+        <div class="cl"><span class="ln">1</span><span class="kw">void</span> <span class="fn">setup</span>() {</div>
+        <div class="cl"><span class="ln"> </span><span style="padding-left:18px" class="cm">// ② SETUP: Wird einmalig beim Start ausgeführt</span></div>
+        <div class="cl"><span class="ln">2</span><span style="padding-left:18px"><span class="fn">Serial</span>.<span class="fn">begin</span>(<span class="num">9600</span>);</span></div>
+        <div class="cl"><span class="ln"> </span><span style="padding-left:18px" class="cm">// Serielle Schnittstelle mit 9600 Baud starten</span></div>
+        <div class="cl"><span class="ln"> </span><span style="padding-left:18px" class="cm">// Sender UND Empfänger müssen dieselbe Baudrate nutzen!</span></div>
+        <div class="cl"><span class="ln">3</span>}</div>
+        <div style="height:8px"></div>
+        <div class="cl"><span class="ln">4</span><span class="kw">void</span> <span class="fn">loop</span>() {</div>
+        <div class="cl"><span class="ln"> </span><span style="padding-left:18px" class="cm">// ③ LOOP: Wird endlos wiederholt</span></div>
+        <div class="cl"><span class="ln">5</span><span style="padding-left:18px"><span class="kw">if</span>(<span class="fn">Serial</span>.<span class="fn">available</span>()) {</span></div>
+        <div class="cl"><span class="ln"> </span><span style="padding-left:18px" class="cm">&nbsp;&nbsp;// Serial.available() gibt die Anzahl Bytes im Eingangspuffer zurück</span></div>
+        <div class="cl"><span class="ln"> </span><span style="padding-left:18px" class="cm">&nbsp;&nbsp;// > 0 (= true) wenn Daten vorhanden; = 0 wenn kein Byte empfangen</span></div>
+        <div class="cl"><span class="ln">6</span><span style="padding-left:36px"><span class="kw">unsigned int</span> timeInSeconds = <span class="fn">Serial</span>.<span class="fn">parseInt</span>();</span></div>
+        <div class="cl"><span class="ln"> </span><span style="padding-left:36px" class="cm">// Liest Daten aus dem seriellen Puffer als Ganzzahl (Integer)</span></div>
+        <div class="cl"><span class="ln"> </span><span style="padding-left:36px" class="cm">// unsigned int = positive Ganzzahl (0 bis 65535)</span></div>
+        <div class="cl"><span class="ln">7</span><span style="padding-left:36px"><span class="fn">Serial</span>.<span class="fn">print</span>(<span class="str">"Seconds elapsed on the other Arduino: "</span>);</span></div>
+        <div class="cl"><span class="ln"> </span><span style="padding-left:36px" class="cm">// Gibt den Text aus – OHNE Zeilenumbruch am Ende</span></div>
+        <div class="cl"><span class="ln">8</span><span style="padding-left:36px"><span class="fn">Serial</span>.<span class="fn">println</span>(timeInSeconds);</span></div>
+        <div class="cl"><span class="ln"> </span><span style="padding-left:36px" class="cm">// Gibt den Zahlenwert aus + hängt '\n' (Zeilenumbruch) an</span></div>
+        <div class="cl"><span class="ln">9</span><span style="padding-left:18px">}</span></div>
+        <div class="cl"><span class="ln">10</span>}</div>
+      </div>
+    </div>
+
+    <div class="section-divider">Schreibtischtest</div>
+
+    <div class="card">
+      <h3>Schreibtischtest: Was passiert bei den Eingaben 42, 100, 7?</h3>
+      <p style="margin-bottom:12px;">Der andere Arduino sendet nacheinander die Zahlen 42, 100 und 7. Was gibt der Empfänger im seriellen Monitor aus?</p>
+      <div class="code-block">
+        <div style="color:var(--muted);font-size:11px;margin-bottom:8px;">Ausgabe im Serial Monitor:</div>
+        <div style="color:var(--accent3);">Seconds elapsed on the other Arduino: 42</div>
+        <div style="color:var(--accent3);">Seconds elapsed on the other Arduino: 100</div>
+        <div style="color:var(--accent3);">Seconds elapsed on the other Arduino: 7</div>
+      </div>
+      <div class="hb hb-purple" style="margin-top:12px;">
+        <strong>Warum drei Zeilen?</strong> Pro empfangenem Wert durchläuft loop() einmal den if-Block. Da <code>println()</code> am Ende steht, beginnt jede Ausgabe auf einer neuen Zeile. Der Text kommt von <code>print()</code> (kein Umbruch), die Zahl + Umbruch von <code>println()</code>.
+      </div>
+    </div>
+
+    <!-- QUIZ ARDUINO -->
+    <div class="quiz-block">
+      <div class="quiz-label">Quiz · Arduino</div>
+      <div class="page-progress">
+        <div class="prog-bar-outer"><div class="prog-bar-inner" id="prog-arduino"></div></div>
+        <div class="prog-label" id="plbl-arduino">0 / 5</div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 16</div>
+        <div class="q-text">In welchem Abschnitt eines Arduino-Sketches werden <strong>Pinmodi</strong> und die serielle Schnittstelle initialisiert?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'arduino',false,'Im globalen Bereich werden Variablen und Konstanten deklariert, keine Initialisierungen ausgeführt.')"><span class="opt-letter">A</span>Im globalen Bereich (vor setup)</button>
+          <button class="opt-btn" onclick="ans(this,'arduino',true,'Richtig! setup() ist für einmalige Initialisierungen zuständig – Pinmodi, Serial.begin(), Displays, etc.')"><span class="opt-letter">B</span>In setup()</button>
+          <button class="opt-btn" onclick="ans(this,'arduino',false,'loop() ist für die Hauptlogik zuständig, nicht Initialisierungen.')"><span class="opt-letter">C</span>In loop()</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 17</div>
+        <div class="q-text">Was bewirkt <code>Serial.begin(9600)</code> – und was passiert, wenn Sender und Empfänger unterschiedliche Baudraten verwenden?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'arduino',false,'Serial.begin startet die Kommunikation – es sendet nicht die Zahl 9600.')"><span class="opt-letter">A</span>Es sendet die Zahl 9600 an den anderen Arduino; unterschiedliche Baudraten sind kein Problem.</button>
+          <button class="opt-btn" onclick="ans(this,'arduino',true,'Richtig! Serial.begin(9600) startet die UART-Schnittstelle mit 9600 Baud. Bei unterschiedlichen Baudraten werden Daten korrumpiert oder kommen als Zeichensalat an.')"><span class="opt-letter">B</span>Es startet die serielle Schnittstelle mit 9600 Baud; unterschiedliche Baudraten führen zu fehlerhafter Übertragung.</button>
+          <button class="opt-btn" onclick="ans(this,'arduino',false,'Serial.begin weist keine Pins zu – das wäre pinMode().')"><span class="opt-letter">C</span>Es weist Pin 9600 dem seriellen Port zu; Baudraten spielen keine Rolle.</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 18</div>
+        <div class="q-text">Welche Ausgabe erzeugt der folgende Code, wenn der Wert <code>55</code> empfangen wird?<br><br><code>Serial.print("Messwert: "); Serial.println(55);</code></div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'arduino',false,'Zwei getrennte Zeilen würden entstehen, wenn beide println wären. print erzeugt keinen Umbruch.')"><span class="opt-letter">A</span>Zwei Zeilen: erst „Messwert: " dann „55"</button>
+          <button class="opt-btn" onclick="ans(this,'arduino',true,'Richtig! print gibt den Text ohne Umbruch aus, println hängt die Zahl + Zeilenumbruch direkt dahinter. Ergebnis: „Messwert: 55" in einer Zeile.')"><span class="opt-letter">B</span>Eine Zeile: „Messwert: 55" (danach Zeilenumbruch)</button>
+          <button class="opt-btn" onclick="ans(this,'arduino',false,'Kein Fehler – parseInt() und println() können problemlos mit Zahlen umgehen.')"><span class="opt-letter">C</span>Fehlermeldung, da 55 ein Integer, kein String ist</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 19</div>
+        <div class="q-text">Was gibt <code>Serial.available()</code> zurück, wenn seit dem letzten Aufruf <strong>keine Daten</strong> empfangen wurden?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'arduino',true,'Richtig! Serial.available() gibt die Anzahl der Bytes im Eingangspuffer zurück. Ohne Daten ist dieser leer → 0 → der if-Block wird nicht ausgeführt.')"><span class="opt-letter">A</span>0 (der if-Block wird nicht ausgeführt)</button>
+          <button class="opt-btn" onclick="ans(this,'arduino',false,'-1 ist kein Rückgabewert von Serial.available().')"><span class="opt-letter">B</span>-1 (Fehlercode)</button>
+          <button class="opt-btn" onclick="ans(this,'arduino',false,'Serial.available() gibt keinen String zurück – nur eine Ganzzahl (Anzahl Bytes).')"><span class="opt-letter">C</span>Einen leeren String ""</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 20</div>
+        <div class="q-text">Richtig oder Falsch: Die <code>loop()</code>-Funktion wartet nach jedem Durchlauf automatisch, bis neue Daten ankommen, bevor sie erneut startet.</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'arduino',false,'Falsch! loop() läuft endlos ohne Pause. Wartemechanismen müssen explizit programmiert werden (z.B. delay(), if(Serial.available()), while-Schleifen).')"><span class="opt-letter">A</span>Richtig</button>
+          <button class="opt-btn" onclick="ans(this,'arduino',true,'Korrekt! loop() wird sofort erneut gestartet, ohne zu warten. Das if(Serial.available()) im Code stellt sicher, dass nur bei vorhandenen Daten gearbeitet wird.')"><span class="opt-letter">B</span>Falsch</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     DEVOPS
+══════════════════════════════════════════════════════ -->
+<div class="page" id="page-devops">
+  <div class="page-hero" style="--glow:rgba(61,232,176,.12);">
+    <div class="hero-label">Thema 5 · LF7</div>
+    <div class="hero-title">🔄 <span>DevOps</span></div>
+    <div class="hero-sub">Kultur · 8 Phasen · CI/CD · Rollen &amp; Ziele</div>
+  </div>
+  <div class="content">
+
+    <div class="card">
+      <h3>Was ist DevOps? – Mehr als nur ein Tool</h3>
+      <p>DevOps ist eine <strong>Kultur, Methodik und Praxis</strong>, die Development (Entwicklung) und Operations (Betrieb) zusammenführt. Ziel ist es, Software <strong>schneller, zuverlässiger und häufiger</strong> auszuliefern. DevOps bricht Silos auf: Entwickler denken an den Betrieb, Betrieb denkt an die Entwicklung.</p>
+      <div class="two-col" style="margin-top:12px;">
+        <div class="hb hb-purple" style="margin:0;">
+          <strong>Vorher (ohne DevOps):</strong><br>
+          Entwickler programmieren monatelang → übergeben Paket an Betrieb → Betrieb deployt und kämpft mit Problemen → gegenseitige Schuldzuweisungen → langsame Releases.
+        </div>
+        <div class="hb hb-green" style="margin:0;">
+          <strong>Mit DevOps:</strong><br>
+          Gemeinsame Verantwortung → automatisierte Pipelines → kontinuierliche Lieferung → schnelles Feedback → Fehler früh erkennen → mehrmals täglich deploybar.
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider">Die 8 Phasen des DevOps-Infinity-Loops</div>
+
+    <div class="card">
+      <h3>Phasenübersicht</h3>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:14px;">Blauer Rahmen = Dev-Seite (Entwicklung) · Grüner Rahmen = Ops-Seite (Betrieb)</p>
+      <div class="devops-grid">
+        <div class="dp dev"><div class="dn">Phase 1 · Dev</div><div class="dt">Plan</div><div class="de">Planen</div></div>
+        <div class="dp dev"><div class="dn">Phase 2 · Dev</div><div class="dt">Code</div><div class="de">Codieren</div></div>
+        <div class="dp dev"><div class="dn">Phase 3 · Dev</div><div class="dt">Build</div><div class="de">Erstellung</div></div>
+        <div class="dp dev"><div class="dn">Phase 4 · Dev</div><div class="dt">Test</div><div class="de">Testen</div></div>
+        <div class="dp ops"><div class="dn">Phase 5 · Ops</div><div class="dt">Release</div><div class="de">Freigabe</div></div>
+        <div class="dp ops"><div class="dn">Phase 6 · Ops</div><div class="dt">Deploy</div><div class="de">Bereitstellen</div></div>
+        <div class="dp ops"><div class="dn">Phase 7 · Ops</div><div class="dt">Operate</div><div class="de">Betrieb</div></div>
+        <div class="dp ops"><div class="dn">Phase 8 · Ops</div><div class="dt">Monitor</div><div class="de">Überwachen</div></div>
+      </div>
+    </div>
+
+    <div class="section-divider">Phasen im Detail</div>
+
+    <div class="two-col">
+      <div class="def-card">
+        <div class="tag" style="background:rgba(124,106,255,.15);color:var(--accent);">1 · Plan</div>
+        <p>Anforderungen definieren, Backlog pflegen, Sprints planen. Tools: Jira, Trello, GitHub Issues.<br><br><strong>Artefakt:</strong> Sprint-Plan, User Stories, Roadmap.</p>
+      </div>
+      <div class="def-card">
+        <div class="tag" style="background:rgba(124,106,255,.15);color:var(--accent);">2 · Code</div>
+        <p>Entwickler schreiben Quellcode, nutzen Versionskontrolle (Git), arbeiten in Feature-Branches.<br><br><strong>Artefakt:</strong> Source Code, Pull Requests.</p>
+      </div>
+      <div class="def-card">
+        <div class="tag" style="background:rgba(124,106,255,.15);color:var(--accent);">3 · Build</div>
+        <p>Code wird kompiliert, Abhängigkeiten aufgelöst, ausführbares Artefakt erstellt (JAR, Docker-Image, Firmware-Hex).<br><br><strong>Artefakt:</strong> Build-Artefakt, Container-Image.</p>
+      </div>
+      <div class="def-card">
+        <div class="tag" style="background:rgba(124,106,255,.15);color:var(--accent);">4 · Test</div>
+        <p>Automatisierte Tests: Unit-Tests, Integrationstests, End-to-End-Tests. Fehler werden <em>hier</em> gefunden, nicht in Produktion.<br><br><strong>Artefakt:</strong> Testergebnis-Report.</p>
+      </div>
+      <div class="def-card">
+        <div class="tag" style="background:rgba(61,232,176,.15);color:var(--accent3);">5 · Release</div>
+        <p>Formale Freigabe der neuen Version. Genehmigungsprozesse, Changelogs, Versionierung (Semantic Versioning: v2.3.1).<br><br><strong>Artefakt:</strong> Release Notes, versioniertes Paket.</p>
+      </div>
+      <div class="def-card">
+        <div class="tag" style="background:rgba(61,232,176,.15);color:var(--accent3);">6 · Deploy</div>
+        <p>Software wird in die Zielumgebung (Produktion, Server, Gerät) ausgerollt. Oft automatisiert via CI/CD-Pipeline.<br><br><strong>Artefakt:</strong> Deployments, Rollout-Protokoll.</p>
+      </div>
+      <div class="def-card">
+        <div class="tag" style="background:rgba(61,232,176,.15);color:var(--accent3);">7 · Operate</div>
+        <p>Das System läuft in Produktion. Infrastruktur bereitstellen, skalieren, Updates einspielen, Incidents bearbeiten.<br><br><strong>Artefakt:</strong> Betriebsdokumentation, SLAs.</p>
+      </div>
+      <div class="def-card">
+        <div class="tag" style="background:rgba(61,232,176,.15);color:var(--accent3);">8 · Monitor</div>
+        <p>Laufende Überwachung: Performance, Fehler, Nutzerverhalten. Erkenntnisse fließen zurück in Plan. Tools: Grafana, Prometheus, ELK.<br><br><strong>Artefakt:</strong> Dashboards, Alerts, Logs.</p>
+      </div>
+    </div>
+
+    <div class="section-divider">CI/CD – Der Kern von DevOps</div>
+
+    <div class="card">
+      <h3>Continuous Integration &amp; Continuous Delivery</h3>
+      <div class="two-col">
+        <div>
+          <p><strong>CI – Continuous Integration:</strong><br>Entwickler integrieren Code <em>häufig</em> (mehrmals täglich) in einen gemeinsamen Branch. Jeder Commit löst automatisch Build und Tests aus → Fehler werden sofort erkannt.</p>
+        </div>
+        <div>
+          <p><strong>CD – Continuous Delivery/Deployment:</strong><br>Nach erfolgreichem CI wird das Artefakt automatisch in eine Staging- oder Produktionsumgebung ausgerollt → Releases werden zur Routine, nicht zum Ereignis.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="hb hb-green">
+      <strong>Merksatz für die Reihenfolge:</strong><br>
+      <em>„<strong>P</strong>rojekte <strong>C</strong>odieren <strong>B</strong>rauchen <strong>T</strong>ests, <strong>R</strong>eleases <strong>D</strong>auern <strong>O</strong>ft <strong>M</strong>onate"</em><br>
+      Plan → Code → Build → Test → Release → Deploy → Operate → Monitor
+    </div>
+
+    <!-- QUIZ DEVOPS -->
+    <div class="quiz-block">
+      <div class="quiz-label">Quiz · DevOps</div>
+      <div class="page-progress">
+        <div class="prog-bar-outer"><div class="prog-bar-inner" id="prog-devops"></div></div>
+        <div class="prog-label" id="plbl-devops">0 / 5</div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 21</div>
+        <div class="q-text">In welcher Phase des DevOps-Zyklus werden automatisierte <strong>Unit-Tests und Integrationstests</strong> ausgeführt?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'devops',false,'In der Build-Phase wird der Code kompiliert und ein ausführbares Artefakt erstellt.')"><span class="opt-letter">A</span>Build</button>
+          <button class="opt-btn" onclick="ans(this,'devops',true,'Richtig! Die Test-Phase (Phase 4) ist für automatisierte Tests verantwortlich. Fehler sollen hier gefunden werden, nicht in der Produktion.')"><span class="opt-letter">B</span>Test</button>
+          <button class="opt-btn" onclick="ans(this,'devops',false,'Monitor überwacht das laufende System in Produktion.')"><span class="opt-letter">C</span>Monitor</button>
+          <button class="opt-btn" onclick="ans(this,'devops',false,'In der Deploy-Phase wird das Artefakt ausgerollt – Tests laufen davor.')"><span class="opt-letter">D</span>Deploy</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 22</div>
+        <div class="q-text">Was beschreibt <strong>Continuous Integration (CI)</strong> am besten?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'devops',false,'Das beschreibt Continuous Delivery (CD), nicht CI.')"><span class="opt-letter">A</span>Die automatische Auslieferung von Software in die Produktion</button>
+          <button class="opt-btn" onclick="ans(this,'devops',true,'Richtig! CI bedeutet, dass Entwickler Code häufig integrieren. Jeder Commit löst automatisch Build und Tests aus, um Fehler früh zu erkennen.')"><span class="opt-letter">B</span>Häufiges Integrieren von Code mit automatischen Builds und Tests bei jedem Commit</button>
+          <button class="opt-btn" onclick="ans(this,'devops',false,'Das beschreibt den Betrieb (Operate), nicht CI.')"><span class="opt-letter">C</span>Das Überwachen des laufenden Systems auf Fehler</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 23</div>
+        <div class="q-text">Welche Phase kommt direkt <strong>nach Release</strong> im DevOps-Zyklus?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'devops',false,'Test kommt vor Release, nicht danach.')"><span class="opt-letter">A</span>Test</button>
+          <button class="opt-btn" onclick="ans(this,'devops',false,'Operate kommt nach Deploy, nicht direkt nach Release.')"><span class="opt-letter">B</span>Operate</button>
+          <button class="opt-btn" onclick="ans(this,'devops',true,'Richtig! Nach Release (Freigabe) folgt Deploy (Bereitstellen) – die Software wird in die Zielumgebung ausgerollt.')"><span class="opt-letter">C</span>Deploy</button>
+          <button class="opt-btn" onclick="ans(this,'devops',false,'Monitor ist die letzte Phase und kommt nach Operate.')"><span class="opt-letter">D</span>Monitor</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 24</div>
+        <div class="q-text">Richtig oder Falsch: In einem DevOps-Team sind Entwicklung und Betrieb strikt in getrennten Abteilungen ohne gemeinsame Verantwortung.</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'devops',false,'Falsch! Das Aufbrechen von Silos und gemeinsame Verantwortung ist der Kern von DevOps.')"><span class="opt-letter">A</span>Richtig</button>
+          <button class="opt-btn" onclick="ans(this,'devops',true,'Korrekt! DevOps zielt genau auf das Gegenteil: gemeinsame Verantwortung, enge Zusammenarbeit zwischen Dev und Ops.')"><span class="opt-letter">B</span>Falsch</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 25</div>
+        <div class="q-text">In welcher DevOps-Phase werden Erkenntnisse über das laufende System gesammelt und fließen als Feedback in die <strong>Plan</strong>-Phase zurück?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'devops',false,'Deploy rollt die Software aus – dort werden keine Betriebsdaten gesammelt.')"><span class="opt-letter">A</span>Deploy</button>
+          <button class="opt-btn" onclick="ans(this,'devops',false,'Release ist die formale Freigabe, nicht die Überwachung.')"><span class="opt-letter">B</span>Release</button>
+          <button class="opt-btn" onclick="ans(this,'devops',false,'Operate betreibt das System – die systematische Auswertung passiert in Monitor.')"><span class="opt-letter">C</span>Operate</button>
+          <button class="opt-btn" onclick="ans(this,'devops',true,'Richtig! Monitor (Phase 8) sammelt Daten über Performance, Fehler und Nutzerverhalten und speist diese als Feedback zurück in Plan – so schließt sich der Infinity-Loop.')"><span class="opt-letter">D</span>Monitor</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     FMEA
+══════════════════════════════════════════════════════ -->
+<div class="page" id="page-fmea">
+  <div class="page-hero" style="--glow:rgba(255,106,138,.15);">
+    <div class="hero-label">Thema 6 · LF7</div>
+    <div class="hero-title">⚠️ <span>FMEA</span></div>
+    <div class="hero-sub">Strukturanalyse · Funktionsanalyse · RPZ · Risikobewertung · Maßnahmen</div>
+  </div>
+  <div class="content">
+
+    <div class="card">
+      <h3>Was ist FMEA? – Grundbegriff</h3>
+      <p><strong>Failure Mode and Effects Analysis</strong> (Fehlermöglichkeits- und Einflussanalyse) ist eine systematische Methode zur <strong>präventiven Qualitätssicherung</strong>. Sie wurde ursprünglich in der Raumfahrt (NASA, 1960er) entwickelt und ist heute Pflichtbestandteil in sicherheitskritischen Branchen wie Automobilbau (IATF 16949), Medizintechnik und – zunehmend – in der CPS-Entwicklung.</p>
+      <div class="hb hb-pink" style="margin-top:12px;">
+        <strong>Grundgedanke:</strong> Mögliche Fehler <em>bevor</em> sie auftreten identifizieren, bewerten und durch gezielte Maßnahmen verhindern oder abschwächen. FMEA ist präventiv, nicht reaktiv.
+      </div>
+    </div>
+
+    <div class="section-divider">Die 5 Schritte der FMEA</div>
+
+    <div class="card">
+      <h3>FMEA-Prozess</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Strukturanalyse:</strong> Das System hierarchisch in Baugruppen, Komponenten und Merkmale zerlegen. Schafft die Grundlage für alle weiteren Schritte.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Funktionsanalyse:</strong> Welche Funktion hat jede Komponente? Was ist die erwartete Leistung? Basis für die Fehlerdefinition.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Fehleranalyse:</strong> Für jede Funktion: Welche Fehler können auftreten? Welche Auswirkungen haben sie? Was sind die Ursachen?</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Risikobewertung (RPZ):</strong> Jeden Fehler mit B, A, E bewerten → RPZ berechnen → Prioritäten setzen.</div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><strong>Maßnahmen &amp; Optimierung:</strong> Für Fehler mit hoher RPZ: Maßnahmen definieren, umsetzen, neue RPZ berechnen und prüfen ob verbessert.</div></div>
+      </div>
+    </div>
+
+    <div class="section-divider">Strukturanalyse – Beispiel Wetterstation</div>
+
+    <div class="card">
+      <h3>Hierarchische Systemzerlegung</h3>
+      <p style="margin-bottom:14px;font-size:13px;">Die Strukturanalyse zerlegt das System von oben nach unten. Jede Ebene beschreibt einen konkreteren Teil des Systems:</p>
+      <div class="code-block" style="line-height:2.1;">
+        <div style="color:var(--muted);font-size:11px;margin-bottom:8px;">Ebene 1: Gesamtsystem → Ebene 2: Baugruppe → Ebene 3: Komponente</div>
+        <div style="color:var(--accent);font-weight:700;">CPS – Wetterstation</div>
+        <div style="padding-left:20px;color:var(--accent3);">├── Gehäuse und Energieversorgung</div>
+        <div style="padding-left:40px;color:#b0b4cc;">│&nbsp;&nbsp;&nbsp;└── 5V Spannungsversorgung</div>
+        <div style="padding-left:20px;color:var(--accent3);">└── Sensoreinheiten</div>
+        <div style="padding-left:40px;color:#b0b4cc;">&nbsp;&nbsp;&nbsp;&nbsp;├── Sensor Temperatur</div>
+        <div style="padding-left:40px;color:#b0b4cc;">&nbsp;&nbsp;&nbsp;&nbsp;└── Sensor Luftfeuchte</div>
+      </div>
+      <p style="margin-top:12px;font-size:12px;color:var(--muted);">Die Strukturanalyse stellt sicher, dass kein Bestandteil vergessen wird. Erst wenn sie vollständig ist, kann die Fehleranalyse beginnen.</p>
+    </div>
+
+    <div class="section-divider">RPZ – Risikoprioritätszahl</div>
+
+    <div class="card">
+      <h3>Die drei Bewertungsfaktoren</h3>
+      <div class="rpz-box" style="margin-bottom:14px;">
+        <div style="color:var(--muted);font-size:12px;">Formel:</div>
+        <div class="rpz-formula">RPZ = B × A × E</div>
+        <div class="rpz-legend">
+          <span><strong style="color:var(--accent2);">B</strong> = Bedeutung (Schwere der Fehlerfolge)</span>
+          <span><strong style="color:var(--accent4);">A</strong> = Auftreten (Wahrscheinlichkeit des Fehlers)</span>
+          <span><strong style="color:var(--accent3);">E</strong> = Entdeckung (Nicht-Entdeckbarkeit)</span>
+        </div>
+      </div>
+      <table class="styled-table">
+        <thead><tr><th>Faktor</th><th>Skala</th><th>Wert 1 = gut</th><th>Wert 10 = schlecht</th></tr></thead>
+        <tbody>
+          <tr><td><strong style="color:var(--accent2);">B – Bedeutung</strong></td><td>1–10</td><td>Keine Auswirkung auf Produkt/Nutzer</td><td>Gefährdung ohne Vorwarnung, sicherheitskritisch</td></tr>
+          <tr><td><strong style="color:var(--accent4);">A – Auftreten</strong></td><td>1–10</td><td>Sehr unwahrscheinlich (&lt;1:1.000.000)</td><td>Fast unvermeidlich (&gt;1:2)</td></tr>
+          <tr><td><strong style="color:var(--accent3);">E – Entdeckung ⚠️</strong></td><td>1–10</td><td>Wird mit Sicherheit vor Auslieferung erkannt</td><td>Keine Prüfmethode vorhanden, wird nicht erkannt</td></tr>
+        </tbody>
+      </table>
+      <div class="hb hb-pink" style="margin-top:12px;">
+        <strong>⚠️ Achtung E-Faktor:</strong> Bei E ist ein <em>hoher Wert schlecht</em>! E=10 bedeutet, der Fehler wird mit hoher Wahrscheinlichkeit <em>nicht</em> entdeckt. E=1 bedeutet, er wird sicher entdeckt.
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>RPZ-Interpretation und Handlungsdruck</h3>
+      <table class="styled-table">
+        <thead><tr><th>RPZ-Bereich</th><th>Bewertung</th><th>Empfohlene Reaktion</th></tr></thead>
+        <tbody>
+          <tr><td style="color:var(--accent3);">1 – 50</td><td>Gering</td><td>Kein unmittelbarer Handlungsbedarf. Dokumentieren und beobachten.</td></tr>
+          <tr><td style="color:var(--accent4);">51 – 100</td><td>Mittel</td><td>Maßnahmen prüfen, bei nächster Gelegenheit optimieren.</td></tr>
+          <tr><td style="color:var(--accent2);">101 – 200</td><td>Erhöht</td><td>Handlungsbedarf. Maßnahmen zeitnah einleiten und RPZ neu berechnen.</td></tr>
+          <tr><td style="color:var(--wrong);">201 – 1000</td><td>Kritisch</td><td>Sofortiger Handlungsbedarf. Produkt darf so nicht ausgeliefert werden.</td></tr>
+        </tbody>
+      </table>
+      <div class="hb hb-orange" style="margin-top:12px;">
+        <strong>Klausurbeispiel – Kabelbruch: B=6, A=5, E=4</strong><br>
+        RPZ = 6 × 5 × 4 = <strong>120</strong> → Bereich „Erhöht" (101–200).<br>
+        → <strong>Handlungsbedarf</strong>: Maßnahmen zeitnah einleiten, z.B. robustere Kabelführung, Schutzmantel, kürzere Inspektionsintervalle, Überströmschutz. Nach Umsetzung: neue RPZ berechnen.
+      </div>
+    </div>
+
+    <div class="section-divider">Maßnahmen zur RPZ-Senkung</div>
+
+    <div class="three-col">
+      <div class="def-card">
+        <div class="tag" style="background:rgba(255,106,138,.15);color:var(--accent2);">B senken</div>
+        <p>Fehlerfolgen abschwächen: redundante Systeme, Sicherheitsmechanismen, Fail-Safe-Design (System geht bei Fehler in sicheren Zustand).</p>
+      </div>
+      <div class="def-card">
+        <div class="tag" style="background:rgba(255,179,71,.15);color:var(--accent4);">A senken</div>
+        <p>Fehlerursachen reduzieren: bessere Qualität der Bauteile, robusteres Design, bessere Fertigungsprozesse.</p>
+      </div>
+      <div class="def-card">
+        <div class="tag" style="background:rgba(61,232,176,.15);color:var(--accent3);">E senken</div>
+        <p>Entdeckungswahrscheinlichkeit erhöhen: mehr Tests, Sensoren, Diagnosesysteme, regelmäßige Inspektionen.</p>
+      </div>
+    </div>
+
+    <!-- QUIZ FMEA -->
+    <div class="quiz-block">
+      <div class="quiz-label">Quiz · FMEA</div>
+      <div class="page-progress">
+        <div class="prog-bar-outer"><div class="prog-bar-inner" id="prog-fmea"></div></div>
+        <div class="prog-label" id="plbl-fmea">0 / 5</div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 26</div>
+        <div class="q-text">Was ist das Ziel der <strong>Strukturanalyse</strong> im FMEA-Prozess?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'fmea',false,'Das ist das Ziel der Risikobewertung (RPZ), nicht der Strukturanalyse.')"><span class="opt-letter">A</span>Jedem Fehler eine Risikoprioritätszahl zuweisen</button>
+          <button class="opt-btn" onclick="ans(this,'fmea',true,'Richtig! Die Strukturanalyse zerlegt das System hierarchisch in Baugruppen und Komponenten – sie ist die Grundlage für alle weiteren FMEA-Schritte.')"><span class="opt-letter">B</span>Das System hierarchisch in Baugruppen und Komponenten zerlegen</button>
+          <button class="opt-btn" onclick="ans(this,'fmea',false,'Maßnahmen werden erst nach der Risikobewertung im 5. Schritt definiert.')"><span class="opt-letter">C</span>Maßnahmen zur Fehlerreduzierung festlegen</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 27</div>
+        <div class="q-text">Ein Sensor hat folgende Bewertung: B=4, A=7, E=6. Berechne die RPZ und bestimme den Handlungsbedarf.</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'fmea',false,'4+7+6=17 – das wäre Addition. RPZ wird durch Multiplikation berechnet.')"><span class="opt-letter">A</span>RPZ=17, kein Handlungsbedarf</button>
+          <button class="opt-btn" onclick="ans(this,'fmea',false,'4×7=28, ×6=168 – nicht 112. Nochmal nachrechnen.')"><span class="opt-letter">B</span>RPZ=112, erhöhter Handlungsbedarf</button>
+          <button class="opt-btn" onclick="ans(this,'fmea',true,'Richtig! RPZ = 4×7×6 = 168. Das liegt im erhöhten Bereich (101–200) → Maßnahmen zeitnah einleiten.')"><span class="opt-letter">C</span>RPZ=168, erhöhter Handlungsbedarf – Maßnahmen einleiten</button>
+          <button class="opt-btn" onclick="ans(this,'fmea',false,'4×7×6=168, nicht 336.')"><span class="opt-letter">D</span>RPZ=336, sofortiger Handlungsbedarf</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 28</div>
+        <div class="q-text">Was bedeutet ein <strong>hoher E-Wert</strong> (z.B. E=9) in der FMEA – und warum ist das problematisch?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'fmea',false,'Das ist das Gegenteil: Hoher E-Wert = Fehler wird kaum erkannt.')"><span class="opt-letter">A</span>Der Fehler wird mit hoher Wahrscheinlichkeit vor der Auslieferung entdeckt → gut.</button>
+          <button class="opt-btn" onclick="ans(this,'fmea',true,'Richtig! Hoher E-Wert = Fehler wird kaum/nicht entdeckt. Das ist besonders gefährlich, da der Fehler unbemerkt bis zum Kunden gelangt und die RPZ stark erhöht.')"><span class="opt-letter">B</span>Der Fehler wird kaum entdeckt → gefährlich, weil er unbemerkt zum Kunden gelangt.</button>
+          <button class="opt-btn" onclick="ans(this,'fmea',false,'E bewertet Entdeckbarkeit, nicht Häufigkeit. Häufigkeit wäre der A-Wert.')"><span class="opt-letter">C</span>Der Fehler tritt sehr häufig auf → hohe Wartungskosten.</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 29</div>
+        <div class="q-text">Worunter wird „Sensor Luftfeuchte" in der Strukturanalyse der CPS-Wetterstation eingeordnet?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'fmea',false,'Gehäuse und Energieversorgung enthält die 5V Spannungsversorgung – keine Sensoren.')"><span class="opt-letter">A</span>Gehäuse und Energieversorgung</button>
+          <button class="opt-btn" onclick="ans(this,'fmea',true,'Richtig! Sensoreinheiten ist die Baugruppe, die sowohl Sensor Temperatur als auch Sensor Luftfeuchte enthält.')"><span class="opt-letter">B</span>Sensoreinheiten</button>
+          <button class="opt-btn" onclick="ans(this,'fmea',false,'CPS-Wetterstation ist die oberste Ebene (Gesamtsystem). Sensoren sind tiefer in der Hierarchie.')"><span class="opt-letter">C</span>CPS – Wetterstation (direkt, ohne Zwischenebene)</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-num">F 30</div>
+        <div class="q-text">Ein Fehler hat RPZ=250. Welche Maßnahme senkt die RPZ am stärksten, wenn der <strong>B-Wert von 10 auf 2</strong> reduziert werden kann (A=5, E=5 bleiben)?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="ans(this,'fmea',false,'Neue RPZ = 2×5×5 = 50. Das ist eine drastische Verbesserung. Die Antwort stimmt in der Richtung, aber die RPZ-Berechnung ist falsch.')"><span class="opt-letter">A</span>Neue RPZ = 100 → mittlerer Bereich, weiterhin Handlungsbedarf</button>
+          <button class="opt-btn" onclick="ans(this,'fmea',true,'Richtig! Neue RPZ = 2×5×5 = 50 → geringer Bereich. Die drastische Senkung des B-Werts (Fehlerfolge abschwächen) ist oft die wirkungsvollste Maßnahme.')"><span class="opt-letter">B</span>Neue RPZ = 50 → geringer Bereich, kein unmittelbarer Handlungsbedarf mehr</button>
+          <button class="opt-btn" onclick="ans(this,'fmea',false,'2×5×5=50, nicht 200.')"><span class="opt-letter">C</span>Neue RPZ = 200 → immer noch erhöhter Bereich</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const PAGE_IDS = ['home','prototypen','git','requirements','arduino','devops','fmea'];
+const PAGE_TOTAL = { prototypen:5, git:5, requirements:5, arduino:5, devops:5, fmea:5 };
+const state = {};
+PAGE_IDS.filter(p=>p!=='home').forEach(p=>{ state[p]={answered:0,correct:0}; });
+let gCorrect=0, gAnswered=0;
+
+function goTo(pageId){
+  PAGE_IDS.forEach(id=>{ document.getElementById('page-'+id).classList.remove('active'); });
+  document.getElementById('page-'+pageId).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t=>{ t.classList.toggle('active', t.dataset.page===pageId); });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click', function(){ goTo(this.dataset.page); });
+});
+
+function ans(btn, page, isCorrect, explanation){
+  const item = btn.closest('.q-item');
+  if(item.dataset.done) return;
+  item.dataset.done='1';
+  item.querySelectorAll('.opt-btn').forEach(b=>{ b.disabled=true; });
+  const fb = item.querySelector('.feedback');
+  if(isCorrect){
+    btn.classList.add('correct');
+    fb.className='feedback ok show';
+    fb.textContent='✓ Richtig! '+explanation;
+    state[page].correct++;
+    gCorrect++;
+  } else {
+    btn.classList.add('wrong');
+    fb.className='feedback no show';
+    fb.textContent='✗ Leider falsch. '+explanation;
+    item.querySelectorAll('.opt-btn').forEach(b=>{
+      const oc=b.getAttribute('onclick')||'';
+      if(oc.includes("ans(this,'"+page+"',true")){ b.classList.add('correct'); }
+    });
+  }
+  state[page].answered++;
+  gAnswered++;
+  refreshProgress(page);
+  refreshScore();
+  refreshHomeCards();
+}
+
+function refreshProgress(page){
+  const total=PAGE_TOTAL[page], done=state[page].answered;
+  const bar=document.getElementById('prog-'+page);
+  const lbl=document.getElementById('plbl-'+page);
+  if(bar) bar.style.width=((done/total)*100)+'%';
+  if(lbl) lbl.textContent=done+' / '+total;
+}
+
+function refreshScore(){
+  document.getElementById('score-disp').textContent=gCorrect+'/'+gAnswered;
+}
+
+function refreshHomeCards(){
+  Object.keys(state).forEach(page=>{
+    const el=document.getElementById('hs-'+page);
+    if(!el) return;
+    const total=PAGE_TOTAL[page], done=state[page].answered, cor=state[page].correct;
+    if(done===0){ el.textContent=total+' Fragen'; el.style.color=''; }
+    else if(done<total){ el.textContent=done+'/'+total+' · '+cor+' richtig'; el.style.color=''; }
+    else { el.textContent='✓ Fertig · '+cor+'/'+total+' richtig'; el.style.color=cor===total?'var(--correct)':'var(--accent4)'; }
+  });
+}
+</script>
+</body>
+</html>
