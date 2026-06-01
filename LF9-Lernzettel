@@ -177,6 +177,13 @@
   .quiz-opt.wrong { border-color: var(--red) !important; background: var(--red-bg) !important; color: #fca5a5 !important; }
   .quiz-opt.show-correct { border-color: var(--green); background: var(--green-bg); color: #86efac; opacity: 0.6; }
   .quiz-opt:disabled { cursor: default; }
+  .quiz-opt.selected { border-color: var(--blue); background: var(--blue-bg); color: var(--blue); }
+  .submit-btn {
+    display: none; margin-top: 10px; padding: 8px 20px;
+    background: var(--blue); color: #fff; border: none; border-radius: var(--radius-sm);
+    font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  .submit-btn:hover { opacity: 0.88; }
   .tf-row { display: flex; gap: 10px; margin-top: 0.5rem; }
   .tf-btn {
     flex: 1; padding: 9px; border: 1px solid var(--border2); border-radius: var(--radius-sm);
@@ -483,98 +490,103 @@
       <div class="quiz-num">Frage 1 · Multiple Choice</div>
       <div class="quiz-q">Was ist die Hauptaufgabe eines Load Balancers?</div>
       <div class="quiz-opts" id="q01">
-        <button class="quiz-opt" onclick="mc('q01',this,false,'q1-prog',8)">Er erstellt regelmäßige Datensicherungen</button>
-        <button class="quiz-opt" onclick="mc('q01',this,true,'q1-prog',8)">Er verteilt eingehende Anfragen auf mehrere Server zur gleichmäßigen Auslastung</button>
-        <button class="quiz-opt" onclick="mc('q01',this,false,'q1-prog',8)">Er verschlüsselt den Datenverkehr zwischen Client und Server</button>
-        <button class="quiz-opt" onclick="mc('q01',this,false,'q1-prog',8)">Er übersetzt Domainnamen in IP-Adressen</button>
+        <button class="quiz-opt" onclick="mc('q01',this,0)">Er erstellt regelmäßige Datensicherungen</button>
+        <button class="quiz-opt" onclick="mc('q01',this,1)">Er verteilt eingehende Anfragen auf mehrere Server zur gleichmäßigen Auslastung</button>
+        <button class="quiz-opt" onclick="mc('q01',this,2)">Er verschlüsselt den Datenverkehr zwischen Client und Server</button>
+        <button class="quiz-opt" onclick="mc('q01',this,3)">Er übersetzt Domainnamen in IP-Adressen</button>
       </div>
+      <button class="submit-btn" id="q01-submit" onclick="submitMC('q01')">Auswerten</button>
       <div class="feedback" id="q01-fb"></div>
-      <button class="reset-btn" onclick="resetMC('q01','q1-prog',8)">↺ Zurücksetzen</button>
+      <button class="reset-btn" onclick="resetQ('q01','mc')">↺ Zurücksetzen</button>
     </div>
 
     <div class="quiz-block">
       <div class="quiz-num">Frage 2 · Multiple Choice</div>
       <div class="quiz-q">Welche Aussage zum Reverse Proxy ist korrekt?</div>
       <div class="quiz-opts" id="q02">
-        <button class="quiz-opt" onclick="mc('q02',this,false,'q1-prog',8)">Er steht vor den Clients und leitet deren Anfragen ins Internet weiter</button>
-        <button class="quiz-opt" onclick="mc('q02',this,false,'q1-prog',8)">Er vergibt IP-Adressen an Clients per DHCP</button>
-        <button class="quiz-opt" onclick="mc('q02',this,true,'q1-prog',8)">Er steht vor internen Servern und schützt diese, indem er Anfragen stellvertretend annimmt</button>
-        <button class="quiz-opt" onclick="mc('q02',this,false,'q1-prog',8)">Er ist nur für Load-Balancing zuständig und hat keine Schutzfunktion</button>
+        <button class="quiz-opt" onclick="mc('q02',this,0)">Er steht vor den Clients und leitet deren Anfragen ins Internet weiter</button>
+        <button class="quiz-opt" onclick="mc('q02',this,1)">Er vergibt IP-Adressen an Clients per DHCP</button>
+        <button class="quiz-opt" onclick="mc('q02',this,2)">Er steht vor internen Servern und schützt diese, indem er Anfragen stellvertretend annimmt</button>
+        <button class="quiz-opt" onclick="mc('q02',this,3)">Er ist nur für Load-Balancing zuständig und hat keine Schutzfunktion</button>
       </div>
+      <button class="submit-btn" id="q02-submit" onclick="submitMC('q02')">Auswerten</button>
       <div class="feedback" id="q02-fb"></div>
-      <button class="reset-btn" onclick="resetMC('q02','q1-prog',8)">↺ Zurücksetzen</button>
+      <button class="reset-btn" onclick="resetQ('q02','mc')">↺ Zurücksetzen</button>
     </div>
 
     <div class="quiz-block">
       <div class="quiz-num">Frage 3 · Richtig oder Falsch</div>
       <div class="quiz-q">Bei einem DHCP-Graceful-Shutdown sendet der Client aktiv eine DHCP-Release-Nachricht, bevor die Lease-Time abläuft.</div>
       <div class="tf-row" id="q03">
-        <button class="tf-btn" onclick="tf('q03',this,true,'q1-prog',8)">✓ Richtig</button>
-        <button class="tf-btn" onclick="tf('q03',this,false,'q1-prog',8)">✗ Falsch</button>
+        <button class="tf-btn" data-correct="true" onclick="tf('q03',this,true)">✓ Richtig</button>
+        <button class="tf-btn" data-correct="false" onclick="tf('q03',this,false)">✗ Falsch</button>
       </div>
       <div class="feedback" id="q03-fb"></div>
-      <button class="reset-btn" onclick="resetTF('q03','q1-prog',8)">↺ Zurücksetzen</button>
+      <button class="reset-btn" onclick="resetQ('q03','tf')">↺ Zurücksetzen</button>
     </div>
 
     <div class="quiz-block">
       <div class="quiz-num">Frage 4 · Multiple Choice</div>
       <div class="quiz-q">In welcher Reihenfolge läuft der DHCP-DORA-Prozess ab?</div>
       <div class="quiz-opts" id="q04">
-        <button class="quiz-opt" onclick="mc('q04',this,false,'q1-prog',8)">Offer → Discover → Request → ACK</button>
-        <button class="quiz-opt" onclick="mc('q04',this,true,'q1-prog',8)">Discover → Offer → Request → ACK</button>
-        <button class="quiz-opt" onclick="mc('q04',this,false,'q1-prog',8)">Request → Discover → Offer → ACK</button>
-        <button class="quiz-opt" onclick="mc('q04',this,false,'q1-prog',8)">Discover → Request → Offer → ACK</button>
+        <button class="quiz-opt" onclick="mc('q04',this,0)">Offer → Discover → Request → ACK</button>
+        <button class="quiz-opt" onclick="mc('q04',this,1)">Discover → Offer → Request → ACK</button>
+        <button class="quiz-opt" onclick="mc('q04',this,2)">Request → Discover → Offer → ACK</button>
+        <button class="quiz-opt" onclick="mc('q04',this,3)">Discover → Request → Offer → ACK</button>
       </div>
+      <button class="submit-btn" id="q04-submit" onclick="submitMC('q04')">Auswerten</button>
       <div class="feedback" id="q04-fb"></div>
-      <button class="reset-btn" onclick="resetMC('q04','q1-prog',8)">↺ Zurücksetzen</button>
+      <button class="reset-btn" onclick="resetQ('q04','mc')">↺ Zurücksetzen</button>
     </div>
 
     <div class="quiz-block">
       <div class="quiz-num">Frage 5 · Richtig oder Falsch</div>
       <div class="quiz-q">Bei der rekursiven DNS-Auflösung muss der Client selbst Root-, TLD- und Authoritative-Server nacheinander befragen.</div>
       <div class="tf-row" id="q05">
-        <button class="tf-btn" onclick="tf('q05',this,false,'q1-prog',8)">✓ Richtig</button>
-        <button class="tf-btn" onclick="tf('q05',this,true,'q1-prog',8)">✗ Falsch</button>
+        <button class="tf-btn" data-correct="false" onclick="tf('q05',this,false)">✓ Richtig</button>
+        <button class="tf-btn" data-correct="true" onclick="tf('q05',this,true)">✗ Falsch</button>
       </div>
       <div class="feedback" id="q05-fb"></div>
-      <button class="reset-btn" onclick="resetTF('q05','q1-prog',8)">↺ Zurücksetzen</button>
+      <button class="reset-btn" onclick="resetQ('q05','tf')">↺ Zurücksetzen</button>
     </div>
 
     <div class="quiz-block">
       <div class="quiz-num">Frage 6 · Multiple Choice</div>
       <div class="quiz-q">Welcher DNS-Eintragstyp wird für Reverse-Lookups (IP → Hostname) verwendet?</div>
       <div class="quiz-opts" id="q06">
-        <button class="quiz-opt" onclick="mc('q06',this,false,'q1-prog',8)">A-Record</button>
-        <button class="quiz-opt" onclick="mc('q06',this,false,'q1-prog',8)">MX-Record</button>
-        <button class="quiz-opt" onclick="mc('q06',this,true,'q1-prog',8)">PTR-Record</button>
-        <button class="quiz-opt" onclick="mc('q06',this,false,'q1-prog',8)">CNAME-Record</button>
+        <button class="quiz-opt" onclick="mc('q06',this,0)">A-Record</button>
+        <button class="quiz-opt" onclick="mc('q06',this,1)">MX-Record</button>
+        <button class="quiz-opt" onclick="mc('q06',this,2)">PTR-Record</button>
+        <button class="quiz-opt" onclick="mc('q06',this,3)">CNAME-Record</button>
       </div>
+      <button class="submit-btn" id="q06-submit" onclick="submitMC('q06')">Auswerten</button>
       <div class="feedback" id="q06-fb"></div>
-      <button class="reset-btn" onclick="resetMC('q06','q1-prog',8)">↺ Zurücksetzen</button>
+      <button class="reset-btn" onclick="resetQ('q06','mc')">↺ Zurücksetzen</button>
     </div>
 
     <div class="quiz-block">
       <div class="quiz-num">Frage 7 · Multiple Choice</div>
       <div class="quiz-q">Was schützt DNSSEC?</div>
       <div class="quiz-opts" id="q07">
-        <button class="quiz-opt" onclick="mc('q07',this,false,'q1-prog',8)">Vor DDoS-Angriffen auf Webserver</button>
-        <button class="quiz-opt" onclick="mc('q07',this,true,'q1-prog',8)">Vor DNS-Spoofing und Cache Poisoning durch digitale Signaturen</button>
-        <button class="quiz-opt" onclick="mc('q07',this,false,'q1-prog',8)">Vor unverschlüsseltem HTTP-Traffic</button>
-        <button class="quiz-opt" onclick="mc('q07',this,false,'q1-prog',8)">Vor Brute-Force-Angriffen auf Passwörter</button>
+        <button class="quiz-opt" onclick="mc('q07',this,0)">Vor DDoS-Angriffen auf Webserver</button>
+        <button class="quiz-opt" onclick="mc('q07',this,1)">Vor DNS-Spoofing und Cache Poisoning durch digitale Signaturen</button>
+        <button class="quiz-opt" onclick="mc('q07',this,2)">Vor unverschlüsseltem HTTP-Traffic</button>
+        <button class="quiz-opt" onclick="mc('q07',this,3)">Vor Brute-Force-Angriffen auf Passwörter</button>
       </div>
+      <button class="submit-btn" id="q07-submit" onclick="submitMC('q07')">Auswerten</button>
       <div class="feedback" id="q07-fb"></div>
-      <button class="reset-btn" onclick="resetMC('q07','q1-prog',8)">↺ Zurücksetzen</button>
+      <button class="reset-btn" onclick="resetQ('q07','mc')">↺ Zurücksetzen</button>
     </div>
 
     <div class="quiz-block">
       <div class="quiz-num">Frage 8 · Richtig oder Falsch</div>
       <div class="quiz-q">Ein Backup-Server nach der 3-2-1-Regel hält 3 Kopien auf 2 verschiedenen Medientypen, von denen 1 Kopie extern (Offsite) aufbewahrt wird.</div>
       <div class="tf-row" id="q08">
-        <button class="tf-btn" onclick="tf('q08',this,true,'q1-prog',8)">✓ Richtig</button>
-        <button class="tf-btn" onclick="tf('q08',this,false,'q1-prog',8)">✗ Falsch</button>
+        <button class="tf-btn" data-correct="true" onclick="tf('q08',this,true)">✓ Richtig</button>
+        <button class="tf-btn" data-correct="false" onclick="tf('q08',this,false)">✗ Falsch</button>
       </div>
       <div class="feedback" id="q08-fb"></div>
-      <button class="reset-btn" onclick="resetTF('q08','q1-prog',8)">↺ Zurücksetzen</button>
+      <button class="reset-btn" onclick="resetQ('q08','tf')">↺ Zurücksetzen</button>
     </div>
   </section>
 
@@ -672,85 +684,89 @@
       <div class="quiz-num">Frage 9 · Multiple Choice</div>
       <div class="quiz-q">Was versteht man unter TCO (Total Cost of Ownership)?</div>
       <div class="quiz-opts" id="q09">
-        <button class="quiz-opt" onclick="mc('q09',this,false,'q2-prog',7)">Nur der Kaufpreis einer Lösung</button>
-        <button class="quiz-opt" onclick="mc('q09',this,false,'q2-prog',7)">Betriebskosten minus Anschaffungskosten</button>
-        <button class="quiz-opt" onclick="mc('q09',this,true,'q2-prog',7)">Gesamtkosten über den kompletten Lebenszyklus: Anschaffung, Betrieb, Wartung, Schulung, Entsorgung</button>
-        <button class="quiz-opt" onclick="mc('q09',this,false,'q2-prog',7)">Die Kosten eines einzigen IT-Projekts</button>
+        <button class="quiz-opt" onclick="mc('q09',this,0)">Nur der Kaufpreis einer Lösung</button>
+        <button class="quiz-opt" onclick="mc('q09',this,1)">Betriebskosten minus Anschaffungskosten</button>
+        <button class="quiz-opt" onclick="mc('q09',this,2)">Gesamtkosten über den kompletten Lebenszyklus: Anschaffung, Betrieb, Wartung, Schulung, Entsorgung</button>
+        <button class="quiz-opt" onclick="mc('q09',this,3)">Die Kosten eines einzigen IT-Projekts</button>
       </div>
+      <button class="submit-btn" id="q09-submit" onclick="submitMC('q09')">Auswerten</button>
       <div class="feedback" id="q09-fb"></div>
-      <button class="reset-btn" onclick="resetMC('q09','q2-prog',7)">↺ Zurücksetzen</button>
+      <button class="reset-btn" onclick="resetQ('q09','mc')">↺ Zurücksetzen</button>
     </div>
 
     <div class="quiz-block">
       <div class="quiz-num">Frage 10 · Richtig oder Falsch</div>
       <div class="quiz-q">CAPEX bezeichnet laufende monatliche Betriebskosten (z. B. Cloud-Abonnement), während OPEX einmalige Investitionen sind.</div>
       <div class="tf-row" id="q10">
-        <button class="tf-btn" onclick="tf('q10',this,false,'q2-prog',7)">✓ Richtig</button>
-        <button class="tf-btn" onclick="tf('q10',this,true,'q2-prog',7)">✗ Falsch</button>
+        <button class="tf-btn" data-correct="false" onclick="tf('q10',this,false)">✓ Richtig</button>
+        <button class="tf-btn" data-correct="true" onclick="tf('q10',this,true)">✗ Falsch</button>
       </div>
       <div class="feedback" id="q10-fb"></div>
-      <button class="reset-btn" onclick="resetTF('q10','q2-prog',7)">↺ Zurücksetzen</button>
+      <button class="reset-btn" onclick="resetQ('q10','tf')">↺ Zurücksetzen</button>
     </div>
 
     <div class="quiz-block">
       <div class="quiz-num">Frage 11 · Multiple Choice</div>
       <div class="quiz-q">Welches Abrechnungsmodell eignet sich am besten für ein Unternehmen mit stark schwankender IT-Auslastung?</div>
       <div class="quiz-opts" id="q11">
-        <button class="quiz-opt" onclick="mc('q11',this,false,'q2-prog',7)">Flat Rate</button>
-        <button class="quiz-opt" onclick="mc('q11',this,true,'q2-prog',7)">Pay-per-use</button>
-        <button class="quiz-opt" onclick="mc('q11',this,false,'q2-prog',7)">Pay as you grow</button>
-        <button class="quiz-opt" onclick="mc('q11',this,false,'q2-prog',7)">Freemium</button>
+        <button class="quiz-opt" onclick="mc('q11',this,0)">Flat Rate</button>
+        <button class="quiz-opt" onclick="mc('q11',this,1)">Pay-per-use</button>
+        <button class="quiz-opt" onclick="mc('q11',this,2)">Pay as you grow</button>
+        <button class="quiz-opt" onclick="mc('q11',this,3)">Freemium</button>
       </div>
+      <button class="submit-btn" id="q11-submit" onclick="submitMC('q11')">Auswerten</button>
       <div class="feedback" id="q11-fb"></div>
-      <button class="reset-btn" onclick="resetMC('q11','q2-prog',7)">↺ Zurücksetzen</button>
+      <button class="reset-btn" onclick="resetQ('q11','mc')">↺ Zurücksetzen</button>
     </div>
 
     <div class="quiz-block">
       <div class="quiz-num">Frage 12 · Multiple Choice</div>
       <div class="quiz-q">Welcher Aspekt spricht bei einer Make-or-Buy-Entscheidung für "Make" (Eigenentwicklung)?</div>
       <div class="quiz-opts" id="q12">
-        <button class="quiz-opt" onclick="mc('q12',this,false,'q2-prog',7)">Schnelle Markteinführung benötigt</button>
-        <button class="quiz-opt" onclick="mc('q12',this,false,'q2-prog',7)">Kein internes Know-how vorhanden</button>
-        <button class="quiz-opt" onclick="mc('q12',this,true,'q2-prog',7)">Die Lösung ist Kernkompetenz des Unternehmens und erfordert individuelle Anforderungen</button>
-        <button class="quiz-opt" onclick="mc('q12',this,false,'q2-prog',7)">Budget ist begrenzt und Entwickler fehlen</button>
+        <button class="quiz-opt" onclick="mc('q12',this,0)">Schnelle Markteinführung benötigt</button>
+        <button class="quiz-opt" onclick="mc('q12',this,1)">Kein internes Know-how vorhanden</button>
+        <button class="quiz-opt" onclick="mc('q12',this,2)">Die Lösung ist Kernkompetenz des Unternehmens und erfordert individuelle Anforderungen</button>
+        <button class="quiz-opt" onclick="mc('q12',this,3)">Budget ist begrenzt und Entwickler fehlen</button>
       </div>
+      <button class="submit-btn" id="q12-submit" onclick="submitMC('q12')">Auswerten</button>
       <div class="feedback" id="q12-fb"></div>
-      <button class="reset-btn" onclick="resetMC('q12','q2-prog',7)">↺ Zurücksetzen</button>
+      <button class="reset-btn" onclick="resetQ('q12','mc')">↺ Zurücksetzen</button>
     </div>
 
     <div class="quiz-block">
       <div class="quiz-num">Frage 13 · Richtig oder Falsch</div>
       <div class="quiz-q">Pay as you grow bedeutet, dass Ressourcen und Kosten mit dem Unternehmenswachstum skalieren, ohne großes Upfront-Investment.</div>
       <div class="tf-row" id="q13">
-        <button class="tf-btn" onclick="tf('q13',this,true,'q2-prog',7)">✓ Richtig</button>
-        <button class="tf-btn" onclick="tf('q13',this,false,'q2-prog',7)">✗ Falsch</button>
+        <button class="tf-btn" data-correct="true" onclick="tf('q13',this,true)">✓ Richtig</button>
+        <button class="tf-btn" data-correct="false" onclick="tf('q13',this,false)">✗ Falsch</button>
       </div>
       <div class="feedback" id="q13-fb"></div>
-      <button class="reset-btn" onclick="resetTF('q13','q2-prog',7)">↺ Zurücksetzen</button>
+      <button class="reset-btn" onclick="resetQ('q13','tf')">↺ Zurücksetzen</button>
     </div>
 
     <div class="quiz-block">
       <div class="quiz-num">Frage 14 · Multiple Choice</div>
       <div class="quiz-q">Was sind Selbstkosten?</div>
       <div class="quiz-opts" id="q14">
-        <button class="quiz-opt" onclick="mc('q14',this,false,'q2-prog',7)">Nur die Fertigungskosten eines Produkts</button>
-        <button class="quiz-opt" onclick="mc('q14',this,true,'q2-prog',7)">Herstellkosten + Verwaltungsgemeinkosten + Vertriebsgemeinkosten</button>
-        <button class="quiz-opt" onclick="mc('q14',this,false,'q2-prog',7)">Der Verkaufspreis minus Gewinnmarge</button>
-        <button class="quiz-opt" onclick="mc('q14',this,false,'q2-prog',7)">Laufende monatliche Betriebskosten</button>
+        <button class="quiz-opt" onclick="mc('q14',this,0)">Nur die Fertigungskosten eines Produkts</button>
+        <button class="quiz-opt" onclick="mc('q14',this,1)">Herstellkosten + Verwaltungsgemeinkosten + Vertriebsgemeinkosten</button>
+        <button class="quiz-opt" onclick="mc('q14',this,2)">Der Verkaufspreis minus Gewinnmarge</button>
+        <button class="quiz-opt" onclick="mc('q14',this,3)">Laufende monatliche Betriebskosten</button>
       </div>
+      <button class="submit-btn" id="q14-submit" onclick="submitMC('q14')">Auswerten</button>
       <div class="feedback" id="q14-fb"></div>
-      <button class="reset-btn" onclick="resetMC('q14','q2-prog',7)">↺ Zurücksetzen</button>
+      <button class="reset-btn" onclick="resetQ('q14','mc')">↺ Zurücksetzen</button>
     </div>
 
     <div class="quiz-block">
       <div class="quiz-num">Frage 15 · Richtig oder Falsch</div>
       <div class="quiz-q">Vendor Lock-in ist ein Vorteil des "Buy"-Ansatzes und beschreibt die vollständige Unabhängigkeit vom Hersteller.</div>
       <div class="tf-row" id="q15">
-        <button class="tf-btn" onclick="tf('q15',this,false,'q2-prog',7)">✓ Richtig</button>
-        <button class="tf-btn" onclick="tf('q15',this,true,'q2-prog',7)">✗ Falsch</button>
+        <button class="tf-btn" data-correct="false" onclick="tf('q15',this,false)">✓ Richtig</button>
+        <button class="tf-btn" data-correct="true" onclick="tf('q15',this,true)">✗ Falsch</button>
       </div>
       <div class="feedback" id="q15-fb"></div>
-      <button class="reset-btn" onclick="resetTF('q15','q2-prog',7)">↺ Zurücksetzen</button>
+      <button class="reset-btn" onclick="resetQ('q15','tf')">↺ Zurücksetzen</button>
     </div>
   </section>
 
@@ -968,122 +984,128 @@
       <div class="quiz-num">Frage 16 · Multiple Choice</div>
       <div class="quiz-q">Was ist der Unterschied zwischen IDS und IPS?</div>
       <div class="quiz-opts" id="q16">
-        <button class="quiz-opt" onclick="mc('q16',this,false,'q3-prog',10)">IDS ist teurer als IPS</button>
-        <button class="quiz-opt" onclick="mc('q16',this,false,'q3-prog',10)">IPS kann nur Netzwerkverkehr überwachen, IDS nicht</button>
-        <button class="quiz-opt" onclick="mc('q16',this,true,'q3-prog',10)">IPS blockiert Angriffe aktiv, IDS erkennt und meldet sie nur</button>
-        <button class="quiz-opt" onclick="mc('q16',this,false,'q3-prog',10)">IDS arbeitet auf Layer 7, IPS nur auf Layer 3</button>
+        <button class="quiz-opt" onclick="mc('q16',this,0)">IDS ist teurer als IPS</button>
+        <button class="quiz-opt" onclick="mc('q16',this,1)">IPS kann nur Netzwerkverkehr überwachen, IDS nicht</button>
+        <button class="quiz-opt" onclick="mc('q16',this,2)">IPS blockiert Angriffe aktiv, IDS erkennt und meldet sie nur</button>
+        <button class="quiz-opt" onclick="mc('q16',this,3)">IDS arbeitet auf Layer 7, IPS nur auf Layer 3</button>
       </div>
+      <button class="submit-btn" id="q16-submit" onclick="submitMC('q16')">Auswerten</button>
       <div class="feedback" id="q16-fb"></div>
-      <button class="reset-btn" onclick="resetMC('q16','q3-prog',10)">↺ Zurücksetzen</button>
+      <button class="reset-btn" onclick="resetQ('q16','mc')">↺ Zurücksetzen</button>
     </div>
 
     <div class="quiz-block">
       <div class="quiz-num">Frage 17 · Richtig oder Falsch</div>
       <div class="quiz-q">In der DMZ werden interne Datenbankserver platziert, damit auf deren Daten von außen zugegriffen werden kann.</div>
       <div class="tf-row" id="q17">
-        <button class="tf-btn" onclick="tf('q17',this,false,'q3-prog',10)">✓ Richtig</button>
-        <button class="tf-btn" onclick="tf('q17',this,true,'q3-prog',10)">✗ Falsch</button>
+        <button class="tf-btn" data-correct="false" onclick="tf('q17',this,false)">✓ Richtig</button>
+        <button class="tf-btn" data-correct="true" onclick="tf('q17',this,true)">✗ Falsch</button>
       </div>
       <div class="feedback" id="q17-fb"></div>
-      <button class="reset-btn" onclick="resetTF('q17','q3-prog',10)">↺ Zurücksetzen</button>
+      <button class="reset-btn" onclick="resetQ('q17','tf')">↺ Zurücksetzen</button>
     </div>
 
     <div class="quiz-block">
       <div class="quiz-num">Frage 18 · Multiple Choice</div>
       <div class="quiz-q">Welche TOM schützt vor unbefugtem physischem Zutritt zu Serverräumen?</div>
       <div class="quiz-opts" id="q18">
-        <button class="quiz-opt" onclick="mc('q18',this,false,'q3-prog',10)">Zugangskontrolle</button>
-        <button class="quiz-opt" onclick="mc('q18',this,true,'q3-prog',10)">Zutrittskontrolle</button>
-        <button class="quiz-opt" onclick="mc('q18',this,false,'q3-prog',10)">Zugriffskontrolle</button>
-        <button class="quiz-opt" onclick="mc('q18',this,false,'q3-prog',10)">Weitergabekontrolle</button>
+        <button class="quiz-opt" onclick="mc('q18',this,0)">Zugangskontrolle</button>
+        <button class="quiz-opt" onclick="mc('q18',this,1)">Zutrittskontrolle</button>
+        <button class="quiz-opt" onclick="mc('q18',this,2)">Zugriffskontrolle</button>
+        <button class="quiz-opt" onclick="mc('q18',this,3)">Weitergabekontrolle</button>
       </div>
+      <button class="submit-btn" id="q18-submit" onclick="submitMC('q18')">Auswerten</button>
       <div class="feedback" id="q18-fb"></div>
-      <button class="reset-btn" onclick="resetMC('q18','q3-prog',10)">↺ Zurücksetzen</button>
+      <button class="reset-btn" onclick="resetQ('q18','mc')">↺ Zurücksetzen</button>
     </div>
 
     <div class="quiz-block">
       <div class="quiz-num">Frage 19 · Richtig oder Falsch</div>
       <div class="quiz-q">SPI (Stateful Packet Inspection) speichert den Verbindungsstatus, um Antwortpakete kontextbezogen zu bewerten und IP-Spoofing zu verhindern.</div>
       <div class="tf-row" id="q19">
-        <button class="tf-btn" onclick="tf('q19',this,true,'q3-prog',10)">✓ Richtig</button>
-        <button class="tf-btn" onclick="tf('q19',this,false,'q3-prog',10)">✗ Falsch</button>
+        <button class="tf-btn" data-correct="true" onclick="tf('q19',this,true)">✓ Richtig</button>
+        <button class="tf-btn" data-correct="false" onclick="tf('q19',this,false)">✗ Falsch</button>
       </div>
       <div class="feedback" id="q19-fb"></div>
-      <button class="reset-btn" onclick="resetTF('q19','q3-prog',10)">↺ Zurücksetzen</button>
+      <button class="reset-btn" onclick="resetQ('q19','tf')">↺ Zurücksetzen</button>
     </div>
 
     <div class="quiz-block">
       <div class="quiz-num">Frage 20 · Multiple Choice</div>
       <div class="quiz-q">Welche Aussage zur NGFW (Next Generation Firewall) trifft zu?</div>
       <div class="quiz-opts" id="q20">
-        <button class="quiz-opt" onclick="mc('q20',this,false,'q3-prog',10)">Sie kann nur Pakete auf Layer 3 filtern</button>
-        <button class="quiz-opt" onclick="mc('q20',this,false,'q3-prog',10)">Sie arbeitet rein stateless ohne Verbindungsverfolgung</button>
-        <button class="quiz-opt" onclick="mc('q20',this,true,'q3-prog',10)">Sie erkennt Anwendungen auf Layer 7 und integriert IPS/IDS sowie SSL-Inspektion</button>
-        <button class="quiz-opt" onclick="mc('q20',this,false,'q3-prog',10)">Sie ersetzt ausschließlich Antivirenprogramme auf Endgeräten</button>
+        <button class="quiz-opt" onclick="mc('q20',this,0)">Sie kann nur Pakete auf Layer 3 filtern</button>
+        <button class="quiz-opt" onclick="mc('q20',this,1)">Sie arbeitet rein stateless ohne Verbindungsverfolgung</button>
+        <button class="quiz-opt" onclick="mc('q20',this,2)">Sie erkennt Anwendungen auf Layer 7 und integriert IPS/IDS sowie SSL-Inspektion</button>
+        <button class="quiz-opt" onclick="mc('q20',this,3)">Sie ersetzt ausschließlich Antivirenprogramme auf Endgeräten</button>
       </div>
+      <button class="submit-btn" id="q20-submit" onclick="submitMC('q20')">Auswerten</button>
       <div class="feedback" id="q20-fb"></div>
-      <button class="reset-btn" onclick="resetMC('q20','q3-prog',10)">↺ Zurücksetzen</button>
+      <button class="reset-btn" onclick="resetQ('q20','mc')">↺ Zurücksetzen</button>
     </div>
 
     <div class="quiz-block">
       <div class="quiz-num">Frage 21 · Multiple Choice</div>
       <div class="quiz-q">DPI (Deep Packet Inspection) inspiziert Pakete bis zu welcher OSI-Schicht?</div>
       <div class="quiz-opts" id="q21">
-        <button class="quiz-opt" onclick="mc('q21',this,false,'q3-prog',10)">Layer 3 (Vermittlungsschicht)</button>
-        <button class="quiz-opt" onclick="mc('q21',this,false,'q3-prog',10)">Layer 4 (Transportschicht)</button>
-        <button class="quiz-opt" onclick="mc('q21',this,true,'q3-prog',10)">Layer 7 (Anwendungsschicht)</button>
-        <button class="quiz-opt" onclick="mc('q21',this,false,'q3-prog',10)">Layer 2 (Sicherungsschicht)</button>
+        <button class="quiz-opt" onclick="mc('q21',this,0)">Layer 3 (Vermittlungsschicht)</button>
+        <button class="quiz-opt" onclick="mc('q21',this,1)">Layer 4 (Transportschicht)</button>
+        <button class="quiz-opt" onclick="mc('q21',this,2)">Layer 7 (Anwendungsschicht)</button>
+        <button class="quiz-opt" onclick="mc('q21',this,3)">Layer 2 (Sicherungsschicht)</button>
       </div>
+      <button class="submit-btn" id="q21-submit" onclick="submitMC('q21')">Auswerten</button>
       <div class="feedback" id="q21-fb"></div>
-      <button class="reset-btn" onclick="resetMC('q21','q3-prog',10)">↺ Zurücksetzen</button>
+      <button class="reset-btn" onclick="resetQ('q21','mc')">↺ Zurücksetzen</button>
     </div>
 
     <div class="quiz-block">
       <div class="quiz-num">Frage 22 · Richtig oder Falsch</div>
       <div class="quiz-q">Privacy by Design (TOM 14) bedeutet, dass Datenschutz nachträglich in bestehende Systeme eingebaut wird, wenn Probleme auftreten.</div>
       <div class="tf-row" id="q22">
-        <button class="tf-btn" onclick="tf('q22',this,false,'q3-prog',10)">✓ Richtig</button>
-        <button class="tf-btn" onclick="tf('q22',this,true,'q3-prog',10)">✗ Falsch</button>
+        <button class="tf-btn" data-correct="false" onclick="tf('q22',this,false)">✓ Richtig</button>
+        <button class="tf-btn" data-correct="true" onclick="tf('q22',this,true)">✗ Falsch</button>
       </div>
       <div class="feedback" id="q22-fb"></div>
-      <button class="reset-btn" onclick="resetTF('q22','q3-prog',10)">↺ Zurücksetzen</button>
+      <button class="reset-btn" onclick="resetQ('q22','tf')">↺ Zurücksetzen</button>
     </div>
 
     <div class="quiz-block">
       <div class="quiz-num">Frage 23 · Multiple Choice</div>
       <div class="quiz-q">Was beschreibt die Formel: Risiko = Eintrittswahrscheinlichkeit × Schadenshöhe?</div>
       <div class="quiz-opts" id="q23">
-        <button class="quiz-opt" onclick="mc('q23',this,false,'q3-prog',10)">Die Berechnung von TCO</button>
-        <button class="quiz-opt" onclick="mc('q23',this,true,'q3-prog',10)">Die quantitative Risikobewertung in der Risikoanalyse</button>
-        <button class="quiz-opt" onclick="mc('q23',this,false,'q3-prog',10)">Den Schutzbedarfswert nach BSI</button>
-        <button class="quiz-opt" onclick="mc('q23',this,false,'q3-prog',10)">Die Projektkosten-Kalkulation</button>
+        <button class="quiz-opt" onclick="mc('q23',this,0)">Die Berechnung von TCO</button>
+        <button class="quiz-opt" onclick="mc('q23',this,1)">Die quantitative Risikobewertung in der Risikoanalyse</button>
+        <button class="quiz-opt" onclick="mc('q23',this,2)">Den Schutzbedarfswert nach BSI</button>
+        <button class="quiz-opt" onclick="mc('q23',this,3)">Die Projektkosten-Kalkulation</button>
       </div>
+      <button class="submit-btn" id="q23-submit" onclick="submitMC('q23')">Auswerten</button>
       <div class="feedback" id="q23-fb"></div>
-      <button class="reset-btn" onclick="resetMC('q23','q3-prog',10)">↺ Zurücksetzen</button>
+      <button class="reset-btn" onclick="resetQ('q23','mc')">↺ Zurücksetzen</button>
     </div>
 
     <div class="quiz-block">
       <div class="quiz-num">Frage 24 · Multiple Choice</div>
       <div class="quiz-q">Ordne zu: Welches System "erkennt ungewöhnlichen Datenverkehr und meldet mögliche Angriffe einem Administrator"?</div>
       <div class="quiz-opts" id="q24">
-        <button class="quiz-opt" onclick="mc('q24',this,true,'q3-prog',10)">IDS</button>
-        <button class="quiz-opt" onclick="mc('q24',this,false,'q3-prog',10)">IPS</button>
-        <button class="quiz-opt" onclick="mc('q24',this,false,'q3-prog',10)">SPI</button>
-        <button class="quiz-opt" onclick="mc('q24',this,false,'q3-prog',10)">DPI</button>
+        <button class="quiz-opt" onclick="mc('q24',this,0)">IDS</button>
+        <button class="quiz-opt" onclick="mc('q24',this,1)">IPS</button>
+        <button class="quiz-opt" onclick="mc('q24',this,2)">SPI</button>
+        <button class="quiz-opt" onclick="mc('q24',this,3)">DPI</button>
       </div>
+      <button class="submit-btn" id="q24-submit" onclick="submitMC('q24')">Auswerten</button>
       <div class="feedback" id="q24-fb"></div>
-      <button class="reset-btn" onclick="resetMC('q24','q3-prog',10)">↺ Zurücksetzen</button>
+      <button class="reset-btn" onclick="resetQ('q24','mc')">↺ Zurücksetzen</button>
     </div>
 
     <div class="quiz-block">
       <div class="quiz-num">Frage 25 · Richtig oder Falsch</div>
       <div class="quiz-q">Die Zugriffskontrolle (TOM 03) regelt, wer welche Daten lesen oder schreiben darf, und wird typischerweise durch ein Rollen- und Rechtekonzept (RBAC) umgesetzt.</div>
       <div class="tf-row" id="q25">
-        <button class="tf-btn" onclick="tf('q25',this,true,'q3-prog',10)">✓ Richtig</button>
-        <button class="tf-btn" onclick="tf('q25',this,false,'q3-prog',10)">✗ Falsch</button>
+        <button class="tf-btn" data-correct="true" onclick="tf('q25',this,true)">✓ Richtig</button>
+        <button class="tf-btn" data-correct="false" onclick="tf('q25',this,false)">✗ Falsch</button>
       </div>
       <div class="feedback" id="q25-fb"></div>
-      <button class="reset-btn" onclick="resetTF('q25','q3-prog',10)">↺ Zurücksetzen</button>
+      <button class="reset-btn" onclick="resetQ('q25','tf')">↺ Zurücksetzen</button>
     </div>
   </section>
 
@@ -1092,8 +1114,19 @@
 </div>
 
 <script>
+// ── Quiz State ──────────────────────────────────────────────
 const TOTAL = 25;
+const state = {}; // qid -> { selected: index, submitted: bool }
 const answered = new Set();
+
+// correct answer index (0-based) per question
+const correctIndex = {
+  q01:1, q02:2, q03:'r', q04:1, q05:'f',
+  q06:2, q07:1, q08:'r',
+  q09:2, q10:'f', q11:1, q12:2, q13:'r', q14:1, q15:'f',
+  q16:2, q17:'f', q18:1, q19:'r', q20:2,
+  q21:2, q22:'f', q23:1, q24:0, q25:'r'
+};
 
 const sectionMap = {
   'q1-prog': ['q01','q02','q03','q04','q05','q06','q07','q08'],
@@ -1101,83 +1134,117 @@ const sectionMap = {
   'q3-prog': ['q16','q17','q18','q19','q20','q21','q22','q23','q24','q25']
 };
 
-
-  const done = qs.filter(q => answered.has(q)).length;
+function updateProgress() {
+  document.getElementById('gp-text').textContent = answered.size + ' / ' + TOTAL + ' beantwortet';
+  document.getElementById('gp-fill').style.width = Math.round(answered.size / TOTAL * 100) + '%';
+  for (const [id, qs] of Object.entries(sectionMap)) {
+    const done = qs.filter(q => answered.has(q)).length;
     document.getElementById(id).textContent = done + '/' + qs.length + ' beantwortet';
   }
 }
 
-function mc(qid, btn, isCorrect, progId, total) {
+// ── MC: select (no lock-in until submitted) ──────────────────
+function mc(qid, btn, idx) {
+  const s = state[qid] || (state[qid] = {});
+  if (s.submitted) return; // locked after submit
+  s.selected = idx;
+
   const container = document.getElementById(qid);
-  if (container.dataset.done) return;
-  container.dataset.done = '1';
-  const btns = container.querySelectorAll('button');
-  btns.forEach(b => b.disabled = true);
+  container.querySelectorAll('button.quiz-opt').forEach((b, i) => {
+    b.classList.toggle('selected', i === idx);
+  });
+
+  // show submit button
+  const submitBtn = document.getElementById(qid + '-submit');
+  if (submitBtn) submitBtn.style.display = 'inline-block';
+}
+
+function submitMC(qid) {
+  const s = state[qid];
+  if (!s || s.selected === undefined) return;
+  s.submitted = true;
+
+  const container = document.getElementById(qid);
+  const correct = correctIndex[qid];
   const fb = document.getElementById(qid + '-fb');
-  if (isCorrect) {
-    btn.classList.add('correct');
+  const submitBtn = document.getElementById(qid + '-submit');
+  if (submitBtn) submitBtn.style.display = 'none';
+
+  container.querySelectorAll('button.quiz-opt').forEach((b, i) => {
+    b.classList.remove('selected');
+    if (i === correct) b.classList.add('correct');
+    else if (i === s.selected && s.selected !== correct) b.classList.add('wrong');
+  });
+
+  if (s.selected === correct) {
     fb.textContent = '✓ Richtig!';
     fb.className = 'feedback show ok';
   } else {
-    btn.classList.add('wrong');
     fb.textContent = '✗ Leider falsch. Die korrekte Antwort ist grün markiert.';
     fb.className = 'feedback show nok';
-    btns.forEach(b => {
-      if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(',true,')) b.classList.add('show-correct');
-    });
   }
   answered.add(qid);
   updateProgress();
 }
 
-function tf(qid, btn, isCorrect, progId, total) {
+// ── TF: select & auto-submit ──────────────────────────────────
+function tf(qid, btn, isCorrect) {
+  const s = state[qid] || (state[qid] = {});
+  if (s.submitted) return;
+  s.submitted = true;
+  s.correct = isCorrect;
+
   const container = document.getElementById(qid);
-  if (container.dataset.done) return;
-  container.dataset.done = '1';
-  const btns = container.querySelectorAll('button');
-  btns.forEach(b => b.disabled = true);
   const fb = document.getElementById(qid + '-fb');
+  const btns = container.querySelectorAll('button.tf-btn');
+
+  // mark correct button green, wrong button red
+  btns.forEach(b => {
+    const bCorrect = b.getAttribute('data-correct') === 'true';
+    if (bCorrect) b.classList.add('correct');
+    else if (b === btn && !isCorrect) b.classList.add('wrong');
+  });
+
   if (isCorrect) {
-    btn.classList.add('correct');
     fb.textContent = '✓ Richtig!';
     fb.className = 'feedback show ok';
   } else {
-    btn.classList.add('wrong');
     fb.textContent = '✗ Falsch. Die richtige Antwort ist grün markiert.';
     fb.className = 'feedback show nok';
-    btns.forEach(b => {
-      if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(',true,')) b.classList.add('correct');
-    });
   }
   answered.add(qid);
   updateProgress();
 }
 
-function resetMC(qid) {
-  const container = document.getElementById(qid);
-  delete container.dataset.done;
-  container.querySelectorAll('button').forEach(b => { b.disabled = false; b.className = 'quiz-opt'; });
-  document.getElementById(qid + '-fb').className = 'feedback';
+// ── Reset ─────────────────────────────────────────────────────
+function resetQ(qid, type) {
+  delete state[qid];
   answered.delete(qid);
+
+  const container = document.getElementById(qid);
+  if (type === 'mc') {
+    container.querySelectorAll('button.quiz-opt').forEach(b => {
+      b.className = 'quiz-opt';
+    });
+    const submitBtn = document.getElementById(qid + '-submit');
+    if (submitBtn) submitBtn.style.display = 'none';
+  } else {
+    container.querySelectorAll('button.tf-btn').forEach(b => {
+      b.className = 'tf-btn';
+    });
+  }
+  const fb = document.getElementById(qid + '-fb');
+  fb.className = 'feedback';
   updateProgress();
 }
 
-function resetTF(qid) {
-  const container = document.getElementById(qid);
-  delete container.dataset.done;
-  container.querySelectorAll('button').forEach(b => { b.disabled = false; b.className = 'tf-btn'; });
-  document.getElementById(qid + '-fb').className = 'feedback';
-  answered.delete(qid);
-  updateProgress();
-}
-
-const navLinks = document.querySelectorAll('nav a');
+// Nav active on scroll
 window.addEventListener('scroll', () => {
   let current = '';
   document.querySelectorAll('section[id]').forEach(sec => {
     if (window.scrollY >= sec.offsetTop - 120) current = sec.id;
   });
-  navLinks.forEach(a => {
+  document.querySelectorAll('nav a').forEach(a => {
     a.classList.toggle('active', a.getAttribute('href') === '#' + current);
   });
 });
